@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\csvad\\Documents\\GitHub\\Project_B_23-24\\Project_B\\Project_B\\Project_B.csproj": {}
+    "C:\\programing\\school\\c#\\repo's\\Project_B_23-24\\Project_B\\Project_B\\Project_B.csproj": {}
   },
   "projects": {
-    "C:\\Users\\csvad\\Documents\\GitHub\\Project_B_23-24\\Project_B\\Project_B\\Project_B.csproj": {
+    "C:\\programing\\school\\c#\\repo's\\Project_B_23-24\\Project_B\\Project_B\\Project_B.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\csvad\\Documents\\GitHub\\Project_B_23-24\\Project_B\\Project_B\\Project_B.csproj",
+        "projectUniqueName": "C:\\programing\\school\\c#\\repo's\\Project_B_23-24\\Project_B\\Project_B\\Project_B.csproj",
         "projectName": "Project_B",
-        "projectPath": "C:\\Users\\csvad\\Documents\\GitHub\\Project_B_23-24\\Project_B\\Project_B\\Project_B.csproj",
-        "packagesPath": "C:\\Users\\csvad\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\csvad\\Documents\\GitHub\\Project_B_23-24\\Project_B\\Project_B\\obj\\",
+        "projectPath": "C:\\programing\\school\\c#\\repo's\\Project_B_23-24\\Project_B\\Project_B\\Project_B.csproj",
+        "packagesPath": "C:\\Users\\jelle\\.nuget\\packages\\",
+        "outputPath": "C:\\programing\\school\\c#\\repo's\\Project_B_23-24\\Project_B\\Project_B\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\csvad\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\jelle\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,11 +32,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -83,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
