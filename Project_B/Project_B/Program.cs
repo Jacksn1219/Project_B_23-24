@@ -6,5 +6,6 @@ public class Program
         //Dit is een test comment
         System.Console.WriteLine("gday");
         Console.WriteLine("hello");
+        Console.WriteLine("wassup")
     }
 }
