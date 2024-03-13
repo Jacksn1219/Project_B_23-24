@@ -397,4 +397,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 Project_B/Project_B/obj/
-./obj/
+
+Project_B/Project_B/obj
