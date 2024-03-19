@@ -65,7 +65,6 @@ namespace Project_B
         /// <exception cref="System.Data.SQLite.SQLiteException"></exception>
         static void ExcecuteQuerry(SQLiteConnection conn, string CreateQuerry)
         {
-
             SQLiteCommand sqlite_cmd;
             sqlite_cmd = conn.CreateCommand();
             try
