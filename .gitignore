@@ -398,3 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 Project_B/Project_B/obj/
 Project_B/Project_B/DataSource/
+Project_B/Project_B/DataSource/database.db
+Project_B/Project_B/DataSource
