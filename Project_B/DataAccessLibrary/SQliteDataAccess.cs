@@ -1,25 +1,22 @@
 using System.Data;
 using System.Data.SQLite;
-using System.Reflection;
-using System.Xml.Schema;
-using DataAccessLibrary.models.interfaces;
 
 namespace DataAccessLibrary
 {
-    public class SQliteDataAccess : IDisposable, ICRUD
+    public class SQliteDataAccess : DataAccess
     {
-        private SQLiteConnection _dbAccess { get; set; }
+        protected override IDbConnection _dbAccess { get; set; }
 
         public SQliteDataAccess(string connectionString)
         {
             _dbAccess = new SQLiteConnection(connectionString);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _dbAccess.Dispose();
         }
-        public bool SafeData(string sqlStatement, Dictionary<string, string> parameters)
+        public override bool SaveData(string sqlStatement, Dictionary<string, string> parameters)
         {
             List<SQLiteParameter> sqliteParameters = new();
             foreach (string key in parameters.Keys)
@@ -28,48 +25,30 @@ namespace DataAccessLibrary
                     new SQLiteParameter(key, parameters[key])
                 );
             }
-            return SafeData(sqlStatement, sqliteParameters.ToArray());
+            return SaveData(sqlStatement, sqliteParameters.ToArray());
         }
-        public bool SafeData(string sqlStatement, SQLiteParameter[] parameters)
+        public bool SaveData(string sqlStatement, SQLiteParameter[] parameters)
         {
-            _dbAccess.Open();
+            SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
+            dbAccess.Open();
             try
             {
-                SQLiteCommand command = _dbAccess.CreateCommand();
+                SQLiteCommand command = dbAccess.CreateCommand();
                 command.CommandText = sqlStatement;
                 command.Parameters.AddRange(parameters);
                 //check if lines affected are greater than 0
                 return command.ExecuteNonQuery() > 0;
             }
-            finally { _dbAccess.Close(); }
+            finally
+            {
+                dbAccess.Close();
+                dbAccess.Dispose();
+            }
         }
-        public List<T> ReadData<T>(string sqlStatement, Dictionary<string, string> parameters)
+        public override List<T> ReadData<T>(string sqlStatement, Dictionary<string, string> parameters)
         {
             throw new NotImplementedException();
-        }
 
-        private static T ConvertToObject<T>(SQLiteDataReader rd) where T : class, new()
-        {
-            Type type = typeof(T);
-            throw new NotImplementedException();
-            //var accessor = TypeAccessor.Create(type);
-            //var members = accessor.GetMembers();
-            //var t = new T();
-            //
-            //for (int i = 0; i < rd.FieldCount; i++)
-            //{
-            //    if (!rd.IsDBNull(i))
-            //    {
-            //        string fieldName = rd.GetName(i);
-            //
-            //        if (members.Any(m => string.Equals(m, fieldName, StringComparison.OrdinalIgnoreCase)))
-            //        {
-            //            accessor[t, fieldName] = rd.GetValue(i);
-            //        }
-            //    }
-            //}
-            //
-            //return t;
         }
     }
 }
