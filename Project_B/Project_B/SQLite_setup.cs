@@ -54,7 +54,7 @@ namespace Project_B
             sqlite_conn = new SQLiteConnection($"Data Source={databasePath}\\database.db; Version = 3; New = True; Compress = True; ");
             // Open the connection:
             try { sqlite_conn.Open(); }
-            catch (Exception ex) { }
+            catch (Exception) { }
             return sqlite_conn;
         }
         /// <summary>
@@ -72,7 +72,7 @@ namespace Project_B
                 sqlite_cmd.CommandText = CreateQuerry;
                 sqlite_cmd.ExecuteNonQuery();
             }
-            catch (System.Data.SQLite.SQLiteException ex)
+            catch (System.Data.SQLite.SQLiteException)
             {
                 throw new System.Data.SQLite.SQLiteException();
             }
