@@ -1,4 +1,5 @@
 ﻿using DataAccessLibrary;
+using Models;
 
 namespace Project_B
 {
@@ -6,12 +7,22 @@ namespace Project_B
     {
         public static void Main()
         {
-            //Opzet Sqlite database
-            //SQLite.SetupProjectB();
 
-            //Test models
-            Author testAuthor = new Author(1, "John", "Not succesfull", 25);
-            Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
+            InputMenu menu = new InputMenu("| Main menu |", true);
+            menu.Add("Setup Database", (x) =>
+            {
+                //Opzet Sqlite database
+                SQLite.SetupProjectB();
+                Console.ReadLine();
+            });
+            menu.Add("Test Author", (x) =>
+            {
+                Author testAuthor = new Author(1, "John", "Not succesfull", 25);
+                Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
+                Console.ReadLine();
+            });
+
+            menu.UseMenu();
         }
     }
 }
