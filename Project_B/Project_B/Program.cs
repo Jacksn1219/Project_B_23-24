@@ -22,14 +22,14 @@ namespace Project_B
                 Console.ReadLine();
             });
 
-            menu.UseMenu();
+            //menu.UseMenu();
 
-            Movie movie1 = new Movie("KUNG FU PANDA 4", 120); //Film 1 wordt toegevoegd
-            Movie movie2 = new Movie("DUNE: PART TWO", 150);  //Film 2 wordt toegevoegd
+            Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
+            Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
 
-            Room room1 = new Room(1, 150); //Room 1 heeft 150 plekken
-            Room room2 = new Room(2, 300); //Room 2 heeft 300 plekken
-            Room room3 = new Room(3, 500); //Room 3 heeft 500 plekken
+            Room room1 = new Room(1, "Room_1", 150); //Room 1 heeft 150 plekken
+            Room room2 = new Room(2, "Room_2", 300); //Room 2 heeft 300 plekken
+            Room room3 = new Room(3, "Room_3", 500); //Room 3 heeft 500 plekken
 
             Timetable timetable = new Timetable();
 
