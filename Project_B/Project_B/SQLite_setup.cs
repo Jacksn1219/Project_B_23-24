@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Data.SQLite;
 
 namespace Project_B
 {
@@ -34,12 +35,13 @@ namespace Project_B
                     pegiAge INTEGER  NOT NULL,
                     Discription TEXT  NOT NULL,
                     Genre TEXT  NOT NULL,
-                    DurationInSec INTEGER  NOT NULL,
+                    DurationInMin INTEGER  NOT NULL,
                     FOREIGN KEY (DirectorID) REFERENCES Director (ID)
                 )");
                 ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Room(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
-                    Name TEXT  NOT NULL
+                    Name TEXT  NOT NULL,
+                    Capacity INTEGER  NOT NULL
                 )");
                 ExcecuteQuerry(sqlite_conn, @"CREATE TABLE TimeTable(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
@@ -89,7 +91,7 @@ namespace Project_B
                     FOREIGN KEY (ReservationID) REFERENCES Reservation (ID)
                 )");
 
-                //----- Inputting starting data -----//
+                //----- Inputting test data -----//
                 ExcecuteQuerry(sqlite_conn, @"INSERT INTO Author(
                     Name,
                     Description,
@@ -133,7 +135,7 @@ namespace Project_B
                     pegiAge,
                     Discription,
                     Genre,
-                    DurationInSec
+                    DurationInMin
                 ) VALUES (
                     1,
                     1,
@@ -158,9 +160,11 @@ namespace Project_B
                     1
                 ); ");
                 ExcecuteQuerry(sqlite_conn, @"INSERT INTO Room(
-                    Name
+                    Name,
+                    Capacity
                 ) VALUES (
-                    'Test'
+                    'Test',
+                    1
                 ); ");
                 ExcecuteQuerry(sqlite_conn, @"INSERT INTO Seat(
                     RoomID,
@@ -173,7 +177,13 @@ namespace Project_B
                     'Test',
                     'Test'
                 ); ");
-                ExcecuteQuerry(sqlite_conn, @"INSERT INTO TimeTable(
+                DateTime StartDateData = new DateTime(2024, 3, 24, 12, 0, 0);
+                Console.WriteLine($@"
+                    {StartDateData.ToString("yyyy-MM-dd HH:mm:ss")}\n
+                    {StartDateData.AddMinutes(120).ToString("yyyy-MM-dd HH:mm:ss")}\n
+                ");
+
+                ExcecuteQuerry(sqlite_conn, $@"INSERT INTO TimeTable(
                     MovieID,
                     RoomID,
                     StartDate,
@@ -181,9 +191,12 @@ namespace Project_B
                 ) VALUES (
                     1,
                     1,
-                    'Test',
-                    'Test'
+                    '{StartDateData.ToString("yyyy-MM-dd HH:mm:ss")}',
+                    '{StartDateData.AddMinutes(120).ToString("yyyy-MM-dd HH:mm:ss")}'
                 ); ");
+                //cmd.Parameters.AddWithValue("@StartDateData", ClsVariables.DatActivityStart);
+                //string sqlFormattedDate = new DateTime(2024, 3, 24, 12, 0, 0).ToString("yyyy-MM-dd HH:mm:ss");
+
 
                 //Print data
                 //ReadData(sqlite_conn);
