@@ -177,12 +177,12 @@ namespace Project_B
                     'Test',
                     'Test'
                 ); ");
+                
                 DateTime StartDateData = new DateTime(2024, 3, 24, 12, 0, 0);
-                Console.WriteLine($@"
+                /*Console.WriteLine($@"
                     {StartDateData.ToString("yyyy-MM-dd HH:mm:ss")}\n
                     {StartDateData.AddMinutes(120).ToString("yyyy-MM-dd HH:mm:ss")}\n
-                ");
-
+                ");*/
                 ExcecuteQuerry(sqlite_conn, $@"INSERT INTO TimeTable(
                     MovieID,
                     RoomID,
@@ -194,8 +194,6 @@ namespace Project_B
                     '{StartDateData.ToString("yyyy-MM-dd HH:mm:ss")}',
                     '{StartDateData.AddMinutes(120).ToString("yyyy-MM-dd HH:mm:ss")}'
                 ); ");
-                //cmd.Parameters.AddWithValue("@StartDateData", ClsVariables.DatActivityStart);
-                //string sqlFormattedDate = new DateTime(2024, 3, 24, 12, 0, 0).ToString("yyyy-MM-dd HH:mm:ss");
 
 
                 //Print data
