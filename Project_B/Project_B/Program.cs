@@ -21,6 +21,14 @@ namespace Project_B
                 Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
                 Console.ReadLine();
             });
+            menu.Add("Test DateTime", (x) =>
+            {
+                string StartDateData = new DateTime(2024, 3, 24, 12, 0, 0).ToString("yyyy-MM-dd HH:mm:ss");
+                DateTime testDateTimeParse = DateTime.Parse(StartDateData);
+                Console.WriteLine(StartDateData);
+                Console.WriteLine(testDateTimeParse);
+                Console.ReadLine();
+            });
 
             //menu.UseMenu();
 
