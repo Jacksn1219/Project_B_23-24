@@ -10,7 +10,7 @@ namespace DataAccessLibrary
         public abstract void Dispose();
         public abstract List<T> ReadData<T>(string sqlStatement, Dictionary<string, string> parameters);
         public abstract bool SaveData(string sqlStatement, Dictionary<string, string> parameters);
-        public static T ConvertToObject<T>(DbDataReader rd) where T : class, new()
+        public virtual T ConvertToObject<T>(DbDataReader rd) where T : class, new()
         {
             Type type = typeof(T);
             throw new NotImplementedException();
