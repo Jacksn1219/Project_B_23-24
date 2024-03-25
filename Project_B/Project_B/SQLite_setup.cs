@@ -93,7 +93,7 @@ namespace Project_B
                 temp.Clear();
                 for (int i = 0; i < sqlite_datareader.FieldCount; i++)
                 {
-                    temp.Add(sqlite_datareader.GetValue(i).ToString());
+                    temp.Add(sqlite_datareader.GetValue(i).ToString() ?? "Not null");
                 }
                 toReturn.Add(temp);
                 //Console.WriteLine();

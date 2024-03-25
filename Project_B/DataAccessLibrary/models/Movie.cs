@@ -16,7 +16,7 @@ public class Movie
         this.pegiAge = pegiAge;
         Discription = discription;
         Genre = genre;
-        DurationInSec = durationInMin;
+        DurationInMin = durationInMin;
         Title = title;
     }
 }
