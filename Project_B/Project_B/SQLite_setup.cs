@@ -17,19 +17,19 @@ namespace Project_B
                 sqlite_conn = CreateConnection();
 
                 //----- Creating Tables -----//
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Author(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS Author(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     Name TEXT  NOT NULL,
                     Description TEXT  NOT NULL,
                     Age INTEGER  NOT NULL
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Director(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS Director(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     Name TEXT  NOT NULL,
                     Discription TEXT  NOT NULL,
                     Age INTEGER  NOT NULL
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Movie(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS Movie(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     DirectorID INTEGER  NOT NULL,
                     pegiAge INTEGER  NOT NULL,
@@ -38,12 +38,12 @@ namespace Project_B
                     DurationInMin INTEGER  NOT NULL,
                     FOREIGN KEY (DirectorID) REFERENCES Director (ID)
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Room(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLEIF NOT EXISTS  Room(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     Name TEXT  NOT NULL,
                     Capacity INTEGER  NOT NULL
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE TimeTable(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS TimeTable(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     MovieID INTEGER  NOT NULL,
                     RoomID INTEGER  NOT NULL,
@@ -52,14 +52,14 @@ namespace Project_B
                     FOREIGN KEY (MovieID) REFERENCES Movie (ID),
                     FOREIGN KEY (RoomID) REFERENCES Room (ID)
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE AuthorInMovie(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS AuthorInMovie(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     AuthorID INTEGER  NOT NULL,
                     MovieID INTEGER  NOT NULL,
                     FOREIGN KEY (AuthorID) REFERENCES Author (ID),
                     FOREIGN KEY (MovieID) REFERENCES Movie (ID)
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Costumer(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS Costumer(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     Name TEXT  NOT NULL,
                     Age INTEGER  NOT NULL,
@@ -67,7 +67,7 @@ namespace Project_B
                     PhoneNumber TEXT  NOT NULL,
                     IsSubsxribed INTEGER  NOT NULL
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Reservation(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS Reservation(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     CostumerID INTEGER  NOT NULL,
                     TimeTableID INTEGER  NOT NULL,
@@ -75,7 +75,7 @@ namespace Project_B
                     FOREIGN KEY (CostumerID) REFERENCES Costumer (ID),
                     FOREIGN KEY (TimeTableID) REFERENCES TimeTable (ID)
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Seat(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS Seat(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     RoomID INTEGER  NOT NULL,
                     Name TEXT  NOT NULL,
@@ -83,7 +83,7 @@ namespace Project_B
                     Type TEXT  NOT NULL,
                     FOREIGN KEY (RoomID) REFERENCES Room (ID)
                 )");
-                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE ReservedSeat(
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE IF NOT EXISTS ReservedSeat(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     SeatID INTEGER  NOT NULL,
                     ReservationID INTEGER  NOT NULL,
