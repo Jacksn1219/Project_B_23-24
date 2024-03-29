@@ -56,6 +56,10 @@ namespace Project_B
                 sqlite_conn.Close();
             }
         }
+        public static void addSeatToDatabase(List<Seat> seats)
+        {
+            foreach (Seat seat in seats) { addSeatToDatabase(seat.RoomID, seat.Name, seat.Rank, seat.Type); }
+        }
 
         /// <summary>
         /// Create folder if it doesnt exsist
