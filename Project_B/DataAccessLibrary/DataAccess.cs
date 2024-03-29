@@ -1,5 +1,6 @@
 using System.Data;
 using System.Data.Common;
+using System.Linq.Expressions;
 using DataAccessLibrary.models.interfaces;
 
 namespace DataAccessLibrary
@@ -8,9 +9,11 @@ namespace DataAccessLibrary
     {
         protected abstract IDbConnection _dbAccess { get; set; }
         public abstract void Dispose();
-        public abstract List<T> ReadData<T>(string sqlStatement, Dictionary<string, string> parameters);
-        public abstract bool SaveData(string sqlStatement, Dictionary<string, string> parameters);
-        public virtual T ConvertToObject<T>(DbDataReader rd) where T : class, new()
+        public abstract List<T> ReadData<T>(string sqlStatement);
+        public abstract List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic> parameters);
+        public abstract bool SaveData(string sqlStatement);
+        public abstract bool SaveData(string sqlStatement, Dictionary<string, dynamic> parameters);
+        public virtual T ConvertToObject<T>(DbDataReader rd)
         {
             Type type = typeof(T);
             throw new NotImplementedException();

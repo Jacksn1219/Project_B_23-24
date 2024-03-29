@@ -16,7 +16,23 @@ namespace DataAccessLibrary
         {
             _dbAccess.Dispose();
         }
-        public override bool SaveData(string sqlStatement, Dictionary<string, string> parameters)
+        public override bool SaveData(string sqlStatement)
+        {
+            SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
+            dbAccess.Open();
+            try
+            {
+                SQLiteCommand command = dbAccess.CreateCommand();
+                command.CommandText = sqlStatement;
+                //check if lines affected are greater than 0
+                return command.ExecuteNonQuery() > 0;
+            }
+            finally
+            {
+                dbAccess.Close();
+            }
+        }
+        public override bool SaveData(string sqlStatement, Dictionary<string, dynamic> parameters)
         {
             List<SQLiteParameter> sqliteParameters = new();
             foreach (string key in parameters.Keys)
@@ -42,13 +58,49 @@ namespace DataAccessLibrary
             finally
             {
                 dbAccess.Close();
-                dbAccess.Dispose();
             }
         }
-        public override List<T> ReadData<T>(string sqlStatement, Dictionary<string, string> parameters)
+        public override List<T> ReadData<T>(string sqlStatement)
         {
-            throw new NotImplementedException();
-
+            SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
+            dbAccess.Open();
+            try
+            {
+                SQLiteCommand command = dbAccess.CreateCommand();
+                command.CommandText = sqlStatement;
+                return ConvertToObject<List<T>>(command.ExecuteReader());
+            }
+            finally
+            {
+                dbAccess.Close();
+            }
+        }
+        public override List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic> parameters)
+        {
+            List<SQLiteParameter> sqliteParameters = new();
+            foreach (string key in parameters.Keys)
+            {
+                sqliteParameters.Add(
+                    new SQLiteParameter(key, parameters[key])
+                );
+            }
+            return ReadData<T>(sqlStatement, sqliteParameters.ToArray());
+        }
+        public List<T> ReadData<T>(string sqlStatement, SQLiteParameter[] parameters)
+        {
+            SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
+            dbAccess.Open();
+            try
+            {
+                SQLiteCommand command = dbAccess.CreateCommand();
+                command.CommandText = sqlStatement;
+                command.Parameters.AddRange(parameters);
+                return ConvertToObject<List<T>>(command.ExecuteReader());
+            }
+            finally
+            {
+                dbAccess.Close();
+            }
         }
     }
 }
