@@ -1,4 +1,7 @@
-﻿using System.Data.SQLite;
+﻿using DataAccessLibrary;
+using System;
+using System.Data.SQLite;
+using System.Xml.Linq;
 
 namespace Project_B
 {
@@ -30,10 +33,30 @@ namespace Project_B
                 ExcecuteQuerry(sqlite_conn, "INSERT INTO SampleTable2(Col1, Col2) VALUES('Test 4       ', 3); ");
 
                 //Print data
-                ReadData(sqlite_conn);
+                //ReadData(sqlite_conn);
+                sqlite_conn.Close();
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); }
         }
+
+        public static void addSeatToDatabase(int roomID, string name, string rank, string type)
+        {
+            SQLiteConnection sqlite_conn;
+            sqlite_conn = CreateConnection();
+
+            try
+            {
+                ExcecuteQuerry(sqlite_conn, @$"INSERT INTO Seat( RoomID, Name, Rank, Type ) VALUES (
+                    {roomID}, '{name}', '{rank}', '{type}'
+                ); ");
+                sqlite_conn.Close();
+            }
+            catch
+            {
+                sqlite_conn.Close();
+            }
+        }
+
         /// <summary>
         /// Create folder if it doesnt exsist
         /// </summary>
