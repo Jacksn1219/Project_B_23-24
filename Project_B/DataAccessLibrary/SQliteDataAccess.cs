@@ -53,7 +53,7 @@ namespace DataAccessLibrary
         /// <param name="sqlStatement">the query to execute (make sure to have $1, $2 statements for parameters)</param>
         /// <param name="parameters">the parameters. example: key = "$1", value = 1 </param>
         /// <returns>true if lines where affected, else false.</returns>
-        public override bool SaveData(string sqlStatement, Dictionary<string, dynamic> parameters)
+        public override bool SaveData(string sqlStatement, Dictionary<string, dynamic?> parameters)
         {
             List<SQLiteParameter> sqliteParameters = new();
             foreach (string key in parameters.Keys)
@@ -103,7 +103,7 @@ namespace DataAccessLibrary
                 dbAccess.Close();
             }
         }
-        public override List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic> parameters)
+        public override List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters)
         {
             List<SQLiteParameter> sqliteParameters = new();
             foreach (string key in parameters.Keys)

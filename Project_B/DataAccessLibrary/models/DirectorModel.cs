@@ -1,16 +1,16 @@
 ﻿namespace DataAccessLibrary;
 
-public class Author
+public class DirectorModel
 {
     public int ID { get; }
     public string Name { get; set; }
-    public string Description { get; set; }
+    public string Discription { get; set; }
     public int Age { get; set; }
-    public Author(int id, string name, string description, int age)
+    public DirectorModel(int id, string name, string discription, int age)
     {
         ID = id;
         Name = name;
-        Description = description;
+        Discription = discription;
         Age = age;
     }
 }

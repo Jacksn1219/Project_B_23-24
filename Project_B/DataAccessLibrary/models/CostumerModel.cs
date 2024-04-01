@@ -1,6 +1,6 @@
 ﻿namespace DataAccessLibrary;
 
-public class Costumer
+public class CostumerModel
 {
     public int ID { get; }
     public string Name { get; set; }
@@ -8,7 +8,7 @@ public class Costumer
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
     public int IsSubscribed { get; set; }
-    public Costumer(int id, string name, int age, string email, string phoneNumber, int isSubscribed)
+    public CostumerModel(int id, string name, int age, string email, string phoneNumber, int isSubscribed)
     {
         ID = id;
         Name = name;

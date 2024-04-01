@@ -10,9 +10,9 @@ namespace DataAccessLibrary
         protected abstract IDbConnection _dbAccess { get; set; }
         public abstract void Dispose();
         public abstract List<T> ReadData<T>(string sqlStatement);
-        public abstract List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic> parameters);
+        public abstract List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters);
         public abstract bool SaveData(string sqlStatement);
-        public abstract bool SaveData(string sqlStatement, Dictionary<string, dynamic> parameters);
+        public abstract bool SaveData(string sqlStatement, Dictionary<string, dynamic?> parameters);
         /// <summary>
         /// converts the rows of the DbDataReader into a list of T
         /// </summary>
