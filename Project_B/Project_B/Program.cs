@@ -31,8 +31,23 @@ namespace Project_B
             });
 
             //menu.UseMenu();
-            MovieModel movie1 = new MovieModel("KUNG FU PANDA 4", "", 12, 120, 1); //Film 1 wordt toegevoegd
-            MovieModel movie2 = new MovieModel("DUNE: PART TWO", "", 16, 150, 1);  //Film 2 wordt toegevoegd
+
+
+            //start of app
+            DataAccess db = new SQliteDataAccess("epic connection string");
+            MovieFactory movieFactory = new(db);
+            //geen ID
+            MovieModel movie1 = new MovieModel("KUNG FU PANDA 4", "everybody was kung fu fighting", 12, 120, 1, "Horror"); //Film 1 wordt lokaal toegevoegd
+            MovieModel movie2 = new MovieModel("DUNE: PART TWO", "I don't like sand. It's coarse and rough and irritating and it gets everywhere.", 16, 150, 1, "Kids");  //Film 2 wordt lokaal toegevoegd
+            //wel ID
+            MovieModel movie3 = movieFactory.GetItemFromId(1); //Film 3 wordt uit de database gehaald
+            //movie3.ID = 1;  <- not possible to set the ID
+            movie3.DurationInMin += 1;
+            bool success = movieFactory.UpdateItem(movie3); //will be true
+            movieFactory.UpdateItem(movie1); // will crash
+            success = movieFactory.CreateItem(movie1); // do this instead
+            //if you are not sure or want to play it safe
+            success = movieFactory.ItemToDb(movie2); // will be true
 
             RoomModel room1 = new RoomModel(1, "Room_1", 150); //RoomModel 1 heeft 150 plekken
             RoomModel room2 = new RoomModel(2, "Room_2", 300); //RoomModel 2 heeft 300 plekken

@@ -21,7 +21,7 @@ public class MovieModel : IDbItem
     public int? ID
     {
         get { return _id; }
-        set
+        private set
         {
             if (value == null || value >= 0)
             {
