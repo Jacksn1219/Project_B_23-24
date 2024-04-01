@@ -13,7 +13,14 @@ namespace DataAccessLibrary
         public abstract List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic> parameters);
         public abstract bool SaveData(string sqlStatement);
         public abstract bool SaveData(string sqlStatement, Dictionary<string, dynamic> parameters);
-        public virtual T ConvertToObject<T>(DbDataReader rd)
+        /// <summary>
+        /// converts the rows of the DbDataReader into a list of T
+        /// </summary>
+        /// <typeparam name="T">the DbItem</typeparam>
+        /// <param name="rd">the DbReader object</param>
+        /// <returns>a list of DbItems</returns>
+        /// <exception cref="NotImplementedException">currently not implemented</exception>
+        public virtual List<T> ConvertToObject<T>(DbDataReader rd)
         {
             Type type = typeof(T);
             throw new NotImplementedException();
