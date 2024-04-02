@@ -26,6 +26,13 @@ namespace Project_B
             menu.Add("Make layout", (x) =>
             {
                 DataAccessLibrary.Layout.MakeNewLayout();
+            });
+            menu.Add("Test DateTime", (x) =>
+            {
+                string StartDateData = new DateTime(2024, 3, 24, 12, 0, 0).ToString("yyyy-MM-dd HH:mm:ss");
+                DateTime testDateTimeParse = DateTime.Parse(StartDateData);
+                Console.WriteLine(StartDateData);
+                Console.WriteLine(testDateTimeParse);
                 Console.ReadLine();
             });
 

@@ -18,19 +18,185 @@ namespace Project_B
             {
                 sqlite_conn = CreateConnection();
 
-                //Creating Tables
-                ExcecuteQuerry(sqlite_conn, "CREATE TABLE SampleTable(Col1 VARCHAR(20), Col2 INT)");
-                ExcecuteQuerry(sqlite_conn, "CREATE TABLE SampleTable1(Col1 VARCHAR(20), Col2 INT)");
-                ExcecuteQuerry(sqlite_conn, "CREATE TABLE SampleTable2(Col1 VARCHAR(20), Col2 INT)");
+                //----- Creating Tables -----//
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Author(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    Name TEXT  NOT NULL,
+                    Description TEXT  NOT NULL,
+                    Age INTEGER  NOT NULL
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Director(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    Name TEXT  NOT NULL,
+                    Discription TEXT  NOT NULL,
+                    Age INTEGER  NOT NULL
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Movie(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    DirectorID INTEGER  NOT NULL,
+                    pegiAge INTEGER  NOT NULL,
+                    Discription TEXT  NOT NULL,
+                    Genre TEXT  NOT NULL,
+                    DurationInMin INTEGER  NOT NULL,
+                    FOREIGN KEY (DirectorID) REFERENCES Director (ID)
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Room(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    Name TEXT  NOT NULL,
+                    Capacity INTEGER  NOT NULL
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE TimeTable(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    MovieID INTEGER  NOT NULL,
+                    RoomID INTEGER  NOT NULL,
+                    StartDate TEXT  NOT NULL,
+                    EndDate TEXT  NOT NULL,
+                    FOREIGN KEY (MovieID) REFERENCES Movie (ID),
+                    FOREIGN KEY (RoomID) REFERENCES Room (ID)
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE AuthorInMovie(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    AuthorID INTEGER  NOT NULL,
+                    MovieID INTEGER  NOT NULL,
+                    FOREIGN KEY (AuthorID) REFERENCES Author (ID),
+                    FOREIGN KEY (MovieID) REFERENCES Movie (ID)
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Costumer(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    Name TEXT  NOT NULL,
+                    Age INTEGER  NOT NULL,
+                    Email TEXT  NOT NULL,
+                    PhoneNumber TEXT  NOT NULL,
+                    IsSubsxribed INTEGER  NOT NULL
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Reservation(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    CostumerID INTEGER  NOT NULL,
+                    TimeTableID INTEGER  NOT NULL,
+                    Note TEXT  NOT NULL,
+                    FOREIGN KEY (CostumerID) REFERENCES Costumer (ID),
+                    FOREIGN KEY (TimeTableID) REFERENCES TimeTable (ID)
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Seat(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    RoomID INTEGER  NOT NULL,
+                    Name TEXT  NOT NULL,
+                    Rank TEXT  NOT NULL,
+                    Type TEXT  NOT NULL,
+                    FOREIGN KEY (RoomID) REFERENCES Room (ID)
+                )");
+                ExcecuteQuerry(sqlite_conn, @"CREATE TABLE ReservedSeat(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    SeatID INTEGER  NOT NULL,
+                    ReservationID INTEGER  NOT NULL,
+                    FOREIGN KEY (SeatID) REFERENCES Seat (ID),
+                    FOREIGN KEY (ReservationID) REFERENCES Reservation (ID)
+                )");
 
-                //Create starting data
-                ExcecuteQuerry(sqlite_conn, "INSERT INTO SampleTable(Col1, Col2) VALUES('Test Text ', 1); ");
-                ExcecuteQuerry(sqlite_conn, "INSERT INTO SampleTable(Col1, Col2) VALUES('Test1 Text1 ', 2); ");
-                ExcecuteQuerry(sqlite_conn, "INSERT INTO SampleTable(Col1, Col2) VALUES('Test2 Text2 ', 3); ");
+                //----- Inputting test data -----//
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO Author(
+                    Name,
+                    Description,
+                    Age
+                ) VALUES (
+                    'Test',
+                    'Test',
+                    1
+                ); ");
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO AuthorInMovie(
+                    AuthorID,
+                    MovieID
+                ) VALUES (
+                    1,
+                    1
+                ); ");
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO Costumer(
+                    Name,
+                    Age,
+                    Email,
+                    PhoneNumber,
+                    IsSubsxribed
+                ) VALUES (
+                    'Test',
+                    1,
+                    'Test',
+                    'Test',
+                    1
+                ); ");
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO Director(
+                    Name,
+                    Discription,
+                    Age
+                ) VALUES (
+                    'Test',
+                    'Test',
+                    1
+                ); ");
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO Movie(
+                    DirectorID,
+                    pegiAge,
+                    Discription,
+                    Genre,
+                    DurationInMin
+                ) VALUES (
+                    1,
+                    1,
+                    'Test',
+                    'Test',
+                    1
+                ); ");
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO Reservation(
+                    CostumerID,
+                    TimeTableID,
+                    Note
+                ) VALUES (
+                    1,
+                    1,
+                    'Test'
+                ); ");
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO ReservedSeat(
+                    SeatID,
+                    ReservationID
+                ) VALUES (
+                    1,
+                    1
+                ); ");
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO Room(
+                    Name,
+                    Capacity
+                ) VALUES (
+                    'Test',
+                    1
+                ); ");
+                ExcecuteQuerry(sqlite_conn, @"INSERT INTO Seat(
+                    RoomID,
+                    Name,
+                    Rank,
+                    Type
+                ) VALUES (
+                    1,
+                    'Test',
+                    'Test',
+                    'Test'
+                ); ");
+                
+                DateTime StartDateData = new DateTime(2024, 3, 24, 12, 0, 0);
+                /*Console.WriteLine($@"
+                    {StartDateData.ToString("yyyy-MM-dd HH:mm:ss")}\n
+                    {StartDateData.AddMinutes(120).ToString("yyyy-MM-dd HH:mm:ss")}\n
+                ");*/
+                ExcecuteQuerry(sqlite_conn, $@"INSERT INTO TimeTable(
+                    MovieID,
+                    RoomID,
+                    StartDate,
+                    EndDate
+                ) VALUES (
+                    1,
+                    1,
+                    '{StartDateData.ToString("yyyy-MM-dd HH:mm:ss")}',
+                    '{StartDateData.AddMinutes(120).ToString("yyyy-MM-dd HH:mm:ss")}'
+                ); ");
 
-                ExcecuteQuerry(sqlite_conn, "INSERT INTO SampleTable1(Col1, Col2) VALUES('Test3 Text3 ', 3); ");
-
-                ExcecuteQuerry(sqlite_conn, "INSERT INTO SampleTable2(Col1, Col2) VALUES('Test 4       ', 3); ");
 
                 //Print data
                 //ReadData(sqlite_conn);
