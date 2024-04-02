@@ -36,6 +36,7 @@ namespace Project_B
             //start of app
             DataAccess db = new SQliteDataAccess("epic connection string");
             MovieFactory movieFactory = new(db);
+            movieFactory.CreateTable(); // creates the movie table, if movie is missing in the db.
             //geen ID
             MovieModel movie1 = new MovieModel("KUNG FU PANDA 4", "everybody was kung fu fighting", 12, 120, 1, "Horror"); //Film 1 wordt lokaal toegevoegd
             MovieModel movie2 = new MovieModel("DUNE: PART TWO", "I don't like sand. It's coarse and rough and irritating and it gets everywhere.", 16, 150, 1, "Kids");  //Film 2 wordt lokaal toegevoegd
@@ -48,6 +49,8 @@ namespace Project_B
             success = movieFactory.CreateItem(movie1); // do this instead
             //if you are not sure or want to play it safe
             success = movieFactory.ItemToDb(movie2); // will be true
+
+
 
             RoomModel room1 = new RoomModel(1, "Room_1", 150); //RoomModel 1 heeft 150 plekken
             RoomModel room2 = new RoomModel(2, "Room_2", 300); //RoomModel 2 heeft 300 plekken

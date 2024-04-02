@@ -19,7 +19,7 @@ public class SQLiteTest
         if (_db == null) throw new FileLoadException("db not found");
         Assert.IsTrue(
             _db.SaveData("INSERT INTO SampleTable(Col1, Col2) VALUES($1, $2);",
-            new Dictionary<string, dynamic>(){
+            new Dictionary<string, dynamic?>(){
                 {"$1", "hi"},
                 {"$2", 1}
             })
