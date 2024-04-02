@@ -1,23 +1,37 @@
 ﻿using DataAccessLibrary;
 using Models;
+using System;
+using System.IO;
+using System.Text;
+using System.Data.SQLite;
 
 namespace Project_B
 {
     class Program
     {
+        private const string databaseConnectionString = @"Data Source=Project_B\Project_B\database.db;";
+
         public static void Main()
         {
-
             InputMenu menu = new InputMenu("| Main menu |", true);
             menu.Add("Setup Database", (x) =>
             {
-                //Opzet Sqlite database
+                // Setup SQLite database
                 SQLite.SetupProjectB();
                 Console.ReadLine();
             });
+            menu.Add("Generate C# Models", (x) =>
+            {
+                using (SQLiteConnection conn = new SQLiteConnection(databaseConnectionString))
+                {
+                    conn.Open();
+                    CSharpModelGenerator.GenerateModels(conn);
+                }
+                Console.WriteLine("C# models generated successfully.");
+            });
             menu.Add("Test Author", (x) =>
             {
-                Author testAuthor = new Author(1, "John", "Not succesfull", 25);
+                Author testAuthor = new Author(1, "John", "Not successful", 25);
                 Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
                 Console.ReadLine();
             });
