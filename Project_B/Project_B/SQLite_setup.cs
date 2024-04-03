@@ -33,6 +33,7 @@ namespace Project_B
                 )");
                 ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Movie(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    Title TEXT  NOT NULL,
                     DirectorID INTEGER  NOT NULL,
                     pegiAge INTEGER  NOT NULL,
                     Discription TEXT  NOT NULL,
@@ -43,7 +44,8 @@ namespace Project_B
                 ExcecuteQuerry(sqlite_conn, @"CREATE TABLE Room(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                     Name TEXT  NOT NULL,
-                    Capacity INTEGER  NOT NULL
+                    Capacity INTEGER  NOT NULL,
+                    RowWidth INTEGER  NOT NULL
                 )");
                 ExcecuteQuerry(sqlite_conn, @"CREATE TABLE TimeTable(
                     ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
@@ -133,12 +135,14 @@ namespace Project_B
                     1
                 ); ");
                 ExcecuteQuerry(sqlite_conn, @"INSERT INTO Movie(
+                    Title,
                     DirectorID,
                     pegiAge,
                     Discription,
                     Genre,
                     DurationInMin
                 ) VALUES (
+                    'Title',
                     1,
                     1,
                     'Test',
@@ -163,9 +167,11 @@ namespace Project_B
                 ); ");
                 ExcecuteQuerry(sqlite_conn, @"INSERT INTO Room(
                     Name,
-                    Capacity
+                    Capacity,
+                    RowWidth
                 ) VALUES (
                     'Test',
+                    1,
                     1
                 ); ");
                 ExcecuteQuerry(sqlite_conn, @"INSERT INTO Seat(

@@ -92,37 +92,37 @@ public class Layout
         int rowWidth = joinedLayout.Max(x => x.Length);
         return rowWidth;
     }
-    public static void drawLayout(List<Seat> layout)
+    public static void drawLayout(List<Seat> layout, Room room)
     {
         Console.Clear();
         Console.ResetColor();
 
         //List<Seat> layout = getSeatsFromDatabase();
-        int rowWidth = getRowWidth(layout);
+        //int rowWidth = getRowWidth(layout);
         string alfabet = "abcdefghijklmnopqrstuvwxyz";
-        for (int i = 1; i < rowWidth + 1; i++) { Console.Write("  " + alfabet[i - 1]); }
+        for (int i = 1; i < room.RowWidth + 1; i++) { Console.Write("  " + alfabet[i - 1]); }
 
         int Row = 1;
         Console.Write("\n" + Row);
-        foreach (Seat seat in layout)
+        for (int i = 0; i < layout.Count; i++)
         {
-            Console.ForegroundColor = seat.Rank switch
+            Console.ForegroundColor = layout[i].Rank switch
             {
                 "1" => ConsoleColor.Blue,
                 "2" => ConsoleColor.DarkYellow,
                 "3" => ConsoleColor.DarkRed,
                 _ => ConsoleColor.Gray
             };
-            if (seat.Rank == "\n") { Row++; Console.Write("\n" + Row); }
-            else if (seat.Rank == " ") { Console.Write("   "); }
+            if (i % room.RowWidth == 0) { Row++; Console.Write("\n" + Row); }
+            else if (layout[i].Rank == " ") { Console.Write("   "); }
             else { Console.Write($" []"); }
         }
         Console.ResetColor();
     }
-    public static void selectSeat(List<Seat> layout)
+    public static void selectSeat(List<Seat> layout, Room room)
     {
         //List<Seat> layout = getSeatsFromDatabase(); - Aymane
-        drawLayout(layout);
+        drawLayout(layout, room);
 
         int rowWidth = getRowWidth(layout);
         string alfabet = "abcdefghijklmnopqrstuvwxyz";
@@ -161,6 +161,7 @@ public class Layout
 
             Console.Clear();
             if (userInput == ConsoleKey.Backspace) seats.RemoveAt(seats.Count - 1);
+            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1) currentRoom.RowWidth = seats.Count;
             else try
                 {
                     seats.Add(userInput switch
@@ -173,27 +174,29 @@ public class Layout
                         ConsoleKey.D1 or ConsoleKey.NumPad1 => new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", "1", "Regular"),
                         ConsoleKey.D2 or ConsoleKey.NumPad2 => new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", "2", "Regular"),
                         ConsoleKey.D3 or ConsoleKey.NumPad3 => new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", "3", "Regular"),
-                        ConsoleKey.Enter => new Seat(seats.Count, 1, "", "\n", " "),
+                        //ConsoleKey.Enter => new Seat(seats.Count, 1, "", "\n", " "),
                         _ => throw new NotImplementedException()
                     });
-                } catch { }
-            foreach (Seat seat in seats)
+                }
+                catch { }
+            for (int i = 0; i < seats.Count; i++)
             {
-                Console.ForegroundColor = seat.Rank switch
+                Console.ForegroundColor = seats[i].Rank switch
                 {
                     "1" => ConsoleColor.Blue,
                     "2" => ConsoleColor.DarkYellow,
                     "3" => ConsoleColor.DarkRed,
                     _ => ConsoleColor.Gray
                 };
-                Console.Write(" " + seat.Rank);
+                if (i == 0 || currentRoom.RowWidth == 1) Console.Write(" " + seats[i].Rank);
+                else Console.Write( currentRoom.RowWidth % i == 0 ? " " + seats[i].Rank + "\n" : " " + seats[i].Rank);
             }
         }
         //Adding the seats to the database
         //upload_to_database(seats, new Room(Room_ID, $"Room{Room_ID}", seats.Count));
         upload_to_database(seats, currentRoom);
 
-        selectSeat(seats);
+        selectSeat(seats, currentRoom);
         //drawLayout(seats);
     }
 }
