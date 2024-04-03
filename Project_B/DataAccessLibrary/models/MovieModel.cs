@@ -49,7 +49,7 @@ public class MovieModel : IDbItem
     /// <summary>
     /// the ID of the director of the movie
     /// </summary>
-    private int? DirectorId { get; set; }
+    private int? DirectorID { get; set; }
     public string Genre { set; get; }
     internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int directorId, string genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }
@@ -61,7 +61,7 @@ public class MovieModel : IDbItem
         Description = description;
         PegiAge = pegiAge;
         DurationInMin = durationInMin;
-        DirectorId = directorId;
+        DirectorID = directorId;
         Genre = genre;
     }
     public MovieModel(string name, string description, int pegiAge, int durationInMin, int directorId, string genre)
@@ -80,7 +80,7 @@ public class MovieModel : IDbItem
     {
         foreach (DirectorModel director in directors)
         {
-            if (DirectorId == director.ID)
+            if (DirectorID == director.ID)
             {
                 return $"The director of this movie is: {director.Name}";
             }
