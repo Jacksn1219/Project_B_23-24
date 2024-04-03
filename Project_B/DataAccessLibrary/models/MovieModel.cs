@@ -13,7 +13,6 @@ public enum PEGIAge
 
 public class MovieModel : IDbItem
 {
-
     private int? _id;
     /// <summary>
     /// the db Id of the movie. must be positive and should be readonly for external classes.
@@ -50,7 +49,7 @@ public class MovieModel : IDbItem
     /// <summary>
     /// the ID of the director of the movie
     /// </summary>
-    public int? DirectorId { get; set; }
+    private int? DirectorId { get; set; }
     public string Genre { set; get; }
     internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int directorId, string genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }
