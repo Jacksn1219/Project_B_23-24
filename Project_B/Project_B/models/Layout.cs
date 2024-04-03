@@ -1,4 +1,6 @@
-﻿using System.Data.SQLite;
+﻿using Models;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Data.SQLite;
 
 namespace DataAccessLibrary;
 
@@ -83,7 +85,7 @@ public class Layout
         } catch { sqlite_conn.Close(); }
         sqlite_conn.Close();
     }
-    public static int getRowWidth(List<Seat> layout)
+    /*public static int getRowWidth(List<Seat> layout)
     {
         List<string> layoutRanks = new List<string>();
         foreach (Seat seat in layout) layoutRanks.Add(seat.Rank);
@@ -91,7 +93,7 @@ public class Layout
         string[] joinedLayout = String.Join("", layoutRanks).Split("\n");
         int rowWidth = joinedLayout.Max(x => x.Length);
         return rowWidth;
-    }
+    }*/
     public static void drawLayout(List<Seat> layout, Room room)
     {
         Console.Clear();
@@ -124,13 +126,27 @@ public class Layout
         //List<Seat> layout = getSeatsFromDatabase(); - Aymane
         drawLayout(layout, room);
 
-        int rowWidth = getRowWidth(layout);
+        InputMenu seatSelectionMenu = new InputMenu("Select seat", false, room.RowWidth);
+        foreach (Seat seat in layout)
+        {
+            string seatName = seat.Rank == " " ? "   " : $" []";
+            seatSelectionMenu.Add(seat.Rank, (x) =>
+            {
+                //ShowSeatInfo(selectedSeat); - Jelle
+                Console.WriteLine("Not yet implemented - ShowSeatInfo");
+                Console.ReadLine();
+            });
+        }
+        seatSelectionMenu.UseMenu();
+        
+        /*
+        //int rowWidth = getRowWidth(layout);
         string alfabet = "abcdefghijklmnopqrstuvwxyz";
 
         Console.WriteLine("\n\nGive a location in a form like ('a1' or 'd5')");
         string chosenSeat = Console.ReadLine() ?? "00";
         if (chosenSeat.Length != 2) chosenSeat = "00";
-        while (chosenSeat.Length != 2 && !alfabet.Contains(chosenSeat[0]) && ((int)chosenSeat[1] >= rowWidth || (int)chosenSeat[1] < 0))
+        while (chosenSeat.Length != 2 && !alfabet.Contains(chosenSeat[0]) && ((int)chosenSeat[1] >= room.RowWidth || (int)chosenSeat[1] < 0))
         {
             Console.WriteLine("That is not a valid input, give a location in a form like ('a1' or 'd5')");
             chosenSeat = Console.ReadLine() ?? "00";
@@ -140,7 +156,7 @@ public class Layout
 
         //ShowSeatInfo(selectedSeat); - Jelle
         Console.WriteLine("Not yet implemented - ShowSeatInfo");
-        Console.ReadLine();
+        Console.ReadLine();*/
     }
     public static void MakeNewLayout()
     {
@@ -161,7 +177,9 @@ public class Layout
 
             Console.Clear();
             if (userInput == ConsoleKey.Backspace) seats.RemoveAt(seats.Count - 1);
-            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1) currentRoom.RowWidth = seats.Count;
+            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1) { 
+                currentRoom.RowWidth = seats.Count;
+            }
             else try
                 {
                     seats.Add(userInput switch
@@ -189,7 +207,7 @@ public class Layout
                     _ => ConsoleColor.Gray
                 };
                 if (i == 0 || currentRoom.RowWidth == 1) Console.Write(" " + seats[i].Rank);
-                else Console.Write( currentRoom.RowWidth % i == 0 ? " " + seats[i].Rank + "\n" : " " + seats[i].Rank);
+                else Console.Write( i % currentRoom.RowWidth == 0 ? "\n " + seats[i].Rank : " " + seats[i].Rank);
             }
         }
         //Adding the seats to the database

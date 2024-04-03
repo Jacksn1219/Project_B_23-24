@@ -1,4 +1,6 @@
-﻿namespace Models
+﻿using DataAccessLibrary;
+
+namespace Models
 {
     public class InputMenu
     {
@@ -6,8 +8,6 @@
         bool exit;
         List<InputMenuOption> menuoptions = new List<InputMenuOption>();
         int row;
-
-        public int GetMenuOptionsCount() => this.menuoptions.Count;
 
         public InputMenu(string introduction = "", bool exit = false, int row = 1)
         {
@@ -38,13 +38,27 @@
             Console.WriteLine(this.introduction);
             for (int i = 0; i <= this.menuoptions.Count; i++)
             {
+                if (i % row == 0) Console.Write("\n");
                 if (i == cursor)
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine((i == this.menuoptions.Count) ? (this.exit) ? "> Exit" : "> Back" : $"> {this.menuoptions[i].Name}");
-                    Console.ResetColor();
+                    Console.Write((i == this.menuoptions.Count) ? (this.exit) ? "> Exit" : "> Back" : $"> {this.menuoptions[i].Name}");
                 }
-                else { Console.WriteLine(i == this.menuoptions.Count ? this.exit ? "  Exit" : "  Back" : $"  {this.menuoptions[i].Name}"); }
+                else
+                {
+                    try
+                    {
+                        Console.ForegroundColor = this.menuoptions[i].Name switch
+                        {
+                            "1" => ConsoleColor.Blue,
+                            "2" => ConsoleColor.DarkYellow,
+                            "3" => ConsoleColor.DarkRed,
+                            _ => ConsoleColor.Gray
+                        };
+                    } catch { }
+                    Console.Write(i == this.menuoptions.Count ? this.exit ? "  Exit" : "  Back" : $"  {this.menuoptions[i].Name}");
+                }
+                Console.ResetColor();
             };
         }
 
@@ -52,7 +66,7 @@
         /// Activating the menu
         /// </summary>
         /// <param name="row"></param>
-        public void UseMenu(int row = 1)
+        public void UseMenu()
         {
             Console.CursorVisible = false;
             int cursor = 0;
@@ -65,8 +79,26 @@
                 //Getting User choice
                 userInput = Console.ReadKey().Key;
 
-                if ((userInput == ConsoleKey.UpArrow || userInput == ConsoleKey.W) && cursor > 0) { cursor--; }
-                else if ((userInput == ConsoleKey.DownArrow || userInput ==  ConsoleKey.S) && cursor < this.menuoptions.Count) { cursor++; }
+                if ((userInput == ConsoleKey.UpArrow || userInput == ConsoleKey.W) && cursor > 0)
+                {
+                    cursor = Math.Max(cursor - row, 0);
+                    if (cursor < this.menuoptions.Count) while (this.menuoptions[cursor].Name == " ") cursor = Math.Max(cursor - row, 0);
+                }
+                else if ((userInput == ConsoleKey.DownArrow || userInput ==  ConsoleKey.S) && cursor < this.menuoptions.Count)
+                {
+                    cursor = Math.Min(cursor + row, this.menuoptions.Count);
+                    if (cursor < this.menuoptions.Count) while (this.menuoptions[cursor].Name == " ") cursor = Math.Min(cursor + row, this.menuoptions.Count);
+                }
+                else if ((userInput == ConsoleKey.LeftArrow || userInput == ConsoleKey.A) && cursor > 0)
+                {
+                    cursor--;
+                    if (cursor < this.menuoptions.Count) while (this.menuoptions[cursor].Name == " ") cursor--;
+                }
+                else if ((userInput == ConsoleKey.RightArrow || userInput == ConsoleKey.D) && cursor < this.menuoptions.Count)
+                {
+                    cursor++;
+                    if (cursor < this.menuoptions.Count) while (this.menuoptions[cursor].Name == " ") cursor++;
+                }
                 else if (userInput == ConsoleKey.Enter)
                 {
                     if (cursor == this.menuoptions.Count)
