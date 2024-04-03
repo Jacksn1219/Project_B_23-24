@@ -7,7 +7,7 @@
         List<InputMenuOption> menuoptions = new List<InputMenuOption>();
         int row;
 
-        public int GetMenuOptionsCount() { return this.menuoptions.Count; }
+        public int GetMenuOptionsCount() => this.menuoptions.Count;
 
         public InputMenu(string introduction = "", bool exit = false, int row = 1)
         {
@@ -16,20 +16,23 @@
             this.row = row;
         }
 
-        //Add item to menu option list
-        public void Add(string Name, Action<string> Act, bool? isTaken = null) //Adding the menu options created in the menu calling part
-        {
-            this.menuoptions.Add(new InputMenuOption(Name, Act, isTaken));
-        }
+        /// <summary>
+        /// Add item to menu option list
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="Act"></param>
+        /// <param name="isTaken"></param>
+        public void Add(string Name, Action<string> Act, bool? isTaken = null) => this.menuoptions.Add(new InputMenuOption(Name, Act, isTaken));
 
-        //Remove item from menu option list
-        public void Remove()
-        {
-            this.menuoptions.Remove(this.menuoptions[this.menuoptions.Count - 1]);
-        }
+        /// <summary>
+        /// Remove item from menu option list
+        /// </summary>
+        public void Remove() => this.menuoptions.Remove(this.menuoptions[this.menuoptions.Count - 1]);
 
-        //Print menu to screen
-        public void Draw()
+        /// <summary>
+        /// Print menu to screen
+        /// </summary>
+        public void Draw(int cursor)
         {
             Console.Clear();
             Console.WriteLine(this.introduction);
@@ -37,76 +40,43 @@
             {
                 if (i == cursor)
                 {
-                    Console.ResetColor();
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine((i == this.menuoptions.Count) ? (this.exit) ? "> Exit" : "> Back" : $"> {this.menuoptions[i].Name}");
                     Console.ResetColor();
                 }
-                else
-                {
-                    if (i == this.menuoptions.Count)
-                    {
-                        if (this.exit) { Console.WriteLine("  Exit"); }
-                        else { Console.WriteLine("  Back"); }
-                    }
-                    else { Console.WriteLine($"  {this.menuoptions[i].Name}"); }
-                }
+                else { Console.WriteLine(i == this.menuoptions.Count ? this.exit ? "  Exit" : "  Back" : $"  {this.menuoptions[i].Name}"); }
             };
         }
 
-        // Main loop, getting users menuchoice
-        private int cursor = 0;
+        /// <summary>
+        /// Activating the menu
+        /// </summary>
+        /// <param name="row"></param>
         public void UseMenu(int row = 1)
         {
             Console.CursorVisible = false;
-            //ConsoleColor DefaultFront = ConsoleColor.White;
-            //ConsoleColor DefaultBack = ConsoleColor.Black;
-            cursor = 0;
-
+            int cursor = 0;
             ConsoleKey userInput = ConsoleKey.Delete;
             //Main loop
             while (userInput != ConsoleKey.Q)
             {
-                Draw();
+                Draw(cursor);
 
                 //Getting User choice
                 userInput = Console.ReadKey().Key;
-                switch (userInput)
-                {
-                    case ConsoleKey.UpArrow or ConsoleKey.W:
-                        if (cursor > 0) { cursor--; }
-                        break;
-                    case ConsoleKey.DownArrow or ConsoleKey.S:
-                        if (cursor < this.menuoptions.Count) { cursor++; }
-                        break;
-                    case ConsoleKey.Enter:
-                        if (cursor == this.menuoptions.Count && this.exit == true)
-                        {
-                            Console.Clear();
-                            Environment.Exit(0);
-                        }
-                        else if (cursor == this.menuoptions.Count && this.exit == false)
-                        {
-                            Console.Clear();
-                            return;
-                        }
-                        else { this.menuoptions[cursor].Act(""); }
-                        break;
-                    default: continue;
-                }
-            }
-        }
 
-        class InputMenuOption
-        {
-            public string Name;
-            public Action<string> Act;
-            public bool? isTaken;
-            public InputMenuOption(string Name, Action<string> Act, bool? isTaken)
-            {
-                this.Name = Name;
-                this.Act = Act;
-                this.isTaken = isTaken;
+                if ((userInput == ConsoleKey.UpArrow || userInput == ConsoleKey.W) && cursor > 0) { cursor--; }
+                else if ((userInput == ConsoleKey.DownArrow || userInput ==  ConsoleKey.S) && cursor < this.menuoptions.Count) { cursor++; }
+                else if (userInput == ConsoleKey.Enter)
+                {
+                    if (cursor == this.menuoptions.Count)
+                    {
+                        Console.Clear();
+                        if (this.exit) Environment.Exit(0);
+                        return;
+                    }
+                    else { this.menuoptions[cursor].Act(""); }
+                }
             }
         }
     }

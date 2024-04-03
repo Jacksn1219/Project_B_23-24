@@ -128,15 +128,15 @@ public class Layout
         string alfabet = "abcdefghijklmnopqrstuvwxyz";
 
         Console.WriteLine("\n\nGive a location in a form like ('a1' or 'd5')");
-        string chosenSeat = Console.ReadLine();
+        string chosenSeat = Console.ReadLine() ?? "00";
         if (chosenSeat.Length != 2) chosenSeat = "00";
         while (chosenSeat.Length != 2 && !alfabet.Contains(chosenSeat[0]) && ((int)chosenSeat[1] >= rowWidth || (int)chosenSeat[1] < 0))
         {
             Console.WriteLine("That is not a valid input, give a location in a form like ('a1' or 'd5')");
-            chosenSeat = Console.ReadLine();
+            chosenSeat = Console.ReadLine() ?? "00";
         }
         string seatLocation = $"{(alfabet.IndexOf(chosenSeat[0]) + 1) * chosenSeat[1]}";
-        Seat selectedSeat = layout.FirstOrDefault(t => t.Name == seatLocation);
+        Seat? selectedSeat = layout.FirstOrDefault(t => t.Name == seatLocation);
 
         //ShowSeatInfo(selectedSeat); - Jelle
         Console.WriteLine("Not yet implemented - ShowSeatInfo");
