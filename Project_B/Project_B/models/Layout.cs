@@ -138,25 +138,6 @@ public class Layout
             });
         }
         seatSelectionMenu.UseMenu();
-        
-        /*
-        //int rowWidth = getRowWidth(layout);
-        string alfabet = "abcdefghijklmnopqrstuvwxyz";
-
-        Console.WriteLine("\n\nGive a location in a form like ('a1' or 'd5')");
-        string chosenSeat = Console.ReadLine() ?? "00";
-        if (chosenSeat.Length != 2) chosenSeat = "00";
-        while (chosenSeat.Length != 2 && !alfabet.Contains(chosenSeat[0]) && ((int)chosenSeat[1] >= room.RowWidth || (int)chosenSeat[1] < 0))
-        {
-            Console.WriteLine("That is not a valid input, give a location in a form like ('a1' or 'd5')");
-            chosenSeat = Console.ReadLine() ?? "00";
-        }
-        string seatLocation = $"{(alfabet.IndexOf(chosenSeat[0]) + 1) * chosenSeat[1]}";
-        Seat? selectedSeat = layout.FirstOrDefault(t => t.Name == seatLocation);
-
-        //ShowSeatInfo(selectedSeat); - Jelle
-        Console.WriteLine("Not yet implemented - ShowSeatInfo");
-        Console.ReadLine();*/
     }
     public static void MakeNewLayout()
     {
@@ -211,10 +192,8 @@ public class Layout
             }
         }
         //Adding the seats to the database
-        //upload_to_database(seats, new Room(Room_ID, $"Room{Room_ID}", seats.Count));
         upload_to_database(seats, currentRoom);
 
         selectSeat(seats, currentRoom);
-        //drawLayout(seats);
     }
 }
