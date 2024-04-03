@@ -1,5 +1,5 @@
 ﻿using System.Data.SQLite;
-
+using System.Text;
 namespace DataAccessLibrary;
 public enum PEGIAge
 {
@@ -37,6 +37,7 @@ public class MovieModel : IDbItem
     /// <summary>
     /// the description of the movie
     /// </summary>
+    public List<AuthorModel> AuthorsInMovie { get; }
     public string? Description { get; set; }
     /// <summary>
     /// the pegi age of the movie. valid numerics -> 4, 7, 12, 16 and 18
@@ -57,6 +58,7 @@ public class MovieModel : IDbItem
     {
         ID = id;
         Name = name;
+        AuthorsInMovie = new List<AuthorModel>();
         Description = description;
         PegiAge = pegiAge;
         DurationInMin = durationInMin;
@@ -65,4 +67,32 @@ public class MovieModel : IDbItem
     }
     public MovieModel(string name, string description, int pegiAge, int durationInMin, int directorId, string genre)
     : this(null, name, description, pegiAge, durationInMin, directorId, genre) { }
+    public string SeeActors()
+    {
+        StringBuilder sb = new();
+        sb.Append("All actors in this movie:\n");
+        foreach (AuthorModel author in AuthorsInMovie)
+        {
+            sb.Append($"{author.Name}\n");
+        }
+        return sb.ToString();
+    }
+    public string SeeDirector(List<DirectorModel> directors)
+    {
+        foreach (DirectorModel director in directors)
+        {
+            if (DirectorId == director.ID)
+            {
+                return $"The director of this movie is: {director.Name}";
+            }
+        }
+        return $"No director found for this {Name}";
+    }
+    public string SeeDescription()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append($"The minimum age for this movie is: {PegiAge}\n");
+        sb.Append($"The genre of this movie is: {Genre}");
+        return sb.ToString();
+    }
 }
