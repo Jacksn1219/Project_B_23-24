@@ -63,10 +63,12 @@ public class Layout
         {
             ExcecuteQuerry(sqlite_conn, $@"INSERT INTO Room(
                     Name,
-                    Capacity
+                    Capacity,
+                    RowWidth
                 ) VALUES (
                     '{room.Name}',
-                    {room.Capacity}
+                    {room.Capacity},
+                    {room.RowWidth}
                 ); ");
             foreach (Seat seat in seats)
             {
@@ -180,11 +182,18 @@ public class Layout
                 catch { }
             for (int i = 0; i < seats.Count; i++)
             {
-                Console.ForegroundColor = seats[i].Rank switch
+                /*Console.ForegroundColor = seats[i].Rank switch
                 {
                     "1" => ConsoleColor.Blue,
                     "2" => ConsoleColor.DarkYellow,
                     "3" => ConsoleColor.DarkRed,
+                    _ => ConsoleColor.Gray
+                };*/
+                Console.ForegroundColor = seats[i].Type switch
+                {
+                    "Normaal" => ConsoleColor.Blue,
+                    "Extra Beenruimte" => ConsoleColor.DarkYellow,
+                    "Love Seat" => ConsoleColor.Magenta,
                     _ => ConsoleColor.Gray
                 };
                 if (i == 0 || currentRoom.RowWidth == 1) Console.Write(" " + seats[i].Rank);
@@ -195,5 +204,15 @@ public class Layout
         upload_to_database(seats, currentRoom);
 
         selectSeat(seats, currentRoom);
+
+        /*
+        Legenda
+
+        Loveseat = roze
+        regular = licht blauw
+        extra beenruimte = geel
+
+        Reserved seat class -> deruit
+        */
     }
 }
