@@ -1,6 +1,8 @@
 using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Text.Json;
 using DataAccessLibrary.models.interfaces;
 
 namespace DataAccessLibrary
@@ -20,28 +22,45 @@ namespace DataAccessLibrary
         /// <param name="rd">the DbReader object</param>
         /// <returns>a list of DbItems</returns>
         /// <exception cref="NotImplementedException">currently not implemented</exception>
-        public virtual List<T> ConvertToObject<T>(DbDataReader rd)
+        public static List<T>? ConvertToObject<T>(DbDataReader rd)
         {
+            // all the type T objects as dictionaries
+            List<Dictionary<string, dynamic?>> typeOfT = new();
+
+            // get the properties of the type T
             Type type = typeof(T);
-            throw new NotImplementedException();
-            //var accessor = TypeAccessor.Create(type);
-            //var members = accessor.GetMembers();
-            //var t = new T();
-            //
-            //for (int i = 0; i < rd.FieldCount; i++)
-            //{
-            //    if (!rd.IsDBNull(i))
-            //    {
-            //        string fieldName = rd.GetName(i);
-            //
-            //        if (members.Any(m => string.Equals(m, fieldName, StringComparison.OrdinalIgnoreCase)))
-            //        {
-            //            accessor[t, fieldName] = rd.GetValue(i);
-            //        }
-            //    }
-            //}
-            //
-            //return t;
+            PropertyInfo[] fields = type.GetProperties();
+
+            // get the rows of the reader
+            DataTable dt = new DataTable();
+            dt.Load(rd);
+            var dv = dt.AsDataView();
+            foreach (DataRow row in dt.Rows)
+            {
+                //new type T dict 
+                Dictionary<string, dynamic?> rowDict = new();
+                foreach (DataColumn column in dt.Columns)
+                {
+                    // try to find fields with the sam name
+                    foreach (PropertyInfo field in fields)
+                    {
+                        // checks all properties in the model
+                        if (field.CanWrite && field.Name.Equals(column.ColumnName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var value = row[column];
+                            // DBNull is the null in databases
+                            if (value.GetType() == typeof(DBNull)) rowDict.Add(field.Name, null);
+                            else rowDict.Add(field.Name, value);
+                            break;
+                        }
+                    }
+                }
+                // add dict to dictlist
+                typeOfT.Add(rowDict);
+            }
+            // make a class from the list of dicts
+            string Tstring = JsonSerializer.Serialize(typeOfT);
+            return JsonSerializer.Deserialize<List<T>>(Tstring);
         }
 
     }

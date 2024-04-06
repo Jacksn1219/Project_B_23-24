@@ -1,16 +1,43 @@
 ﻿namespace DataAccessLibrary;
 
-public class DirectorModel
+public class DirectorModel : IDbItem
 {
-    public int ID { get; }
-    public string Name { get; set; }
-    public string Discription { get; set; }
-    public int Age { get; set; }
-    public DirectorModel(int id, string name, string discription, int age)
+    private int? _id;
+    public int? ID
     {
-        ID = id;
+        get { return _id; }
+        protected set
+        {
+            if (value != null && value >= 0)
+            {
+                _id = value;
+                return;
+            }
+            throw new InvalidDataException("ID cannot be below 0");
+        }
+    }
+    public string Name { get; set; }
+    public string? Description { get; set; }
+    private int _age;
+    public int Age
+    {
+        get { return _age; }
+        set
+        {
+            if (value >= 0)
+            {
+                _age = value;
+                return;
+            }
+            throw new InvalidDataException("The director's age cannot be below 0");
+        }
+    }
+    public DirectorModel(string name, string? description, int age) : this(null, name, description, age) { }
+    protected DirectorModel(int? id, string name, string? description, int age)
+    {
         Name = name;
-        Discription = discription;
+        Description = description;
         Age = age;
+        ID = id;
     }
 }

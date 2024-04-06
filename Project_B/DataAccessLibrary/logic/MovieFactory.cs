@@ -1,4 +1,5 @@
 using DataAccessLibrary;
+using DataAccessLibrary.logic;
 
 public class MovieFactory : IDbItemFactory<MovieModel>
 {
@@ -6,13 +7,17 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// The db acccess for the class
     /// </summary>
     private readonly DataAccess _db;
+    private readonly DirectorFactory _df;
+    private readonly ActorFactory _af;
     /// <summary>
     /// the constructor for the movie factory
     /// </summary>
     /// <param name="db">the database connection</param>
-    public MovieFactory(DataAccess db)
+    public MovieFactory(DataAccess db, DirectorFactory df, ActorFactory af)
     {
         _db = db;
+        _df = df;
+        _af = af;
     }
     /// <summary>
     /// creates the movie table 
@@ -26,7 +31,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             DirectorID INTEGER NOT NULL,
             pegiAge INTEGER NOT NULL,
             Description TEXT,
-            Genre TEXT  NOT NULL,
+            Genre TEXT NOT NULL,
             DurationInMin INTEGER  NOT NULL,
             FOREIGN KEY (DirectorID) REFERENCES Director (ID)
             )"
@@ -80,7 +85,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             VALUES ($1,$2,$3,$4,$5,$6);",
             new Dictionary<string, dynamic?>(){
                 {"$1", movie.Name},
-                {"$2", movie.DirectorId},
+                {"$2", movie.DirectorID},
                 {"$3", (int)movie.PegiAge},
                 {"$4", movie.Description},
                 {"$5", movie.Genre},
@@ -108,7 +113,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             WHERE ID = $7;",
             new Dictionary<string, dynamic?>(){
                 {"$1", movie.Name},
-                {"$2", movie.DirectorId},
+                {"$2", movie.DirectorID},
                 {"$3", (int)movie.PegiAge},
                 {"$4", movie.Description},
                 {"$5", movie.Genre},
