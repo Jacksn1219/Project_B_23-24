@@ -1,21 +1,8 @@
 ﻿namespace DataAccessLibrary;
 
-public class DirectorModel : IDbItem
+public class DirectorModel : DbItem
 {
-    private int? _id;
-    public int? ID
-    {
-        get { return _id; }
-        protected set
-        {
-            if (value != null && value >= 0)
-            {
-                _id = value;
-                return;
-            }
-            throw new InvalidDataException("ID cannot be below 0");
-        }
-    }
+    public override int? ID { get; }
     public string Name { get; set; }
     public string? Description { get; set; }
     private int _age;

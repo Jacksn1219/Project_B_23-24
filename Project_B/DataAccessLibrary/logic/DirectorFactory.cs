@@ -6,6 +6,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
     public DirectorFactory(DataAccess db)
     {
         _db = db;
+        CreateTable();
     }
 
     public bool CreateItem(DirectorModel item)

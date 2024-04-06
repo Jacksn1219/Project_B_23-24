@@ -12,6 +12,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         _db = db;
         _mf = mf;
         _rf = rf;
+        CreateTable();
     }
     public bool CreateItem(TimeTableModel item)
     {
@@ -20,7 +21,17 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 
     public void CreateTable()
     {
-        throw new NotImplementedException();
+        _db.SaveData(
+            @"CREATE TABLE IF NOT EXISTS TimeTable(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+                MovieID INTEGER NOT NULL,
+                RoomID INTEGER NOT NULL,
+                StartDate TEXT NOT NULL,
+                EndDate TEXT NOT NULL,
+                FOREIGN KEY (MovieID) REFERENCES Movie (ID),
+                FOREIGN KEY (RoomID) REFERENCES Room (ID)
+            )"
+        );
     }
 
     public TimeTableModel GetItemFromId(int id)

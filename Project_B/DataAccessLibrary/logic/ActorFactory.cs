@@ -8,6 +8,7 @@ namespace DataAccessLibrary.logic
         public ActorFactory(DataAccess db)
         {
             _db = db;
+            CreateTable();
         }
         public bool CreateItem(ActorModel item)
         {
@@ -16,7 +17,14 @@ namespace DataAccessLibrary.logic
 
         public void CreateTable()
         {
-            throw new NotImplementedException();
+            _db.SaveData(
+                @"CREATE TABLE IF NOT EXISTS Actor(
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    Name TEXT NOT NULL,
+                    Description TEXT,
+                    Age INTEGER NOT NULL
+                )"
+            );
         }
 
         public ActorModel GetItemFromId(int id)

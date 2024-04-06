@@ -11,6 +11,7 @@ namespace DataAccessLibrary.logic
         {
             _db = db;
             _sf = sf;
+            CreateTable();
         }
 
         public bool CreateItem(RoomModel item)
@@ -20,7 +21,13 @@ namespace DataAccessLibrary.logic
 
         public void CreateTable()
         {
-            throw new NotImplementedException();
+            _db.SaveData(
+                @"CREATE TABLE IF NOT EXISTS Room(
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+                    Name TEXT NOT NULL,
+                    Capacity INTEGER NOT NULL
+                )"
+            );
         }
 
         public RoomModel GetItemFromId(int id)

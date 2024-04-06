@@ -12,6 +12,7 @@ namespace DataAccessLibrary.logic
             _db = db;
             _cf = cf;
             _sf = sf;
+            CreateTable();
         }
 
         public bool CreateItem(ReservationModel item)
@@ -21,7 +22,25 @@ namespace DataAccessLibrary.logic
 
         public void CreateTable()
         {
-            throw new NotImplementedException();
+            _db.SaveData(
+                @"CREATE TABLE IF NOT EXISTS Reservation(
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+                    CostumerID INTEGER NOT NULL,
+                    TimeTableID INTEGER NOT NULL,
+                    Note TEXT,
+                    FOREIGN KEY (CostumerID) REFERENCES Costumer (ID),
+                    FOREIGN KEY (TimeTableID) REFERENCES TimeTable (ID)
+                )"
+            );
+            _db.SaveData(
+                @"CREATE TABLE IF NOT EXISTS ReservedSeat(
+                    ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                    SeatID INTEGER  NOT NULL,
+                    ReservationID INTEGER  NOT NULL,
+                    FOREIGN KEY (SeatID) REFERENCES Seat (ID),
+                    FOREIGN KEY (ReservationID) REFERENCES Reservation (ID)
+                )"
+            );
         }
 
         public ReservationModel GetItemFromId(int id)

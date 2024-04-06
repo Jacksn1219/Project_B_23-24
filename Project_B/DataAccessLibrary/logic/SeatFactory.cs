@@ -8,6 +8,7 @@ namespace DataAccessLibrary.logic
         public SeatFactory(DataAccess db)
         {
             _db = db;
+            CreateTable();
         }
         public bool CreateItem(SeatModel item)
         {
@@ -16,7 +17,16 @@ namespace DataAccessLibrary.logic
 
         public void CreateTable()
         {
-            throw new NotImplementedException();
+            _db.SaveData(
+                @"CREATE TABLE IF NOT EXISTS Seat(
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+                    RoomID INTEGER  NOT NULL,
+                    Name TEXT,
+                    Rank TEXT,
+                    Type TEXT,
+                    FOREIGN KEY (RoomID) REFERENCES Room (ID)
+                )"
+            );
         }
 
         public SeatModel GetItemFromId(int id)

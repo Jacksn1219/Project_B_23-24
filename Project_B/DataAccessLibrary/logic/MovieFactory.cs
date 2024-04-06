@@ -18,6 +18,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         _db = db;
         _df = df;
         _af = af;
+        CreateTable();
     }
     /// <summary>
     /// creates the movie table 
@@ -34,6 +35,15 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             Genre TEXT NOT NULL,
             DurationInMin INTEGER  NOT NULL,
             FOREIGN KEY (DirectorID) REFERENCES Director (ID)
+            )"
+        );
+        _db.SaveData(
+            @"CREATE TABLE IF NOT EXISTS ActorInMovie(
+                ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                ActorID INTEGER NOT NULL,
+                MovieID INTEGER NOT NULL,
+                FOREIGN KEY (ActorID) REFERENCES Actor (ID),
+                FOREIGN KEY (MovieID) REFERENCES Movie (ID)
             )"
         );
     }

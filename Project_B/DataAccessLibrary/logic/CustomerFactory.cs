@@ -8,6 +8,7 @@ namespace DataAccessLibrary.logic
         public CustomerFactory(DataAccess db)
         {
             _db = db;
+            CreateTable();
         }
 
         public bool CreateItem(CustomerModel item)
@@ -17,7 +18,16 @@ namespace DataAccessLibrary.logic
 
         public void CreateTable()
         {
-            throw new NotImplementedException();
+            _db.SaveData(
+                @"CREATE TABLE IF NOT EXISTS Customer(
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+                    Name TEXT NOT NULL,
+                    Age INTEGER NOT NULL,
+                    Email TEXT UNIQUE NOT NULL,
+                    PhoneNumber TEXT NOT NULL,
+                    IsSubscribed INTEGER NOT NULL
+                )"
+            );
         }
 
         public CustomerModel GetItemFromId(int id)

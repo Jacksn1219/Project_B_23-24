@@ -11,25 +11,12 @@ public enum PEGIAge
 
 }
 
-public class MovieModel : IDbItem
+public class MovieModel : DbItem
 {
-
-    private int? _id;
     /// <summary>
     /// the db Id of the movie. must be positive and should be readonly for external classes.
     /// </summary>
-    public int? ID
-    {
-        get { return _id; }
-        private set
-        {
-            if (value == null || value >= 0)
-            {
-                _id = value;
-            }
-            else throw new InvalidDataException("the unique Id cannot be below 0");
-        }
-    }
+    public override int? ID { get; }
     /// <summary>
     /// the title of the movie
     /// </summary>
@@ -49,7 +36,7 @@ public class MovieModel : IDbItem
     /// <summary>
     /// the ID of the director of the movie
     /// </summary>
-    internal int? DirectorID { get; set; }
+    internal int? DirectorID { get; }
     public DirectorModel? Director { get; set; }
     public string Genre { set; get; }
     internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int directorId, string genre)

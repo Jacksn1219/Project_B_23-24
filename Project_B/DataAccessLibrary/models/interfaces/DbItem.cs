@@ -1,4 +1,4 @@
-public interface IDbItem
+public abstract class DbItem
 {
     /// <summary>
     /// the db Id. do not set, only when creating DbItems from a DatabaseReader.

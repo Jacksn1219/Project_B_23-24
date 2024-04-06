@@ -2,9 +2,9 @@ using DataAccessLibrary;
 
 namespace DataAccessLibrary.models
 {
-    public class TimeTableModel : IDbItem
+    public class TimeTableModel : DbItem
     {
-        public int? ID { get; }
+        public override int? ID { get; }
         public int? MovieId { get; }
         public MovieModel? Movie;
         public int? RoomId { get; }

@@ -1,8 +1,8 @@
 ﻿namespace DataAccessLibrary;
 
-public class SeatModel
+public class SeatModel : DbItem
 {
-    public int ID { get; }
+    public override int? ID { get; }
     public int RoomID { get; set; }
     public string Name { get; set; }
     public string Rank { get; set; }
