@@ -150,7 +150,7 @@ public class Layout
         //Room currentRoom = new Room(Room_ID, $"Room{Room_ID}", seats.Count)
         Room currentRoom = new Room(1, "Room1", seats.Count);
 
-        Console.WriteLine("Press one of these (1, 2, 3, Enter, Q):\n");
+        Console.WriteLine("Press one of these (N, E, L, Enter, Q):\n");
 
         ConsoleKey userInput = ConsoleKey.Delete;
         while (userInput != ConsoleKey.Q)
@@ -165,6 +165,22 @@ public class Layout
             }
             else try
                 {
+                    Console.Write("Type: ");
+                    string getType = userInput switch
+                    {
+                        ConsoleKey.Spacebar => " ",
+                        //ConsoleKey.D1 or ConsoleKey.NumPad1 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "1", "Regular"),
+                        //ConsoleKey.D2 or ConsoleKey.NumPad2 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "2", "Regular"),
+                        //ConsoleKey.D3 or ConsoleKey.NumPad3 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "3", "Regular"),
+                        //ConsoleKey.Enter => new Seat(seats.Count, Room_ID, "", "\n", " "),
+                        ConsoleKey.N => "Normaal",
+                        ConsoleKey.E => "Extra Beenruimte",
+                        ConsoleKey.L => "Love Seat",
+                        //ConsoleKey.Enter => new Seat(seats.Count, 1, "", "\n", " "),
+                        _ => throw new NotImplementedException()
+                    };
+                    Console.Write(getType + "\n Rank: ");
+                    ConsoleKey secondUserInput = Console.ReadKey().Key;
                     seats.Add(userInput switch
                     {
                         ConsoleKey.Spacebar => new Seat(seats.Count, 1, "", " ", " "),
@@ -178,8 +194,17 @@ public class Layout
                         //ConsoleKey.Enter => new Seat(seats.Count, 1, "", "\n", " "),
                         _ => throw new NotImplementedException()
                     });
+                    Console.Write(secondUserInput);
                 }
                 catch { }
+
+
+
+
+
+
+
+
             for (int i = 0; i < seats.Count; i++)
             {
                 /*Console.ForegroundColor = seats[i].Rank switch
@@ -199,6 +224,11 @@ public class Layout
                 if (i == 0 || currentRoom.RowWidth == 1) Console.Write(" " + seats[i].Rank);
                 else Console.Write( i % currentRoom.RowWidth == 0 ? "\n " + seats[i].Rank : " " + seats[i].Rank);
             }
+            Console.WriteLine($@"
+                {Console.ForegroundColor = ConsoleColor.Blue} [] {Console.ForegroundColor = ConsoleColor.White} = Normaal
+                {Console.ForegroundColor = ConsoleColor.Blue} [] {Console.ForegroundColor = ConsoleColor.White} = Extra Beenruimte
+                {Console.ForegroundColor = ConsoleColor.Blue} [] {Console.ForegroundColor = ConsoleColor.White} = Love Seat
+            ");
         }
         //Adding the seats to the database
         upload_to_database(seats, currentRoom);
