@@ -50,9 +50,9 @@ namespace Models
                     {
                         Console.ForegroundColor = this.menuoptions[i].Name switch
                         {
-                            "1" => ConsoleColor.Blue,
-                            "2" => ConsoleColor.DarkYellow,
-                            "3" => ConsoleColor.DarkRed,
+                            "N" => ConsoleColor.Blue,
+                            "E" => ConsoleColor.DarkYellow,
+                            "L" => ConsoleColor.Magenta,
                             _ => ConsoleColor.Gray
                         };
                     } catch { }

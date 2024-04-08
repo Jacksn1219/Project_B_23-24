@@ -87,22 +87,12 @@ public class Layout
         } catch { sqlite_conn.Close(); }
         sqlite_conn.Close();
     }
-    /*public static int getRowWidth(List<Seat> layout)
-    {
-        List<string> layoutRanks = new List<string>();
-        foreach (Seat seat in layout) layoutRanks.Add(seat.Rank);
-
-        string[] joinedLayout = String.Join("", layoutRanks).Split("\n");
-        int rowWidth = joinedLayout.Max(x => x.Length);
-        return rowWidth;
-    }*/
     public static void drawLayout(List<Seat> layout, Room room)
     {
         Console.Clear();
         Console.ResetColor();
 
         //List<Seat> layout = getSeatsFromDatabase();
-        //int rowWidth = getRowWidth(layout);
         string alfabet = "abcdefghijklmnopqrstuvwxyz";
         for (int i = 1; i < room.RowWidth + 1; i++) { Console.Write("  " + alfabet[i - 1]); }
 
@@ -110,30 +100,32 @@ public class Layout
         Console.Write("\n" + Row);
         for (int i = 0; i < layout.Count; i++)
         {
-            Console.ForegroundColor = layout[i].Rank switch
+            Console.ForegroundColor = layout[i].Type switch
             {
-                "1" => ConsoleColor.Blue,
-                "2" => ConsoleColor.DarkYellow,
-                "3" => ConsoleColor.DarkRed,
+                "Normaal" => ConsoleColor.Blue,
+                "Extra Beenruimte" => ConsoleColor.DarkYellow,
+                "Love Seat" => ConsoleColor.Magenta,
                 _ => ConsoleColor.Gray
             };
             if (i % room.RowWidth == 0) { Row++; Console.Write("\n" + Row); }
             else if (layout[i].Rank == " ") { Console.Write("   "); }
             else { Console.Write($" []"); }
         }
+        Console.Write($"[{room.RowWidth - 8 / 2}Screen{room.RowWidth-8/2}]");
         Console.ResetColor();
     }
     public static void selectSeat(List<Seat> layout, Room room)
     {
         //List<Seat> layout = getSeatsFromDatabase(); - Aymane
-        drawLayout(layout, room);
+        //drawLayout(layout, room);
 
-        InputMenu seatSelectionMenu = new InputMenu("Select seat", false, room.RowWidth);
+        InputMenu seatSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth);
         foreach (Seat seat in layout)
         {
-            string seatName = seat.Rank == " " ? "   " : $" []";
-            seatSelectionMenu.Add(seat.Rank, (x) =>
+            string seatName = seat.Type == " " ? "   " : $" []";
+            seatSelectionMenu.Add($"{seat.Type[0]}", (x) =>
             {
+                Console.Clear();
                 //ShowSeatInfo(selectedSeat); - Jelle
                 Console.WriteLine("Not yet implemented - ShowSeatInfo");
                 Console.ReadLine();
@@ -143,67 +135,120 @@ public class Layout
     }
     public static void MakeNewLayout()
     {
-        //getting the correct room ID
-        //int Room_ID = getRoomsFromDatabase().Count;
+        //Getting the correct room ID
+        /*int Room_ID = getRoomsFromDatabase().Count;*/
 
         List<Seat> seats = new List<Seat>();
-        //Room currentRoom = new Room(Room_ID, $"Room{Room_ID}", seats.Count)
+        /*Room currentRoom = new Room(Room_ID, $"Room{Room_ID}", seats.Count)*/
         Room currentRoom = new Room(1, "Room1", seats.Count);
 
-        Console.WriteLine("Press one of these (N, E, L, Enter, Q):\n");
+        Console.Clear();
+        Console.WriteLine("Press one of these (N, E, L, 1, 2, 3, Enter, Q):\n");
+
+        string getType = "0";
+        string getRank = "0";
 
         ConsoleKey userInput = ConsoleKey.Delete;
         while (userInput != ConsoleKey.Q)
         {
+            Console.ForegroundColor = ConsoleColor.White;
+            switch (getType)
+            {
+                case "Normaal":
+                    Console.Write("\n\nType: ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write("N");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(" E L");
+                    break;
+                case "Extra Beenruimte":
+                    Console.Write("\n\nType: N ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write("E");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(" L");
+                    break;
+                case "Love Seat":
+                    Console.Write("\n\nType: N E ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write("L");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                default:
+                    Console.Write("\n\nType: N E L");
+                    break;
+            };
+            switch (getRank)
+            {
+                case "1":
+                    Console.Write($"\nRank: ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write(getRank);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write($" 2 3");
+                    break;
+                case "2":
+                    Console.Write($"\nRank: 1 ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write(getRank);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write($" 3");
+                    break;
+                case "3":
+                    Console.Write($"\nRank: 1 2 ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write(getRank);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                default:
+                    Console.Write("\nRank: 1 2 3");
+                    break;
+            };
+            Console.Write("\nPress (A) to confirm");
+
             //Getting User choice
             userInput = Console.ReadKey().Key;
 
             Console.Clear();
-            if (userInput == ConsoleKey.Backspace) seats.RemoveAt(seats.Count - 1);
-            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1) { 
+            if (userInput == ConsoleKey.Backspace && seats.Count > 0) seats.RemoveAt(seats.Count - 1);
+            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1)
+            {
                 currentRoom.RowWidth = seats.Count;
             }
-            else try
+            else if (userInput == ConsoleKey.A)
+            {
+                if (getType == "0" || getRank == "0") Console.WriteLine("Not all required fields are filled in...");
+                //new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", getRank, getType),
+                else seats.Add(new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", getRank, getType));
+            }
+            else
+            {
+                try
                 {
-                    Console.Write("Type: ");
-                    string getType = userInput switch
+                    getType = userInput switch
                     {
                         ConsoleKey.Spacebar => " ",
-                        //ConsoleKey.D1 or ConsoleKey.NumPad1 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "1", "Regular"),
-                        //ConsoleKey.D2 or ConsoleKey.NumPad2 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "2", "Regular"),
-                        //ConsoleKey.D3 or ConsoleKey.NumPad3 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "3", "Regular"),
-                        //ConsoleKey.Enter => new Seat(seats.Count, Room_ID, "", "\n", " "),
                         ConsoleKey.N => "Normaal",
                         ConsoleKey.E => "Extra Beenruimte",
                         ConsoleKey.L => "Love Seat",
-                        //ConsoleKey.Enter => new Seat(seats.Count, 1, "", "\n", " "),
                         _ => throw new NotImplementedException()
                     };
-                    Console.Write(getType + "\n Rank: ");
-                    ConsoleKey secondUserInput = Console.ReadKey().Key;
-                    seats.Add(userInput switch
-                    {
-                        ConsoleKey.Spacebar => new Seat(seats.Count, 1, "", " ", " "),
-                        //ConsoleKey.D1 or ConsoleKey.NumPad1 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "1", "Regular"),
-                        //ConsoleKey.D2 or ConsoleKey.NumPad2 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "2", "Regular"),
-                        //ConsoleKey.D3 or ConsoleKey.NumPad3 => new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", "3", "Regular"),
-                        //ConsoleKey.Enter => new Seat(seats.Count, Room_ID, "", "\n", " "),
-                        ConsoleKey.D1 or ConsoleKey.NumPad1 => new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", "1", "Regular"),
-                        ConsoleKey.D2 or ConsoleKey.NumPad2 => new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", "2", "Regular"),
-                        ConsoleKey.D3 or ConsoleKey.NumPad3 => new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", "3", "Regular"),
-                        //ConsoleKey.Enter => new Seat(seats.Count, 1, "", "\n", " "),
-                        _ => throw new NotImplementedException()
-                    });
-                    Console.Write(secondUserInput);
                 }
                 catch { }
-
-
-
-
-
-
-
+                try
+                {
+                    getRank = userInput switch
+                    {
+                        ConsoleKey.Spacebar => " ",
+                        ConsoleKey.D1 or ConsoleKey.NumPad1 => "1",
+                        ConsoleKey.D2 or ConsoleKey.NumPad2 => "2",
+                        ConsoleKey.D3 or ConsoleKey.NumPad3 => "3",
+                        _ => throw new NotImplementedException()
+                    };
+                }
+                catch { }
+            }
+            Console.WriteLine("Press one of these (N, E, L, 1, 2, 3, Enter, Q):\n");
 
             for (int i = 0; i < seats.Count; i++)
             {
@@ -221,28 +266,13 @@ public class Layout
                     "Love Seat" => ConsoleColor.Magenta,
                     _ => ConsoleColor.Gray
                 };
-                if (i == 0 || currentRoom.RowWidth == 1) Console.Write(" " + seats[i].Rank);
-                else Console.Write( i % currentRoom.RowWidth == 0 ? "\n " + seats[i].Rank : " " + seats[i].Rank);
+                if (i == 0 || currentRoom.RowWidth == 1) Console.Write(" " + seats[i].Type[0]);
+                else Console.Write( i % currentRoom.RowWidth == 0 ? "\n " + seats[i].Type[0] : " " + seats[i].Type[0]);
             }
-            Console.WriteLine($@"
-                {Console.ForegroundColor = ConsoleColor.Blue} [] {Console.ForegroundColor = ConsoleColor.White} = Normaal
-                {Console.ForegroundColor = ConsoleColor.Blue} [] {Console.ForegroundColor = ConsoleColor.White} = Extra Beenruimte
-                {Console.ForegroundColor = ConsoleColor.Blue} [] {Console.ForegroundColor = ConsoleColor.White} = Love Seat
-            ");
         }
         //Adding the seats to the database
         upload_to_database(seats, currentRoom);
 
         selectSeat(seats, currentRoom);
-
-        /*
-        Legenda
-
-        Loveseat = roze
-        regular = licht blauw
-        extra beenruimte = geel
-
-        Reserved seat class -> deruit
-        */
     }
 }
