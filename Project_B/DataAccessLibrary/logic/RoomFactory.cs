@@ -16,7 +16,18 @@ namespace DataAccessLibrary.logic
 
         public bool CreateItem(RoomModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID != null) throw new InvalidDataException("the room is already in the db.");
+            return _db.SaveData(
+                @"INSERT INTO Room(
+                    Name,
+                    Capacity
+                )
+                VALUES ($1,$2);",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.Name},
+                    {"$2", item.Capacity}
+                }
+            ) && RelatedItemsToDb(item);
         }
 
         public void CreateTable()
@@ -32,17 +43,44 @@ namespace DataAccessLibrary.logic
 
         public RoomModel GetItemFromId(int id)
         {
-            throw new NotImplementedException();
+            return _db.ReadData<RoomModel>(
+                @"SELECT * FROM Room
+                WHERE ID = $1",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", id},
+                }
+            ).First();
         }
 
         public bool ItemToDb(RoomModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID == null) return CreateItem(item);
+            return UpdateItem(item);
         }
 
         public bool UpdateItem(RoomModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID == null) throw new InvalidDataException("the id of the room is null. the item cannot be updated.");
+            return _db.SaveData(
+                @"UPDATE Room
+                SET Name = $1
+                    Capacity = $2
+                where ID = $3",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.Name},
+                    {"$2", item.Capacity},
+                    {"$3", item.ID}
+                }
+            ) && RelatedItemsToDb(item);
+        }
+
+        private bool RelatedItemsToDb(RoomModel item)
+        {
+            foreach (SeatModel seat in item.Seats)
+            {
+                _sf.ItemToDb(seat);
+            }
+            return true;
         }
     }
 }

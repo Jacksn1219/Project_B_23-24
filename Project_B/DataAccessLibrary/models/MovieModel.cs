@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using DataAccessLibrary.models.interfaces;
 
 namespace DataAccessLibrary;
 public enum PEGIAge

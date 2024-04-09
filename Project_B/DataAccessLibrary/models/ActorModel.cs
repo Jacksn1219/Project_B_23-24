@@ -1,4 +1,6 @@
-﻿namespace DataAccessLibrary;
+﻿using DataAccessLibrary.models.interfaces;
+
+namespace DataAccessLibrary;
 
 public class ActorModel : DbItem
 {

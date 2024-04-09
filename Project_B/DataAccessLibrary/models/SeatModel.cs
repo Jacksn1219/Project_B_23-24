@@ -1,9 +1,11 @@
-﻿namespace DataAccessLibrary;
+﻿using DataAccessLibrary.models.interfaces;
+
+namespace DataAccessLibrary;
 
 public class SeatModel : DbItem
 {
     public override int? ID { get; }
-    public int RoomID { get; set; }
+    public int? RoomID { get; set; }
     public string Name { get; set; }
     public string Rank { get; set; }
     public string Type { get; set; }

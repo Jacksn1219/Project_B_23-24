@@ -96,7 +96,7 @@ namespace DataAccessLibrary
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
                 command.CommandText = sqlStatement;
-                return ConvertToObject<T>(command.ExecuteReader());
+                return ConvertToObject<T>(command.ExecuteReader()) ?? new List<T>();
             }
             finally
             {
@@ -123,7 +123,7 @@ namespace DataAccessLibrary
                 SQLiteCommand command = dbAccess.CreateCommand();
                 command.CommandText = sqlStatement;
                 command.Parameters.AddRange(parameters);
-                return ConvertToObject<T>(command.ExecuteReader());
+                return ConvertToObject<T>(command.ExecuteReader()) ?? new List<T>();
             }
             finally
             {

@@ -13,7 +13,20 @@ namespace DataAccessLibrary.logic
 
         public bool CreateItem(CustomerModel item)
         {
-            throw new NotImplementedException();
+            if (item.Exists) throw new InvalidDataException("this Customer already exists in the db.");
+            return _db.SaveData(
+                @"INSERT INTO Customer(
+                    Name,
+                    Email,
+                    Age
+                )
+                VALUES($1,$2,$3)",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.Name},
+                    {"$2", item.Email},
+                    {"$3", item.Age}
+                }
+            );
         }
 
         public void CreateTable()
@@ -32,17 +45,36 @@ namespace DataAccessLibrary.logic
 
         public CustomerModel GetItemFromId(int id)
         {
-            throw new NotImplementedException();
+            return _db.ReadData<CustomerModel>(
+                @"SELECT * FROM Customer
+                WHERE ID = $1",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", id},
+                }
+            ).First();
         }
 
         public bool ItemToDb(CustomerModel item)
         {
-            throw new NotImplementedException();
+            if (!item.Exists) return CreateItem(item);
+            return UpdateItem(item);
         }
 
         public bool UpdateItem(CustomerModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID == null) throw new InvalidDataException("the ID of the Customer is null. the Customer cannot be updated.");
+            return _db.SaveData(
+                @"UPDATE Customer
+                SET Name = $1,
+                    Age = $2,
+                    Email = $3
+                WHERE ID = $4;",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.Name},
+                    {"$2", item.Age},
+                    {"$3", item.Email}
+                }
+            );
         }
     }
 }

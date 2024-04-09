@@ -1,3 +1,4 @@
+using System.Transactions;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
@@ -16,7 +17,24 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     }
     public bool CreateItem(TimeTableModel item)
     {
-        throw new NotImplementedException();
+        if (item.ID != null) throw new InvalidDataException("the timetable is already in the db.");
+        return _db.SaveData(
+            @"INSERT INTO TimeTable
+            VALUES(
+                MovieID,
+                RoomID,
+                StartDate,
+                EndDate
+            )
+            VALUES($1,$2,$3,$4)",
+            new Dictionary<string, dynamic?>()
+            {
+                {"$1", item.MovieID},
+                {"$2", item.RoomId},
+                {"$3", item.StartDate.ToString()},
+                {"$4", item.EndDate.ToString()}
+            }
+        ) && RelatedItemsToDb(item);
     }
 
     public void CreateTable()
@@ -36,16 +54,42 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 
     public TimeTableModel GetItemFromId(int id)
     {
-        throw new NotImplementedException();
+        return _db.ReadData<TimeTableModel>(
+            @"SELECT * FROM TimeTable
+            WHERE ID = $1",
+            new Dictionary<string, dynamic?>(){
+                {"$1", id},
+            }
+        ).First();
     }
 
     public bool ItemToDb(TimeTableModel item)
     {
-        throw new NotImplementedException();
+        if (item.ID == null) return CreateItem(item);
+        return UpdateItem(item);
     }
-
     public bool UpdateItem(TimeTableModel item)
     {
-        throw new NotImplementedException();
+        if (item.ID == null) throw new InvalidDataException("timetable is not in the db.");
+        return _db.SaveData(
+            @"UPDATE TimeTable
+            SET RoomID,
+                MovieID,
+                StartDate,
+                EndDate
+            VALUES($1,$2,$3,$4)",
+            new Dictionary<string, dynamic?>(){
+                {"$1", item.RoomId},
+                {"$2", item.MovieID},
+                {"$3", item.StartDate.ToString()},
+                {"$4", item.EndDate.ToString()}
+            }
+        ) && RelatedItemsToDb(item);
+    }
+    private bool RelatedItemsToDb(TimeTableModel item)
+    {
+        if (item.Movie != null) _mf.ItemToDb(item.Movie);
+        if (item.Room != null) _rf.ItemToDb(item.Room);
+        return true;
     }
 }

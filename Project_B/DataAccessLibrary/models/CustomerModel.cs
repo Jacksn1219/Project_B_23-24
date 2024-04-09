@@ -1,12 +1,14 @@
-﻿namespace DataAccessLibrary;
+﻿using DataAccessLibrary.models.interfaces;
+
+namespace DataAccessLibrary;
 
 public class CustomerModel : DbItem
 {
     public override int? ID { get; }
     public string Name { get; set; }
     public int Age { get; set; }
-    private string _email;
-    public string Email
+    private string? _email;
+    public string? Email
     {
         get
         {
@@ -34,8 +36,9 @@ public class CustomerModel : DbItem
     /// </summary>
     /// <param name="email">ur email</param>
     /// <returns>true if probably valid, else false</returns>
-    private bool IsValidEmail(string email)
+    private static bool IsValidEmail(string? email)
     {
+        if (email == null) return true;
         var trimmedEmail = email.Trim();
 
         if (trimmedEmail.EndsWith("."))

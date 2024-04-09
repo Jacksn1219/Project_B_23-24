@@ -12,7 +12,22 @@ namespace DataAccessLibrary.logic
         }
         public bool CreateItem(SeatModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID != null) throw new InvalidDataException("the seat is already in the db.");
+            return _db.SaveData(
+                @"INSERT INTO Seat(
+                    Name,
+                    Rank,
+                    Type,
+                    RoomID
+                )
+                VALUES($1,$2,$3)",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.Name},
+                    {"$2", item.Rank},
+                    {"$3", item.Type},
+                    {"$4", item.RoomID}
+                }
+            );
         }
 
         public void CreateTable()
@@ -20,7 +35,7 @@ namespace DataAccessLibrary.logic
             _db.SaveData(
                 @"CREATE TABLE IF NOT EXISTS Seat(
                     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
-                    RoomID INTEGER  NOT NULL,
+                    RoomID INTEGER NOT NULL,
                     Name TEXT,
                     Rank TEXT,
                     Type TEXT,
@@ -31,17 +46,39 @@ namespace DataAccessLibrary.logic
 
         public SeatModel GetItemFromId(int id)
         {
-            throw new NotImplementedException();
+            return _db.ReadData<SeatModel>(
+                @"SELECT * FROM Seat
+                WHERE ID = $1",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", id},
+                }
+            ).First();
         }
 
         public bool ItemToDb(SeatModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID == null) return CreateItem(item);
+            return UpdateItem(item);
         }
 
         public bool UpdateItem(SeatModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID == null) throw new InvalidDataException("the seat has no ID therefore it cannot be updated.");
+            return _db.SaveData(
+                @"UPDATE Seat
+                SET RoomID = $1
+                    Name = $2
+                    Type = $3
+                    Rank = $4
+                WHERE ID = $5",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.RoomID },
+                    {"$2", item.Name },
+                    {"$3", item.Type },
+                    {"$4", item.Rank },
+                    {"$5", item.ID }
+                }
+            );
         }
     }
 }

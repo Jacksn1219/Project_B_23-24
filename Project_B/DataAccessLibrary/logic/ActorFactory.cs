@@ -12,7 +12,20 @@ namespace DataAccessLibrary.logic
         }
         public bool CreateItem(ActorModel item)
         {
-            throw new NotImplementedException();
+            if (item.Exists) throw new InvalidDataException("this Actor already exists in the db.");
+            return _db.SaveData(
+                @"INSERT INTO Actor(
+                    Name,
+                    Description,
+                    Age
+                ) 
+                VALUES ($1,$2,$3);",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.Name},
+                    {"$2", item.Description},
+                    {"$3", item.Age}
+                }
+            );
         }
 
         public void CreateTable()
@@ -29,17 +42,37 @@ namespace DataAccessLibrary.logic
 
         public ActorModel GetItemFromId(int id)
         {
-            throw new NotImplementedException();
+            return _db.ReadData<ActorModel>(
+                @"SELECT * FROM Actor
+                WHERE ID = $1",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", id}
+                }
+            ).First();
         }
 
         public bool ItemToDb(ActorModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID == null) return CreateItem(item);
+            return UpdateItem(item);
         }
 
         public bool UpdateItem(ActorModel item)
         {
-            throw new NotImplementedException();
+            if (!item.Exists) throw new InvalidDataException("this Actor's ID is null. this actor cannot be updated.");
+            return _db.SaveData(
+                @"UPDATE Actor
+                SET Name = $1,
+                    Age = $2,
+                    Description = $3
+                WHERE ID = $4;",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.Name},
+                    {"$2", item.Age},
+                    {"$3", item.Description},
+                    {"$4", item.ID}
+                }
+            );
         }
     }
 }

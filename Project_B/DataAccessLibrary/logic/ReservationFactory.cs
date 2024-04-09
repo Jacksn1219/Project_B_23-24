@@ -6,7 +6,7 @@ namespace DataAccessLibrary.logic
     {
         private readonly DataAccess _db;
         private readonly CustomerFactory _cf;
-        private readonly SeatFactory _sf; // do not know if this factory is needed
+        private readonly SeatFactory _sf;
         public ReservationFactory(DataAccess db, CustomerFactory cf, SeatFactory sf)
         {
             _db = db;
@@ -17,7 +17,21 @@ namespace DataAccessLibrary.logic
 
         public bool CreateItem(ReservationModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID != null) throw new InvalidDataException("the reservation is already in the db.");
+            //add reservation
+            return _db.SaveData(
+                @"INSERT INTO Reservation(
+                    CustomerID,
+                    TimeTableID,
+                    Note
+                )
+                VALUES($1,$2,$3)",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.CostumerID},
+                    {"$2", item.TimeTableID},
+                    {"$3", item.Note}
+                }
+            ) && RelatedItemsToDb(item);
         }
 
         public void CreateTable()
@@ -45,17 +59,60 @@ namespace DataAccessLibrary.logic
 
         public ReservationModel GetItemFromId(int id)
         {
-            throw new NotImplementedException();
+            return _db.ReadData<ReservationModel>(
+                @"SELECT * FROM Reservation
+                WHERE ID = $1",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", id},
+                }
+            ).First();
         }
 
         public bool ItemToDb(ReservationModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID == null) return CreateItem(item);
+            else return UpdateItem(item);
         }
 
         public bool UpdateItem(ReservationModel item)
         {
-            throw new NotImplementedException();
+            if (item.ID == null) throw new InvalidDataException("the Reservation does not have a value and cannot be updated.");
+            return _db.SaveData(
+                @"UPDATE Reservation
+                SET CustomerID = $1,
+                    TimeTableID = $2,
+                    Note = $3
+                WHERE ID = $4;",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.CostumerID},
+                    {"$2", item.TimeTableID},
+                    {"$3", item.Note},
+                    {"$4", item.ID}
+                }
+            ) && RelatedItemsToDb(item);
+
+        }
+        private bool RelatedItemsToDb(ReservationModel item)
+        {
+            //add seats
+            foreach (SeatModel seat in item.ReservedSeats)
+            {
+                _sf.ItemToDb(seat);
+                _db.SaveData(
+                    @"INSERT INTO ReservedSeat(
+                        SeatID,
+                        ReservationID
+                    )
+                    VALUES($1,$2)",
+                    new Dictionary<string, dynamic?>(){
+                        {"$1", seat.ID},
+                        {"$2", item.ID}
+                    }
+                );
+            }
+            // update/add the customer
+            if (item.Customer != null) _cf.ItemToDb(item.Customer);
+            return true;
         }
     }
 }

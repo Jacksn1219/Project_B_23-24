@@ -1,12 +1,15 @@
-public abstract class DbItem
+namespace DataAccessLibrary.models.interfaces
 {
-    /// <summary>
-    /// the db Id. do not set, only when creating DbItems from a DatabaseReader.
-    /// </summary>
-    public abstract int? ID { get; }
+    public abstract class DbItem
+    {
+        /// <summary>
+        /// the db Id. do not set, only when creating DbItems from a DatabaseReader.
+        /// </summary>
+        public abstract int? ID { get; }
 
-    /// <summary>
-    /// check if the DbItem exists
-    /// </summary>
-    public bool Exists { get { return ID != null; } }
+        /// <summary>
+        /// check if the DbItem exists
+        /// </summary>
+        public bool Exists { get { return ID != null; } }
+    }
 }

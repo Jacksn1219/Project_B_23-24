@@ -1,11 +1,12 @@
 using DataAccessLibrary;
+using DataAccessLibrary.models.interfaces;
 
 namespace DataAccessLibrary.models
 {
     public class TimeTableModel : DbItem
     {
         public override int? ID { get; }
-        public int? MovieId { get; }
+        public int? MovieID { get; }
         public MovieModel? Movie;
         public int? RoomId { get; }
         public RoomModel? Room;
@@ -24,7 +25,7 @@ namespace DataAccessLibrary.models
         internal TimeTableModel(int roomId, int movieId, DateTime startDate, DateTime endDate)
         {
             RoomId = roomId;
-            MovieId = movieId;
+            MovieID = movieId;
             StartDate = startDate;
             EndDate = endDate;
         }
