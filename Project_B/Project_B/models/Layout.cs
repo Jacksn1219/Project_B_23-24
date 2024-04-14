@@ -87,6 +87,7 @@ public class Layout
         } catch { sqlite_conn.Close(); }
         sqlite_conn.Close();
     }
+    public static void ChangeColour(ConsoleColor colour) => Console.ForegroundColor = colour;
     public static void drawLayout(List<Seat> layout, Room room)
     {
         Console.Clear();
@@ -143,7 +144,8 @@ public class Layout
         Room currentRoom = new Room(1, "Room1", seats.Count);
 
         Console.Clear();
-        Console.WriteLine("Press one of these (N, E, L, 1, 2, 3, Enter, Q):\n");
+        Console.WriteLine("  [   screen   ]");
+        //Console.WriteLine("Press one of these:\nN = Normaal\nE = Extra beenruimte\nL = Love Seat\nRank: (1, 2, 3)\nBackspace\nEnter = 1x dan automatisch\nQ = goedkeuren volgorde.\n");
 
         string getType = "0";
         string getRank = "0";
@@ -156,21 +158,21 @@ public class Layout
             {
                 case "Normaal":
                     Console.Write("\n\nType: ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.Write("N");
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(" E L");
                     break;
                 case "Extra Beenruimte":
                     Console.Write("\n\nType: N ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
                     Console.Write("E");
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(" L");
                     break;
                 case "Love Seat":
                     Console.Write("\n\nType: N E ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.Magenta;
                     Console.Write("L");
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
@@ -182,21 +184,21 @@ public class Layout
             {
                 case "1":
                     Console.Write($"\nRank: ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
                     Console.Write(getRank);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write($" 2 3");
                     break;
                 case "2":
                     Console.Write($"\nRank: 1 ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
                     Console.Write(getRank);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write($" 3");
                     break;
                 case "3":
                     Console.Write($"\nRank: 1 2 ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
                     Console.Write(getRank);
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
@@ -204,7 +206,60 @@ public class Layout
                     Console.Write("\nRank: 1 2 3");
                     break;
             };
-            Console.Write("\nPress (A) to confirm");
+            Console.Write("\n\nDruk op een van de volgende toetsen (");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("N");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(", ");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write("E");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(", ");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.Write("L");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(", 1, 2, 3, Enter, Backspace, ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("Q");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(", Spatiebalk, A)\n\n");
+
+            /*Console.Write("Stoel types:\n (");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("N");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(") = Normaal\n (");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write("E");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(") = Extra beenruimte\n (");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.Write("L");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(") = Love Seat \n\nBetaal niveaus:\n (1) = niveau 1\n (2) = niveau 2\n (3) = niveau 3 \n\nAnders:\n (Enter) = 1x dan automatisch\n (Backspace) \n (");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("Q");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(") = goedkeuren volgorde \n");*/
+
+            //Console.Write("Stoel types:                 Betaal niveaus:              Anders:\n  (");
+            Console.Write("Uitleg:\n  (");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("N");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(") = Normaal                (1) = Betaal niveau 1        (Enter) = 1x dan automatisch        (Spatiebalk) = Lege plek instellen\n  (");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write("E");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(") = Extra beenruimte       (2) = Betaal niveau 2        (Backspace)                         (A) = Ingestelde stoel toevoegen\n  (");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.Write("L");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(") = Love Seat              (3) = Betaal niveau 3        (");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("Q");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(") = goedkeuren volgorde \n");
 
             //Getting User choice
             userInput = Console.ReadKey().Key;
@@ -248,17 +303,11 @@ public class Layout
                 }
                 catch { }
             }
-            Console.WriteLine("Press one of these (N, E, L, 1, 2, 3, Enter, Q):\n");
+            //Console.WriteLine("Press one of these:\nN = Normaal\nE = Extra beenruimte\nL = Love Seat\nRank: (1, 2, 3)\nBackspace\nEnter = 1x dan automatisch\nQ = goedkeuren volgorde.\n");
+            Console.WriteLine("  [   Screen   ]");
 
             for (int i = 0; i < seats.Count; i++)
             {
-                /*Console.ForegroundColor = seats[i].Rank switch
-                {
-                    "1" => ConsoleColor.Blue,
-                    "2" => ConsoleColor.DarkYellow,
-                    "3" => ConsoleColor.DarkRed,
-                    _ => ConsoleColor.Gray
-                };*/
                 Console.ForegroundColor = seats[i].Type switch
                 {
                     "Normaal" => ConsoleColor.Blue,
@@ -266,8 +315,8 @@ public class Layout
                     "Love Seat" => ConsoleColor.Magenta,
                     _ => ConsoleColor.Gray
                 };
-                if (i == 0 || currentRoom.RowWidth == 1) Console.Write(" " + seats[i].Type[0]);
-                else Console.Write( i % currentRoom.RowWidth == 0 ? "\n " + seats[i].Type[0] : " " + seats[i].Type[0]);
+                if (i == 0 || currentRoom.RowWidth == 1) Console.Write(seats[i].Type == " " ? " []" : " " + seats[i].Type[0] + seats[i].Rank );
+                else Console.Write( (i % currentRoom.RowWidth == 0) ? (seats[i].Type == " ") ? "\n []" : "\n " + seats[i].Type[0] + seats[i].Rank : (seats[i].Type == " ") ? " []" : " " + seats[i].Type[0] + seats[i].Rank);
             }
         }
         //Adding the seats to the database

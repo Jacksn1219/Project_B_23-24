@@ -82,22 +82,22 @@ namespace Models
                 if ((userInput == ConsoleKey.UpArrow || userInput == ConsoleKey.W) && cursor > 0)
                 {
                     cursor = Math.Max(cursor - row, 0);
-                    if (cursor < this.menuoptions.Count) while (this.menuoptions[cursor].Name == " ") cursor = Math.Max(cursor - row, 0);
+                    while (cursor < this.menuoptions.Count && this.menuoptions[cursor].Name == " ") cursor = Math.Max(cursor - row, 0);
                 }
                 else if ((userInput == ConsoleKey.DownArrow || userInput ==  ConsoleKey.S) && cursor < this.menuoptions.Count)
                 {
                     cursor = Math.Min(cursor + row, this.menuoptions.Count);
-                    if (cursor < this.menuoptions.Count) while (this.menuoptions[cursor].Name == " ") cursor = Math.Min(cursor + row, this.menuoptions.Count);
+                    while (cursor < this.menuoptions.Count && this.menuoptions[cursor].Name == " ") cursor = Math.Min(cursor + row, this.menuoptions.Count);
                 }
                 else if ((userInput == ConsoleKey.LeftArrow || userInput == ConsoleKey.A) && cursor > 0)
                 {
                     cursor--;
-                    if (cursor < this.menuoptions.Count) while (this.menuoptions[cursor].Name == " ") cursor--;
+                    while (cursor > 0 && this.menuoptions[cursor].Name == " ") cursor--;
                 }
                 else if ((userInput == ConsoleKey.RightArrow || userInput == ConsoleKey.D) && cursor < this.menuoptions.Count)
                 {
                     cursor++;
-                    if (cursor < this.menuoptions.Count) while (this.menuoptions[cursor].Name == " ") cursor++;
+                    while (cursor < this.menuoptions.Count && this.menuoptions[cursor].Name == " ") cursor++;
                 }
                 else if (userInput == ConsoleKey.Enter)
                 {

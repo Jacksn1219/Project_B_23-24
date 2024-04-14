@@ -23,7 +23,7 @@ namespace Project_B
                 Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
                 Console.ReadLine();
             });
-            menu.Add("Make layout", (x) =>
+            menu.Add("Layout creator", (x) =>
             {
                 DataAccessLibrary.Layout.MakeNewLayout();
                 /*
