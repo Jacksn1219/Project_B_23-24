@@ -1,5 +1,6 @@
 ﻿using Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.SQLite;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -52,7 +53,7 @@ public class Layout
         }
     }
     /// <summary>
-    /// Made to upload a new Layout to the database.
+    /// TEMPORARY FUNCTION : Made to upload a new Layout to the database.
     /// </summary>
     /// <param name="layout"></param>
     /// <param name="room"></param>
@@ -128,6 +129,7 @@ public class Layout
             string seatName = seat.Type == " " ? "   " : $" []";
             seatSelectionMenu.Add($"{seat.Type[0]}", (x) =>
             {
+                Seat selectedSeat = seat;
                 Console.Clear();
                 //ShowSeatInfo(selectedSeat); - Jelle
                 Console.WriteLine("Not yet implemented - ShowSeatInfo");
@@ -135,6 +137,105 @@ public class Layout
             });
         }
         seatSelectionMenu.UseMenu();
+    }
+    public static void WriteColor(string toPrint, ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+        Console.Write(toPrint);
+        Console.ForegroundColor = ConsoleColor.White;
+    }
+    public static void editLayout(List<Seat> layout, Room room)
+    {
+        //List<Seat> layout = getSeatsFromDatabase(); - Aymane
+        //Room room = getRoomFromDatabase(); - Aymane
+
+        InputMenu seatSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth);
+        foreach (Seat seat in layout)
+        {
+            string seatName = seat.Type == " " ? "   " : $" []";
+            seatSelectionMenu.Add($"{seat.Type[0]}", (x) =>
+            {
+                Seat selectedSeat = seat;
+                Console.Clear();
+
+                string getType = "0";
+                string getRank = "0";
+
+                ConsoleKey userInput = ConsoleKey.Delete;
+                while (userInput != ConsoleKey.Q)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    switch (getType)
+                    {
+                        case "Normaal":
+                            Console.Write("\n\nType: ");
+                            WriteColor("N", ConsoleColor.Blue);
+                            Console.Write(" E L");
+                            break;
+                        case "Extra Beenruimte":
+                            Console.Write("\n\nType: N ");
+                            WriteColor("E", ConsoleColor.DarkYellow);
+                            Console.Write(" L");
+                            break;
+                        case "Love Seat":
+                            Console.Write("\n\nType: N E ");
+                            WriteColor("L", ConsoleColor.Magenta);
+                            break;
+                        default:
+                            Console.Write("\n\nType: N E L");
+                            break;
+                    };
+                    switch (getRank)
+                    {
+                        case "1":
+                            Console.Write($"\nRank: ");
+                            WriteColor(getRank, ConsoleColor.DarkCyan);
+                            Console.Write($" 2 3");
+                            break;
+                        case "2":
+                            Console.Write($"\nRank: 1 ");
+                            WriteColor(getRank, ConsoleColor.DarkCyan);
+                            Console.Write($" 3");
+                            break;
+                        case "3":
+                            Console.Write($"\nRank: 1 2 ");
+                            WriteColor(getRank, ConsoleColor.DarkCyan);
+                            break;
+                        default:
+                            Console.Write("\nRank: 1 2 3");
+                            break;
+                    };
+                    Console.Write("\n\nDruk op een van de volgende toetsen om het nieuwe type te selecteren (");
+                    WriteColor("N", ConsoleColor.Blue);
+                    Console.Write(", ");
+                    WriteColor("E", ConsoleColor.DarkYellow);
+                    Console.Write(", ");
+                    WriteColor("L", ConsoleColor.Magenta);
+                    Console.Write(", 1, 2, 3, Enter, Spatiebalk)\n\n");
+
+                    Console.Write("Uitleg:\n  (");
+                    WriteColor("N", ConsoleColor.Blue);
+                    Console.Write(") = Normaal                (1) = Betaal niveau 1        (Spatiebalk) = Lege plek instellen\n  (");
+                    WriteColor ("E", ConsoleColor.DarkYellow);
+                    Console.Write(") = Extra beenruimte       (2) = Betaal niveau 2        (Enter) = goedkeuren aanpassing\n  (");
+                    WriteColor("L", ConsoleColor.Magenta);
+                    Console.Write(") = Love Seat              (3) = Betaal niveau 3");
+
+                    //Getting User choice
+                    userInput = Console.ReadKey().Key;
+
+                    if (getType == "0" || getRank == "0") Console.WriteLine("Not all required fields are filled in...");
+                    else
+                    {
+                        layout[Int32.Parse(selectedSeat.Name)].Type = getType;
+                        layout[Int32.Parse(selectedSeat.Name)].Rank = getRank;
+                    }
+
+                    Console.ReadLine();
+                };
+            });
+            seatSelectionMenu.UseMenu();
+        }
     }
     public static void MakeNewLayout()
     {
@@ -160,23 +261,17 @@ public class Layout
             {
                 case "Normaal":
                     Console.Write("\n\nType: ");
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.Write("N");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    WriteColor("N", ConsoleColor.Blue);
                     Console.Write(" E L");
                     break;
                 case "Extra Beenruimte":
                     Console.Write("\n\nType: N ");
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.Write("E");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    WriteColor("E", ConsoleColor.DarkYellow);
                     Console.Write(" L");
                     break;
                 case "Love Seat":
                     Console.Write("\n\nType: N E ");
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.Write("L");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    WriteColor("L", ConsoleColor.Magenta);
                     break;
                 default:
                     Console.Write("\n\nType: N E L");
@@ -186,44 +281,30 @@ public class Layout
             {
                 case "1":
                     Console.Write($"\nRank: ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write(getRank);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    WriteColor(getRank, ConsoleColor.DarkCyan);
                     Console.Write($" 2 3");
                     break;
                 case "2":
                     Console.Write($"\nRank: 1 ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write(getRank);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    WriteColor(getRank, ConsoleColor.DarkCyan);
                     Console.Write($" 3");
                     break;
                 case "3":
                     Console.Write($"\nRank: 1 2 ");
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write(getRank);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    WriteColor(getRank, ConsoleColor.DarkCyan);
                     break;
                 default:
                     Console.Write("\nRank: 1 2 3");
                     break;
             };
             Console.Write("\n\nDruk op een van de volgende toetsen (");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("N");
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColor("N", ConsoleColor.Blue);
             Console.Write(", ");
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.Write("E");
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColor("E", ConsoleColor.DarkYellow);
             Console.Write(", ");
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.Write("L");
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColor ("L", ConsoleColor.Magenta);
             Console.Write(", 1, 2, 3, Enter, Backspace, ");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("Q");
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColor("Q", ConsoleColor.Red);
             Console.Write(", Spatiebalk, A)\n\n");
 
             /*Console.Write("Stoel types:\n (");
@@ -246,21 +327,13 @@ public class Layout
 
             //Console.Write("Stoel types:                 Betaal niveaus:              Anders:\n  (");
             Console.Write("Uitleg:\n  (");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("N");
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColor("N", ConsoleColor.Blue);
             Console.Write(") = Normaal                (1) = Betaal niveau 1        (Enter) = 1x dan automatisch        (Spatiebalk) = Lege plek instellen\n  (");
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.Write("E");
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColor("E", ConsoleColor.DarkYellow);
             Console.Write(") = Extra beenruimte       (2) = Betaal niveau 2        (Backspace)                         (A) = Ingestelde stoel toevoegen\n  (");
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.Write("L");
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColor("L", ConsoleColor.Magenta);
             Console.Write(") = Love Seat              (3) = Betaal niveau 3        (");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("Q");
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColor("Q", ConsoleColor.Red);
             Console.Write(") = goedkeuren volgorde \n");
 
             //Getting User choice
@@ -324,7 +397,7 @@ public class Layout
         //Adding the seats to the database
         upload_to_database(seats, currentRoom);
         
-        Console.WriteLine("List<Seat> layout = new List<Seat> {");
+        Console.WriteLine("\n\nList<Seat> layout = new List<Seat> {");
         foreach (Seat seat in seats)
         {
             Console.WriteLine($"new Seat({seat.ID}, {seat.RoomID}, \"{seat.Name}\", \"{seat.Rank}\", \"{seat.Type}\"),");
