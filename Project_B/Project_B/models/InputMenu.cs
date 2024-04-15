@@ -22,12 +22,14 @@ namespace Models
         /// <param name="Name"></param>
         /// <param name="Act"></param>
         /// <param name="isTaken"></param>
-        public void Add(string Name, Action<string> Act, bool? isTaken = null) => this.menuoptions.Add(new InputMenuOption(Name, Act, isTaken));
+        public void Add(string Name, Action<string> Act, bool? isTaken = null, int? ID = null) => this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken, ID));
 
         /// <summary>
         /// Remove item from menu option list
         /// </summary>
         public void Remove() => this.menuoptions.Remove(this.menuoptions[this.menuoptions.Count - 1]);
+
+        public void Edit(int ID, string newName) => this.menuoptions[this.menuoptions.FindIndex(x => x.ID == ID)].Name = newName;
 
         /// <summary>
         /// Print menu to screen
@@ -82,7 +84,8 @@ namespace Models
                 if ((userInput == ConsoleKey.UpArrow || userInput == ConsoleKey.W) && cursor > 0)
                 {
                     cursor = Math.Max(cursor - row, 0);
-                    while (cursor < this.menuoptions.Count && this.menuoptions[cursor].Name == " ") cursor = Math.Max(cursor - row, 0);
+                    while (cursor > 0 && this.menuoptions[cursor].Name == " ") cursor = Math.Max(cursor - row, 0);
+                    while (this.menuoptions[cursor].Name == " " && cursor < this.menuoptions.Count) cursor++;
                 }
                 else if ((userInput == ConsoleKey.DownArrow || userInput ==  ConsoleKey.S) && cursor < this.menuoptions.Count)
                 {
@@ -91,8 +94,11 @@ namespace Models
                 }
                 else if ((userInput == ConsoleKey.LeftArrow || userInput == ConsoleKey.A) && cursor > 0)
                 {
-                    cursor--;
-                    while (cursor > 0 && this.menuoptions[cursor].Name == " ") cursor--;
+                    if (this.menuoptions[cursor - 1].Name != " ")
+                    {
+                        cursor--;
+                        while (cursor > 0 && this.menuoptions[cursor].Name == " ") cursor--;
+                    }
                 }
                 else if ((userInput == ConsoleKey.RightArrow || userInput == ConsoleKey.D) && cursor < this.menuoptions.Count)
                 {

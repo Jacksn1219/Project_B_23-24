@@ -150,20 +150,23 @@ public class Layout
         //Room room = getRoomFromDatabase(); - Aymane
 
         InputMenu seatSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth);
+        string seatName;
+        string getType;
+        string getRank;
         foreach (Seat seat in layout)
         {
-            string seatName = seat.Type == " " ? "   " : $" []";
+            seatName = seat.Type == " " ? "   " : $" []";
             seatSelectionMenu.Add($"{seat.Type[0]}", (x) =>
             {
+                getType = seat.Type;
+                getRank = seat.Rank;
                 Seat selectedSeat = seat;
                 Console.Clear();
-
-                string getType = "0";
-                string getRank = "0";
 
                 ConsoleKey userInput = ConsoleKey.Delete;
                 while (userInput != ConsoleKey.Q)
                 {
+                    Console.Clear();
                     Console.ForegroundColor = ConsoleColor.White;
                     switch (getType)
                     {
@@ -224,18 +227,48 @@ public class Layout
                     //Getting User choice
                     userInput = Console.ReadKey().Key;
 
-                    if (getType == "0" || getRank == "0") Console.WriteLine("Not all required fields are filled in...");
-                    else
+                    if (new List<ConsoleKey> { ConsoleKey.N, ConsoleKey.E, ConsoleKey.L, ConsoleKey.Spacebar, ConsoleKey.NumPad1, ConsoleKey.NumPad2, ConsoleKey.NumPad3, ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3 }.Contains(userInput))
                     {
-                        layout[Int32.Parse(selectedSeat.Name)].Type = getType;
-                        layout[Int32.Parse(selectedSeat.Name)].Rank = getRank;
+                        try
+                        {
+                            getType = userInput switch
+                            {
+                                ConsoleKey.Spacebar => " ",
+                                ConsoleKey.N => "Normaal",
+                                ConsoleKey.E => "Extra Beenruimte",
+                                ConsoleKey.L => "Love Seat",
+                                _ => throw new NotImplementedException()
+                            };
+                        }
+                        catch { }
+                        try
+                        {
+                            getRank = userInput switch
+                            {
+                                ConsoleKey.Spacebar => " ",
+                                ConsoleKey.D1 or ConsoleKey.NumPad1 => "1",
+                                ConsoleKey.D2 or ConsoleKey.NumPad2 => "2",
+                                ConsoleKey.D3 or ConsoleKey.NumPad3 => "3",
+                                _ => throw new NotImplementedException()
+                            };
+                        }
+                        catch { }
                     }
-
-                    Console.ReadLine();
+                    else if (userInput == ConsoleKey.Enter)
+                    {
+                        if (getType == "0" || getRank == "0") Console.WriteLine("Not all required fields are filled in...");
+                        else
+                        {
+                            seatSelectionMenu.Edit(Int32.Parse(seat.Name), $"{getType[0]}");
+                            layout[Int32.Parse(selectedSeat.Name)].Type = getType;
+                            layout[Int32.Parse(selectedSeat.Name)].Rank = getRank;
+                            userInput = ConsoleKey.Q;
+                        }
+                    }
                 };
-            });
-            seatSelectionMenu.UseMenu();
+            }, null, Int32.Parse(seat.Name));
         }
+        seatSelectionMenu.UseMenu();
     }
     public static void MakeNewLayout()
     {

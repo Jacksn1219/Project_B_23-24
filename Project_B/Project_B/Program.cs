@@ -50,7 +50,7 @@ namespace Project_B
                     new Seat(13, 1, "13", " ", " ")
                 };
                 List<Room> roomList = new List<Room> { new Room(1, "Room1", layout1.Count, 6) };
-                InputMenu selectRoom = new InputMenu();
+                InputMenu selectRoom = new InputMenu("| Select room to edit |");
                 foreach (Room room in roomList/*getRoomFromDatabase() - Aymane*/) {
                     selectRoom.Add($"{room.Name}", (x) => DataAccessLibrary.Layout.editLayout(layout1/*getLayoutFromDatabase() - Aymane*/, room));
                 }
