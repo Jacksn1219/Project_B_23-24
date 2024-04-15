@@ -1,6 +1,8 @@
 ﻿using Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.SQLite;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace DataAccessLibrary;
 
@@ -321,6 +323,14 @@ public class Layout
         }
         //Adding the seats to the database
         upload_to_database(seats, currentRoom);
+        
+        Console.WriteLine("List<Seat> layout = new List<Seat> {");
+        foreach (Seat seat in seats)
+        {
+            Console.WriteLine($"new Seat({seat.ID}, {seat.RoomID}, \"{seat.Name}\", \"{seat.Rank}\", \"{seat.Type}\"),");
+        }
+        Console.WriteLine("};");
+        Console.ReadLine();
 
         selectSeat(seats, currentRoom);
     }
