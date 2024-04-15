@@ -130,5 +130,52 @@ namespace DataAccessLibrary
                 dbAccess.Close();
             }
         }
+
+        public override int CreateData(string sqlStatement)
+        {
+            SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
+            dbAccess.Open();
+            try
+            {
+                SQLiteCommand command = dbAccess.CreateCommand();
+                command.CommandText = sqlStatement;
+                var result = command.ExecuteScalar(CommandBehavior.KeyInfo);
+                if (result == null) throw new FileLoadException("failed to get the result.");
+                return (int)result;
+            }
+            finally
+            {
+                dbAccess.Close();
+            }
+        }
+
+        public override int CreateData(string sqlStatement, Dictionary<string, dynamic?> parameters)
+        {
+            List<SQLiteParameter> sqliteParameters = new();
+            foreach (string key in parameters.Keys)
+            {
+                sqliteParameters.Add(
+                    new SQLiteParameter(key, parameters[key])
+                );
+            }
+            return CreateData(sqlStatement, sqliteParameters.ToArray());
+        }
+        public int CreateData(string sqlStatement, SQLiteParameter[] parameters)
+        {
+            SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
+            dbAccess.Open();
+            try
+            {
+                SQLiteCommand command = dbAccess.CreateCommand();
+                command.CommandText = sqlStatement;
+                command.Parameters.AddRange(parameters);
+                var result = command.ExecuteScalar(CommandBehavior.KeyInfo) ?? throw new FileLoadException("failed to get the result.");
+                return (int)result;
+            }
+            finally
+            {
+                dbAccess.Close();
+            }
+        }
     }
 }

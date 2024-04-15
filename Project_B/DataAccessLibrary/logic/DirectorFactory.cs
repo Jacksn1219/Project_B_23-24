@@ -12,7 +12,8 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
     public bool CreateItem(DirectorModel item)
     {
         if (item.ID != null) throw new InvalidOperationException("this director already exists in the db");
-        return _db.SaveData(
+        if (!item.IsChanged) return true;
+        item.ID = _db.CreateData(
             @"INSERT INTO Director(
                 Name,
                 Age,
@@ -25,6 +26,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
                 {"$3", item.Description}
             }
         );
+        return item.ID > 0;
     }
 
     public void CreateTable()
@@ -51,6 +53,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
 
     public bool ItemToDb(DirectorModel item)
     {
+        if (!item.IsChanged) return true;
         if (item.ID != null) return UpdateItem(item);
         return CreateItem(item);
     }
@@ -58,6 +61,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
     public bool UpdateItem(DirectorModel item)
     {
         if (item.ID == null) throw new InvalidOperationException("cannot update a director without an ID.");
+        if (!item.IsChanged) return true;
         return _db.SaveData(
             @"UPDATE Director
             SET Name = $1,

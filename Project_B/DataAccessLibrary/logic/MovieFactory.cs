@@ -66,24 +66,26 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// <summary>
     /// updates or creates the movie in the db
     /// </summary>
-    /// <param name="movie">the movie to update or create</param>
+    /// <param name="item">the movie to update or create</param>
     /// <returns>true if succesfull, else false</returns>
-    public bool ItemToDb(MovieModel movie)
+    public bool ItemToDb(MovieModel item)
     {
-        if (movie.ID == null) return CreateItem(movie);
-        return UpdateItem(movie);
+        if (!item.IsChanged) return true;
+        if (item.ID == null) return CreateItem(item);
+        return UpdateItem(item);
 
     }
     /// <summary>
     /// creates a new movie in the db
     /// </summary>
-    /// <param name="movie">the movie to create</param>
+    /// <param name="item">the movie to create</param>
     /// <returns>true if successfull, else false</returns>
     /// <exception cref="InvalidOperationException">when ID is not null</exception>
-    public bool CreateItem(MovieModel movie)
+    public bool CreateItem(MovieModel item)
     {
-        if (movie.ID != null) throw new InvalidOperationException("this movie already exists in the db");
-        return _db.SaveData(
+        if (item.ID != null) throw new InvalidOperationException("this movie already exists in the db");
+        if (!item.IsChanged) return true;
+        item.ID = _db.CreateData(
             @"INSERT INTO Movie(
                 Name,
                 DirectorID,
@@ -94,24 +96,26 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             )
             VALUES ($1,$2,$3,$4,$5,$6);",
             new Dictionary<string, dynamic?>(){
-                {"$1", movie.Name},
-                {"$2", movie.DirectorID},
-                {"$3", (int)movie.PegiAge},
-                {"$4", movie.Description},
-                {"$5", movie.Genre},
-                {"$6", movie.DurationInMin}
+                {"$1", item.Name},
+                {"$2", item.DirectorID},
+                {"$3", (int)item.PegiAge},
+                {"$4", item.Description},
+                {"$5", item.Genre},
+                {"$6", item.DurationInMin}
             }
         );
+        return item.ID > 0 && RelatedItemsToDb(item);
     }
     /// <summary>
     /// updates the movie
     /// </summary>
-    /// <param name="movie">the movie to update</param>
+    /// <param name="item">the movie to update</param>
     /// <returns>true if succesfull, else false</returns>
     /// <exception cref="InvalidOperationException">if ID of the movie is null</exception>
-    public bool UpdateItem(MovieModel movie)
+    public bool UpdateItem(MovieModel item)
     {
-        if (movie.ID == null) throw new InvalidOperationException("cannot update a movie without an ID.");
+        if (item.ID == null) throw new InvalidOperationException("cannot update a movie without an ID.");
+        if (!item.IsChanged) return true;
         return _db.SaveData(
             @"UPDATE Movie
             SET Name = $1,
@@ -122,14 +126,42 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 DurationInMin = $6
             WHERE ID = $7;",
             new Dictionary<string, dynamic?>(){
-                {"$1", movie.Name},
-                {"$2", movie.DirectorID},
-                {"$3", (int)movie.PegiAge},
-                {"$4", movie.Description},
-                {"$5", movie.Genre},
-                {"$6", movie.DurationInMin},
-                {"$7", movie.ID}
+                {"$1", item.Name},
+                {"$2", item.DirectorID},
+                {"$3", (int)item.PegiAge},
+                {"$4", item.Description},
+                {"$5", item.Genre},
+                {"$6", item.DurationInMin},
+                {"$7", item.ID}
             }
-        );
+        ) && RelatedItemsToDb(item);
+    }
+    private bool RelatedItemsToDb(MovieModel item)
+    {
+        if (item.Director != null) _df.ItemToDb(item.Director);
+        foreach (ActorModel actor in item.Actors)
+        {
+            try
+            {
+                _af.ItemToDb(actor);
+                _db.SaveData(
+                    @"INSERT INTO ReservedSeat(
+                        ActorID,
+                        MovieID
+                    )
+                    VALUES($1,$2)",
+                    new Dictionary<string, dynamic?>(){
+                        {"$1", actor.ID},
+                        {"$2", item.ID}
+                    }
+                );
+            }
+            catch
+            {
+                Console.WriteLine("Failed to add a seat to db.");
+            }
+
+        }
+        return true;
     }
 }

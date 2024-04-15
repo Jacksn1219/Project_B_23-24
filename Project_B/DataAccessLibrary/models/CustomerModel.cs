@@ -4,10 +4,31 @@ namespace DataAccessLibrary;
 
 public class CustomerModel : DbItem
 {
-    public override int? ID { get; }
-    public string Name { get; set; }
-    public int Age { get; set; }
+    public override int? ID { get; internal set; }
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            IsChanged = true;
+        }
+    }
+    public int Age
+    {
+        get => _age;
+        set
+        {
+            _age = value;
+            IsChanged = true;
+        }
+    }
     private string? _email;
+    private string _name;
+    private int _age;
+    private string _phoneNumber;
+    private bool _isSubscribed;
+
     public string? Email
     {
         get
@@ -18,11 +39,31 @@ public class CustomerModel : DbItem
         {
             if (IsValidEmail(value)) _email = value;
             else throw new ArgumentException("the email has an invalid value.");
+            IsChanged = true;
         }
     }
-    public string PhoneNumber { get; set; }
-    public int IsSubscribed { get; set; }
-    public CustomerModel(int id, string name, int age, string email, string phoneNumber, int isSubscribed)
+    public string PhoneNumber
+    {
+        get => _phoneNumber;
+        set
+        {
+            _phoneNumber = value;
+            IsChanged = true;
+        }
+    }
+    public bool IsSubscribed
+    {
+        get => _isSubscribed;
+        set
+        {
+            _isSubscribed = value;
+            IsChanged = true;
+        }
+    }
+    public CustomerModel(string name, int age, string email, string phoneNumber, bool isSubscribed)
+    : this(null, name, age, email, phoneNumber, isSubscribed)
+    { }
+    internal CustomerModel(int? id, string name, int age, string email, string phoneNumber, bool isSubscribed)
     {
         ID = id;
         Name = name;

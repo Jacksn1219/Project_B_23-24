@@ -60,8 +60,12 @@ namespace DataAccessLibrary
             }
             // make a class from the list of dicts
             string Tstring = JsonSerializer.Serialize(typeOfT);
-            return JsonSerializer.Deserialize<List<T>>(Tstring);
+            List<T>? items = JsonSerializer.Deserialize<List<T>>(Tstring);
+            return items;
         }
 
+        public abstract int CreateData(string sqlStatement);
+
+        public abstract int CreateData(string sqlStatement, Dictionary<string, dynamic?> parameters);
     }
 }

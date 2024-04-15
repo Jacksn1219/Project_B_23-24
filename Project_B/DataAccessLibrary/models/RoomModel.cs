@@ -4,9 +4,28 @@ namespace DataAccessLibrary;
 
 public class RoomModel : DbItem
 {
-    public override int? ID { get; }
-    public string Name { get; set; }
-    public int Capacity { get; set; }
+    public override int? ID { get; internal set; }
+    private string _name;
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            IsChanged = true;
+        }
+    }
+
+    private int _capacity;
+    public int Capacity
+    {
+        get => _capacity;
+        set
+        {
+            _capacity = value;
+            IsChanged = true;
+        }
+    }
     internal List<SeatModel> Seats;
     public RoomModel(string name, int capacity)
     : this(name, capacity, new List<SeatModel>())

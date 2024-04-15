@@ -13,7 +13,8 @@ namespace DataAccessLibrary.logic
         public bool CreateItem(ActorModel item)
         {
             if (item.Exists) throw new InvalidDataException("this Actor already exists in the db.");
-            return _db.SaveData(
+            if (!item.IsChanged) return true;
+            item.ID = _db.CreateData(
                 @"INSERT INTO Actor(
                     Name,
                     Description,
@@ -26,6 +27,7 @@ namespace DataAccessLibrary.logic
                     {"$3", item.Age}
                 }
             );
+            return item.ID > 0;
         }
 
         public void CreateTable()
@@ -53,6 +55,7 @@ namespace DataAccessLibrary.logic
 
         public bool ItemToDb(ActorModel item)
         {
+            if (!item.IsChanged) return true;
             if (item.ID == null) return CreateItem(item);
             return UpdateItem(item);
         }
@@ -60,6 +63,7 @@ namespace DataAccessLibrary.logic
         public bool UpdateItem(ActorModel item)
         {
             if (!item.Exists) throw new InvalidDataException("this Actor's ID is null. this actor cannot be updated.");
+            if (!item.IsChanged) return true;
             return _db.SaveData(
                 @"UPDATE Actor
                 SET Name = $1,

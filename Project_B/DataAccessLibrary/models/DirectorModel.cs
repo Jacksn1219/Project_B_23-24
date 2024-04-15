@@ -4,9 +4,27 @@ namespace DataAccessLibrary;
 
 public class DirectorModel : DbItem
 {
-    public override int? ID { get; }
-    public string Name { get; set; }
-    public string? Description { get; set; }
+    public override int? ID { get; internal set; }
+    private string _name;
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            IsChanged = true;
+        }
+    }
+    private string? _description;
+    public string? Description
+    {
+        get => _description;
+        set
+        {
+            _description = value;
+            IsChanged = true;
+        }
+    }
     private int _age;
     public int Age
     {
@@ -16,6 +34,7 @@ public class DirectorModel : DbItem
             if (value >= 0)
             {
                 _age = value;
+                IsChanged = true;
                 return;
             }
             throw new InvalidDataException("The director's age cannot be below 0");

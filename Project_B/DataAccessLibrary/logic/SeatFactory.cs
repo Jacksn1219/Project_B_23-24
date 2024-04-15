@@ -13,7 +13,8 @@ namespace DataAccessLibrary.logic
         public bool CreateItem(SeatModel item)
         {
             if (item.ID != null) throw new InvalidDataException("the seat is already in the db.");
-            return _db.SaveData(
+            if (!item.IsChanged) return true;
+            item.ID = _db.CreateData(
                 @"INSERT INTO Seat(
                     Name,
                     Rank,
@@ -28,6 +29,7 @@ namespace DataAccessLibrary.logic
                     {"$4", item.RoomID}
                 }
             );
+            return item.ID > 0;
         }
 
         public void CreateTable()
@@ -57,6 +59,7 @@ namespace DataAccessLibrary.logic
 
         public bool ItemToDb(SeatModel item)
         {
+            if (!item.IsChanged) return true;
             if (item.ID == null) return CreateItem(item);
             return UpdateItem(item);
         }
@@ -64,6 +67,7 @@ namespace DataAccessLibrary.logic
         public bool UpdateItem(SeatModel item)
         {
             if (item.ID == null) throw new InvalidDataException("the seat has no ID therefore it cannot be updated.");
+            if (!item.IsChanged) return true;
             return _db.SaveData(
                 @"UPDATE Seat
                 SET RoomID = $1

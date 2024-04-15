@@ -14,7 +14,8 @@ namespace DataAccessLibrary.logic
         public bool CreateItem(CustomerModel item)
         {
             if (item.Exists) throw new InvalidDataException("this Customer already exists in the db.");
-            return _db.SaveData(
+            if (!item.IsChanged) return true;
+            item.ID = _db.CreateData(
                 @"INSERT INTO Customer(
                     Name,
                     Email,
@@ -27,6 +28,7 @@ namespace DataAccessLibrary.logic
                     {"$3", item.Age}
                 }
             );
+            return item.ID > 0;
         }
 
         public void CreateTable()
@@ -56,6 +58,7 @@ namespace DataAccessLibrary.logic
 
         public bool ItemToDb(CustomerModel item)
         {
+            if (!item.IsChanged) return true;
             if (!item.Exists) return CreateItem(item);
             return UpdateItem(item);
         }
@@ -63,6 +66,7 @@ namespace DataAccessLibrary.logic
         public bool UpdateItem(CustomerModel item)
         {
             if (item.ID == null) throw new InvalidDataException("the ID of the Customer is null. the Customer cannot be updated.");
+            if (!item.IsChanged) return true;
             return _db.SaveData(
                 @"UPDATE Customer
                 SET Name = $1,

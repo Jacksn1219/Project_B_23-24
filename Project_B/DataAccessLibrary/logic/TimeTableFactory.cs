@@ -1,4 +1,3 @@
-using System.Transactions;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
@@ -18,7 +17,8 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     public bool CreateItem(TimeTableModel item)
     {
         if (item.ID != null) throw new InvalidDataException("the timetable is already in the db.");
-        return _db.SaveData(
+        if (!item.IsChanged) return true;
+        item.ID = _db.CreateData(
             @"INSERT INTO TimeTable
             VALUES(
                 MovieID,
@@ -30,11 +30,12 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             new Dictionary<string, dynamic?>()
             {
                 {"$1", item.MovieID},
-                {"$2", item.RoomId},
+                {"$2", item.RoomID},
                 {"$3", item.StartDate.ToString()},
                 {"$4", item.EndDate.ToString()}
             }
-        ) && RelatedItemsToDb(item);
+        );
+        return item.ID > 0 && RelatedItemsToDb(item);
     }
 
     public void CreateTable()
@@ -65,12 +66,14 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 
     public bool ItemToDb(TimeTableModel item)
     {
+        if (!item.IsChanged) return true;
         if (item.ID == null) return CreateItem(item);
         return UpdateItem(item);
     }
     public bool UpdateItem(TimeTableModel item)
     {
         if (item.ID == null) throw new InvalidDataException("timetable is not in the db.");
+        if (!item.IsChanged) return true;
         return _db.SaveData(
             @"UPDATE TimeTable
             SET RoomID,
@@ -79,7 +82,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 EndDate
             VALUES($1,$2,$3,$4)",
             new Dictionary<string, dynamic?>(){
-                {"$1", item.RoomId},
+                {"$1", item.RoomID},
                 {"$2", item.MovieID},
                 {"$3", item.StartDate.ToString()},
                 {"$4", item.EndDate.ToString()}

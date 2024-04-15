@@ -14,32 +14,82 @@ public enum PEGIAge
 
 public class MovieModel : DbItem
 {
+    private string? _description;
+    private PEGIAge _pegiAge;
+    private int _durationInMin;
+
     /// <summary>
     /// the db Id of the movie. must be positive and should be readonly for external classes.
     /// </summary>
-    public override int? ID { get; }
+    public override int? ID { get; internal set; }
     /// <summary>
     /// the title of the movie
     /// </summary>
-    public string? Name { get; set; }
+    private string? _name;
+    public string? Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            IsChanged = true;
+        }
+    }
     /// <summary>
     /// the description of the movie
     /// </summary>
-    public string? Description { get; set; }
+    public string? Description
+    {
+        get => _description;
+        set
+        {
+            _description = value;
+            IsChanged = true;
+        }
+    }
     /// <summary>
     /// the pegi age of the movie. valid numerics -> 4, 7, 12, 16 and 18
     /// </summary>
-    public PEGIAge PegiAge { get; set; }
+    public PEGIAge PegiAge
+    {
+        get => _pegiAge;
+        set
+        {
+            _pegiAge = value;
+            IsChanged = true;
+        }
+    }
     /// <summary>
     /// the duration in minutes
     /// </summary>
-    public int DurationInMin { get; set; }
+    public int DurationInMin
+    {
+        get => _durationInMin;
+        set
+        {
+            _durationInMin = value;
+            IsChanged = true;
+        }
+    }
     /// <summary>
     /// the ID of the director of the movie
     /// </summary>
-    internal int? DirectorID { get; }
-    public DirectorModel? Director { get; set; }
-    public string Genre { set; get; }
+    internal int? DirectorID
+    {
+        get;
+    }
+    public DirectorModel? Director;
+    private string _genre;
+    public string Genre
+    {
+        get => _genre;
+        set
+        {
+            _genre = value;
+            IsChanged = true;
+        }
+    }
+    public List<ActorModel> Actors = new();
     internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int directorId, string genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }
     internal MovieModel(int? id, string name, string description, PEGIAge pegiAge, int durationInMin, int directorId, string genre)
