@@ -8,6 +8,26 @@ namespace Project_B
     {
         public static void Main()
         {
+            //start of app
+            DataAccess db = new SQliteDataAccess("epic connection string");
+            DirectorFactory df = new(db);
+            ActorFactory af = new(db);
+            MovieFactory movieFactory = new(db, df, af);
+            movieFactory.CreateTable(); // creates the movie table, if movie is missing in the db.
+            //geen ID
+            MovieModel movie1 = new MovieModel("KUNG FU PANDA 4", "everybody was kung fu fighting", 12, 120, 1, "Horror"); //Film 1 wordt lokaal toegevoegd
+            MovieModel movie2 = new MovieModel("DUNE: PART TWO", "I don't like sand. It's coarse and rough and irritating and it gets everywhere.", 16, 150, 1, "Kids");  //Film 2 wordt lokaal toegevoegd
+            //wel ID
+            MovieModel movie3 = movieFactory.GetItemFromId(1); //Film 3 wordt uit de database gehaald
+            //movie3.ID = 1;  <- not possible to set the ID
+            movie3.DurationInMin += 1;
+            bool success = movieFactory.UpdateItem(movie3); //will be true
+            movieFactory.UpdateItem(movie1); // will crash
+            success = movieFactory.CreateItem(movie1); // do this instead
+            //if you are not sure or want to play it safe
+            success = movieFactory.ItemToDb(movie2); // will be true
+
+
 
             InputMenu menu = new InputMenu("| Main menu |", true);
             menu.Add("Setup Database", (x) =>
@@ -34,24 +54,6 @@ namespace Project_B
             //menu.UseMenu();
 
 
-            //start of app
-            DataAccess db = new SQliteDataAccess("epic connection string");
-            DirectorFactory df = new(db);
-            ActorFactory af = new(db);
-            MovieFactory movieFactory = new(db, df, af);
-            movieFactory.CreateTable(); // creates the movie table, if movie is missing in the db.
-            //geen ID
-            MovieModel movie1 = new MovieModel("KUNG FU PANDA 4", "everybody was kung fu fighting", 12, 120, 1, "Horror"); //Film 1 wordt lokaal toegevoegd
-            MovieModel movie2 = new MovieModel("DUNE: PART TWO", "I don't like sand. It's coarse and rough and irritating and it gets everywhere.", 16, 150, 1, "Kids");  //Film 2 wordt lokaal toegevoegd
-            //wel ID
-            MovieModel movie3 = movieFactory.GetItemFromId(1); //Film 3 wordt uit de database gehaald
-            //movie3.ID = 1;  <- not possible to set the ID
-            movie3.DurationInMin += 1;
-            bool success = movieFactory.UpdateItem(movie3); //will be true
-            movieFactory.UpdateItem(movie1); // will crash
-            success = movieFactory.CreateItem(movie1); // do this instead
-            //if you are not sure or want to play it safe
-            success = movieFactory.ItemToDb(movie2); // will be true
 
 
 

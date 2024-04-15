@@ -20,6 +20,7 @@ namespace DataAccessLibrary.logic
             if (item.ID != null) throw new InvalidDataException("the reservation is already in the db.");
             if (!item.IsChanged) return true;
             //add reservation
+            bool result = RelatedItemsToDb(item);
             item.ID = _db.CreateData(
                 @"INSERT INTO Reservation(
                     CustomerID,
@@ -33,7 +34,7 @@ namespace DataAccessLibrary.logic
                     {"$3", item.Note}
                 }
             );
-            return item.ID > 0 && RelatedItemsToDb(item);
+            return item.ID > 0 && result;
         }
 
         public void CreateTable()
@@ -81,7 +82,8 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID == null) throw new InvalidDataException("the Reservation does not have a value and cannot be updated.");
             if (!item.IsChanged) return true;
-            return _db.SaveData(
+            return RelatedItemsToDb(item)
+            && _db.SaveData(
                 @"UPDATE Reservation
                 SET CustomerID = $1,
                     TimeTableID = $2,
@@ -93,7 +95,7 @@ namespace DataAccessLibrary.logic
                     {"$3", item.Note},
                     {"$4", item.ID}
                 }
-            ) && RelatedItemsToDb(item);
+            );
 
         }
         private bool RelatedItemsToDb(ReservationModel item)

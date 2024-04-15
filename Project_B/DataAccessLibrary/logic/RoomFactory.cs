@@ -18,6 +18,7 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID != null) throw new InvalidDataException("the room is already in the db.");
             if (!item.IsChanged) return true;
+            bool result = RelatedItemsToDb(item);
             item.ID = _db.CreateData(
                 @"INSERT INTO Room(
                     Name,
@@ -29,7 +30,7 @@ namespace DataAccessLibrary.logic
                     {"$2", item.Capacity}
                 }
             );
-            return item.ID > 0 && RelatedItemsToDb(item);
+            return item.ID > 0 && result;
         }
 
         public void CreateTable()
@@ -65,7 +66,8 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID == null) throw new InvalidDataException("the id of the room is null. the item cannot be updated.");
             if (!item.IsChanged) return true;
-            return _db.SaveData(
+            return RelatedItemsToDb(item)
+            && _db.SaveData(
                 @"UPDATE Room
                 SET Name = $1
                     Capacity = $2
@@ -75,7 +77,7 @@ namespace DataAccessLibrary.logic
                     {"$2", item.Capacity},
                     {"$3", item.ID}
                 }
-            ) && RelatedItemsToDb(item);
+            );
         }
 
         private bool RelatedItemsToDb(RoomModel item)

@@ -18,6 +18,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     {
         if (item.ID != null) throw new InvalidDataException("the timetable is already in the db.");
         if (!item.IsChanged) return true;
+        bool result = RelatedItemsToDb(item);
         item.ID = _db.CreateData(
             @"INSERT INTO TimeTable
             VALUES(
@@ -35,7 +36,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 {"$4", item.EndDate.ToString()}
             }
         );
-        return item.ID > 0 && RelatedItemsToDb(item);
+        return item.ID > 0 && result;
     }
 
     public void CreateTable()
@@ -74,7 +75,8 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     {
         if (item.ID == null) throw new InvalidDataException("timetable is not in the db.");
         if (!item.IsChanged) return true;
-        return _db.SaveData(
+        return RelatedItemsToDb(item)
+            && _db.SaveData(
             @"UPDATE TimeTable
             SET RoomID,
                 MovieID,
@@ -87,7 +89,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 {"$3", item.StartDate.ToString()},
                 {"$4", item.EndDate.ToString()}
             }
-        ) && RelatedItemsToDb(item);
+        );
     }
     private bool RelatedItemsToDb(TimeTableModel item)
     {
