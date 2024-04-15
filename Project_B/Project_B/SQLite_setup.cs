@@ -248,11 +248,11 @@ namespace Project_B
                 //Print data
                 //ReadData(sqlite_conn);
                 sqlite_conn.Close();
-                Console.WriteLine("✓ Database setup!");
+                Console.WriteLine("\n--- 50% ---\nDatabase setup!");
             }
             catch (Exception) { Console.WriteLine("X Database setup : Something went wrong!"); }
             finally { sqlite_conn.Close(); }
-            if (!File.Exists(@$"{System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Datasource"))}\Layouts.json"))
+            if (true /* getRoomsFromDatabase().Count() >= 3 - Aymane */)
             {
                 List<Seat> layout1 = new List<Seat> {
                     new Seat(0, 1, "0", " ", " "),
@@ -1384,9 +1384,11 @@ namespace Project_B
                     foreach (List<Seat> layout in _layoutList) {
                         upload_to_database(layout, new Room(layout[0].RoomID, $"Room{layout[0].RoomID}", layout.Count, RowWidthsLayouts[layout[0].RoomID - 1]));
                     }
+                    Console.WriteLine("\n--- 100% ---\nLayout database setup!");
                 }
-                catch (Exception) { Console.WriteLine("X Layout json setup : Something went wrong!"); }
+                catch (Exception) { Console.WriteLine("X Layout database setup : Something went wrong!"); }
                 finally { sqlite_conn.Close(); }
+                Console.ReadLine();
             }
         }
 
