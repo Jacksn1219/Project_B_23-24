@@ -38,7 +38,7 @@ namespace DataAccessLibrary.logic
                 @"CREATE TABLE IF NOT EXISTS Seat(
                     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
                     RoomID INTEGER NOT NULL,
-                    Name TEXT,
+                    Name TEXT NOT NULL,
                     Rank TEXT,
                     Type TEXT,
                     FOREIGN KEY (RoomID) REFERENCES Room (ID)

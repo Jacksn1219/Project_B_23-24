@@ -18,7 +18,6 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID != null) throw new InvalidDataException("the room is already in the db.");
             if (!item.IsChanged) return true;
-            bool result = RelatedItemsToDb(item);
             item.ID = _db.CreateData(
                 @"INSERT INTO Room(
                     Name,
@@ -30,6 +29,7 @@ namespace DataAccessLibrary.logic
                     {"$2", item.Capacity}
                 }
             );
+            bool result = RelatedItemsToDb(item);
             return item.ID > 0 && result;
         }
 
@@ -84,6 +84,7 @@ namespace DataAccessLibrary.logic
         {
             foreach (SeatModel seat in item.Seats)
             {
+                seat.RoomID = item.ID;
                 _sf.ItemToDb(seat);
             }
             return true;

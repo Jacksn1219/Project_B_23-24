@@ -167,10 +167,10 @@ namespace DataAccessLibrary
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
-                command.CommandText = sqlStatement;
+                command.CommandText = sqlStatement + "\nRETURNING ID";
                 command.Parameters.AddRange(parameters);
-                var result = command.ExecuteScalar(CommandBehavior.KeyInfo) ?? throw new FileLoadException("failed to get the result.");
-                return (int)result;
+                var result = command.ExecuteScalar();
+                return Convert.ToInt32(result);
             }
             finally
             {

@@ -117,7 +117,11 @@ namespace DataAccessLibrary.logic
                 );
             }
             // update/add the customer
-            if (item.Customer != null) _cf.ItemToDb(item.Customer);
+            if (item.Customer != null)
+            {
+                _cf.ItemToDb(item.Customer);
+                item.CostumerID = item.Customer.ID;
+            }
             return true;
         }
     }

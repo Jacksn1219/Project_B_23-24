@@ -4,26 +4,26 @@ namespace DataAccessLibrary;
 
 public class ActorModel : DbItem
 {
-    private string name;
-    private string description;
+    private string _name;
+    private string _description;
     private int age;
 
     public override int? ID { get; internal set; }
     public string Name
     {
-        get => name;
+        get => _name;
         set
         {
-            name = value;
+            _name = value;
             IsChanged = true;
         }
     }
     public string Description
     {
-        get => description;
+        get => _description;
         set
         {
-            description = value;
+            _description = value;
             IsChanged = true;
         }
     }
@@ -36,9 +36,8 @@ public class ActorModel : DbItem
             IsChanged = true;
         }
     }
-    public ActorModel(int id, string name, string description, int age)
+    public ActorModel(string name, string description, int age)
     {
-        ID = id;
         Name = name;
         Description = description;
         Age = age;

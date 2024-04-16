@@ -9,7 +9,6 @@ namespace DataAccessLibraryTest
         public const string TestDbPath = "customertest.db";
         private DataAccess? _db;
         private CustomerFactory? _cf;
-
         public CustumerFactoryTest()
         {
             try
@@ -21,7 +20,7 @@ namespace DataAccessLibraryTest
                 System.Console.WriteLine($"cannot delete testdb {TestDbPath}: {ex.Message}");
             }
 
-            _db = new SQliteDataAccess(TestDbPath);
+            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
             _cf = new CustomerFactory(_db);
         }
         [TestMethod]
@@ -55,14 +54,32 @@ namespace DataAccessLibraryTest
                 Assert.Fail("the item can be added twice");
             }
             catch { }
-
         }
         [TestMethod]
         public void TestGetCustomer()
         {
             Assert.IsTrue(_cf != null);
-            CustomerModel cust = _cf.GetItemFromId(1);
-            Assert.IsNotNull(cust);
+            CustomerModel cust = new CustomerModel
+            (
+                "tester2", 1, "test2@gmail.com", "0987654321", false
+            );
+            _cf.CreateItem(cust);
+            Assert.IsNotNull(cust.ID);
+            CustomerModel custReturned = _cf.GetItemFromId(cust.ID ?? 1);
+            Assert.AreEqual(cust.Email, custReturned.Email);
+        }
+        [TestMethod]
+        public void TestUpdateCustomer()
+        {
+            Assert.IsTrue(_cf != null);
+            CustomerModel cust = new CustomerModel
+            (
+                "tester3", 1, "test3@gmail.com", "112233445", true
+            );
+            _cf.CreateItem(cust);
+            Assert.IsNotNull(cust.ID);
+            cust.Age = 80;
+            Assert.IsTrue(_cf.UpdateItem(cust));
         }
     }
 }

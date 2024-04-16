@@ -19,7 +19,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
                 Age,
                 Description
             )
-            VALUES ($1,$2,$3);",
+            VALUES ($1,$2,$3)",
             new Dictionary<string, dynamic?>(){
                 {"$1", item.Name},
                 {"$2", item.Age},
@@ -32,7 +32,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
     public void CreateTable()
     {
         _db.SaveData(
-            @"CREATE TABLE IF NOT EXSISTS Director(
+            @"CREATE TABLE IF NOT EXISTS Director(
                 ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
                 Name TEXT NOT NULL,
                 Description TEXT NOT NULL,

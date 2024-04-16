@@ -14,7 +14,7 @@ public class Timetable
         Console.WriteLine("Timetable:");
         foreach (var item in schedule)
         {
-            DateTime endTime = item.Key.AddMinutes(item.Value.Key.DurationInMin); // Bereken de eindtijd van de film
+            DateTime endTime = item.Key.AddMinutes((double)item.Value.Key.DurationInMin); // Bereken de eindtijd van de film
             Console.WriteLine($"Movie: {item.Value.Key.Name}, RoomModel: {item.Value.Value.ID}, Start Time: {item.Key}, End Time: {endTime}"); // Toon de film, zaal, starttijd en eindtijd van de film
         }
     }

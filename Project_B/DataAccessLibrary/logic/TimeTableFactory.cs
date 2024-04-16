@@ -93,8 +93,16 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     }
     private bool RelatedItemsToDb(TimeTableModel item)
     {
-        if (item.Movie != null) _mf.ItemToDb(item.Movie);
-        if (item.Room != null) _rf.ItemToDb(item.Room);
+        if (item.Movie != null)
+        {
+            _mf.ItemToDb(item.Movie);
+            item.MovieID = item.Movie.ID;
+        }
+        if (item.Room != null)
+        {
+            _rf.ItemToDb(item.Room);
+            item.RoomID = item.Room.ID;
+        }
         return true;
     }
 }

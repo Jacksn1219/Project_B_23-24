@@ -19,13 +19,17 @@ namespace DataAccessLibrary.logic
                 @"INSERT INTO Customer(
                     Name,
                     Email,
-                    Age
+                    Age,
+                    PhoneNumber,
+                    IsSubscribed
                 )
-                VALUES($1,$2,$3)",
+                VALUES($1,$2,$3,$4,$5)",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.Email},
-                    {"$3", item.Age}
+                    {"$3", item.Age},
+                    {"$4", item.PhoneNumber},
+                    {"$5", item.IsSubscribed}
                 }
             );
             return item.ID > 0;
@@ -71,12 +75,17 @@ namespace DataAccessLibrary.logic
                 @"UPDATE Customer
                 SET Name = $1,
                     Age = $2,
-                    Email = $3
-                WHERE ID = $4;",
+                    Email = $3,
+                    PhoneNumber = $4,
+                    IsSubscribed = $5
+                WHERE ID = $6;",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.Age},
-                    {"$3", item.Email}
+                    {"$3", item.Email},
+                    {"$4", item.PhoneNumber},
+                    {"$5", item.IsSubscribed},
+                    {"$6", item.ID}
                 }
             );
         }

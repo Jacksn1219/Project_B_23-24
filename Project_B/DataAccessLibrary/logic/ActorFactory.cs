@@ -20,7 +20,7 @@ namespace DataAccessLibrary.logic
                     Description,
                     Age
                 ) 
-                VALUES ($1,$2,$3);",
+                VALUES ($1,$2,$3)",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.Description},

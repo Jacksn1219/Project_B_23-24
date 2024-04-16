@@ -6,9 +6,9 @@ namespace DataAccessLibrary.models
     public class TimeTableModel : DbItem
     {
         public override int? ID { get; internal set; }
-        public int? MovieID { get; }
+        internal int? MovieID { get; set; }
         public readonly MovieModel? Movie;
-        public int? RoomID { get; }
+        internal int? RoomID { get; set; }
         public readonly RoomModel? Room;
         private DateTime _startDate;
         private DateTime _endDate;
@@ -31,7 +31,7 @@ namespace DataAccessLibrary.models
             }
         }
         public TimeTableModel(RoomModel room, MovieModel movie, DateTime startDate) :
-            this(room, movie, startDate, startDate.AddMinutes(movie.DurationInMin))
+            this(room, movie, startDate, startDate.AddMinutes((double)movie.DurationInMin))
         { }
         public TimeTableModel(RoomModel room, MovieModel movie, DateTime startDate, DateTime endDate)
         {

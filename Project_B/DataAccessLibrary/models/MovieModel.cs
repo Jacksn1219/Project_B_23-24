@@ -74,13 +74,10 @@ public class MovieModel : DbItem
     /// <summary>
     /// the ID of the director of the movie
     /// </summary>
-    internal int? DirectorID
-    {
-        get;
-    }
+    public int? DirectorID { get; set; }
     public DirectorModel? Director;
-    private string _genre;
-    public string Genre
+    private string? _genre;
+    public string? Genre
     {
         get => _genre;
         set
@@ -90,9 +87,9 @@ public class MovieModel : DbItem
         }
     }
     public List<ActorModel> Actors = new();
-    internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int directorId, string genre)
+    internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int? directorId, string genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }
-    internal MovieModel(int? id, string name, string description, PEGIAge pegiAge, int durationInMin, int directorId, string genre)
+    internal MovieModel(int? id, string name, string description, PEGIAge pegiAge, int durationInMin, int? directorId, string genre)
     {
         ID = id;
         Name = name;
@@ -102,6 +99,19 @@ public class MovieModel : DbItem
         DirectorID = directorId;
         Genre = genre;
     }
-    public MovieModel(string name, string description, int pegiAge, int durationInMin, int directorId, string genre)
-    : this(null, name, description, pegiAge, durationInMin, directorId, genre) { }
+    /// <summary>
+    /// parameterless ctor to please the JsonSerializer gods
+    /// </summary>
+    public MovieModel()
+    {
+
+    }
+    public MovieModel(string name, string description, int pegiAge, int durationInMin, string genre)
+    : this(null, name, description, pegiAge, durationInMin, null, genre) { }
+    public MovieModel(string name, string description, int pegiAge, int durationInMin, string genre, DirectorModel dir, List<ActorModel> actors)
+    : this(null, name, description, pegiAge, durationInMin, dir.ID, genre)
+    {
+        Director = dir;
+        Actors = actors;
+    }
 }

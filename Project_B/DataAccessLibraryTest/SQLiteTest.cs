@@ -9,6 +9,12 @@ public class SQLiteTest
     [TestInitialize]
     public void TestDbConnection()
     {
+        try
+        {
+            File.Delete("database.db");
+
+        }
+        catch { }
         string connectionstring = "Data Source=database.db; Version = 3; New = True; Compress = True;";
         _db = new SQliteDataAccess(connectionstring);
         _db.SaveData("CREATE TABLE IF NOT EXISTS SampleTable(Col1 VARCHAR(20), Col2 INT)");

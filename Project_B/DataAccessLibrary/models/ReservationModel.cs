@@ -10,7 +10,7 @@ public class ReservationModel : DbItem
     /// </summary>
     public override int? ID { get; internal set; }
     public CustomerModel? Customer;
-    internal int CostumerID { get; }
+    internal int? CostumerID { get; set; }
     public TimeTableModel? TimeTable;
     internal int TimeTableID { get; }
     public string Note

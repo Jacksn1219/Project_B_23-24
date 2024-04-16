@@ -9,7 +9,7 @@ public class SeatModel : DbItem
     private string _type;
 
     public override int? ID { get; internal set; }
-    internal int? RoomID { get; }
+    internal int? RoomID { get; set; }
     public string Name
     {
         get => _name;
@@ -24,11 +24,19 @@ public class SeatModel : DbItem
         get => _rank;
         set { _rank = value; IsChanged = true; }
     }
-    public string Type { get => _type; set { _type = value; IsChanged = true; } }
-    public SeatModel(int id, int roomID, string name, string rank, string type)
+    public string Type
     {
-        ID = id;
-        RoomID = roomID;
+        get => _type;
+        set
+        {
+            _type = value;
+            IsChanged = true;
+        }
+    }
+    public SeatModel(string name, string rank, string type)
+    {
+        ID = null;
+        RoomID = null;
         Name = name;
         Rank = rank;
         Type = type;

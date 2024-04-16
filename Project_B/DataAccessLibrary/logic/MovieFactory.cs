@@ -29,7 +29,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             @"CREATE TABLE IF NOT EXISTS Movie(
             ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL ,
             Name TEXT NOT NULL,
-            DirectorID INTEGER NOT NULL,
+            DirectorID INTEGER,
             pegiAge INTEGER NOT NULL,
             Description TEXT,
             Genre TEXT NOT NULL,
@@ -95,11 +95,11 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 Genre,
                 DurationInMin
             )
-            VALUES ($1,$2,$3,$4,$5,$6);",
+            VALUES ($1,$2,$3,$4,$5,$6)",
             new Dictionary<string, dynamic?>(){
                 {"$1", item.Name},
                 {"$2", item.DirectorID},
-                {"$3", (int)item.PegiAge},
+                {"$3", item.PegiAge},
                 {"$4", item.Description},
                 {"$5", item.Genre},
                 {"$6", item.DurationInMin}
@@ -140,14 +140,18 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     }
     private bool RelatedItemsToDb(MovieModel item)
     {
-        if (item.Director != null) _df.ItemToDb(item.Director);
+        if (item.Director != null)
+        {
+            _df.ItemToDb(item.Director);
+            item.DirectorID = item.Director.ID;
+        }
         foreach (ActorModel actor in item.Actors)
         {
             try
             {
                 _af.ItemToDb(actor);
-                _db.SaveData(
-                    @"INSERT INTO ReservedSeat(
+                var x = _db.SaveData(
+                    @"INSERT INTO ActorInMovie(
                         ActorID,
                         MovieID
                     )
@@ -158,7 +162,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     }
                 );
             }
-            catch
+            catch (Exception ex)
             {
                 Console.WriteLine("Failed to add a seat to db.");
             }

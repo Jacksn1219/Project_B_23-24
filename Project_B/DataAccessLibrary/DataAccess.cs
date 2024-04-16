@@ -1,6 +1,5 @@
 using System.Data;
 using System.Data.Common;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
 using DataAccessLibrary.models.interfaces;
@@ -48,8 +47,13 @@ namespace DataAccessLibrary
                         if (field.CanWrite && field.Name.Equals(column.ColumnName, StringComparison.OrdinalIgnoreCase))
                         {
                             var value = row[column];
+                            var x = value.GetType();
                             // DBNull is the null in databases
                             if (value.GetType() == typeof(DBNull)) rowDict.Add(field.Name, null);
+                            else if (field.PropertyType == typeof(bool))
+                            {
+                                rowDict.Add(field.Name, Convert.ToBoolean(value));
+                            }
                             else rowDict.Add(field.Name, value);
                             break;
                         }
