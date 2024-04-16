@@ -23,7 +23,7 @@ namespace DataAccessLibrary.logic
                     Name,
                     Capacity
                 )
-                VALUES ($1,$2);",
+                VALUES ($1,$2)",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.Capacity}

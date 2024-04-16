@@ -21,7 +21,7 @@ namespace DataAccessLibrary.logic
                     Type,
                     RoomID
                 )
-                VALUES($1,$2,$3)",
+                VALUES($1,$2,$3,$4)",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.Rank},
@@ -70,9 +70,9 @@ namespace DataAccessLibrary.logic
             if (!item.IsChanged) return true;
             return _db.SaveData(
                 @"UPDATE Seat
-                SET RoomID = $1
-                    Name = $2
-                    Type = $3
+                SET RoomID = $1,
+                    Name = $2,
+                    Type = $3,
                     Rank = $4
                 WHERE ID = $5",
                 new Dictionary<string, dynamic?>(){

@@ -167,6 +167,10 @@ namespace DataAccessLibrary
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
+                if (sqlStatement.Last().Equals(';'))
+                {
+                    sqlStatement.Remove(sqlStatement.Length - 1);
+                }
                 command.CommandText = sqlStatement + "\nRETURNING ID";
                 command.Parameters.AddRange(parameters);
                 var result = command.ExecuteScalar();

@@ -10,6 +10,7 @@ public class SeatModel : DbItem
 
     public override int? ID { get; internal set; }
     internal int? RoomID { get; set; }
+    public RoomModel? Room;
     public string Name
     {
         get => _name;
@@ -33,10 +34,26 @@ public class SeatModel : DbItem
             IsChanged = true;
         }
     }
+    /// <summary>
+    /// parameterless ctor to please the jsonserialiser gods
+    /// </summary>
+    public SeatModel()
+    {
+
+    }
     public SeatModel(string name, string rank, string type)
     {
         ID = null;
         RoomID = null;
+        Name = name;
+        Rank = rank;
+        Type = type;
+    }
+    public SeatModel(string name, string rank, string type, RoomModel room)
+    {
+        ID = null;
+        RoomID = room.ID;
+        Room = room;
         Name = name;
         Rank = rank;
         Type = type;

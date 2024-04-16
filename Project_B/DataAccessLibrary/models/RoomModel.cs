@@ -30,6 +30,13 @@ public class RoomModel : DbItem
     public RoomModel(string name, int capacity)
     : this(name, capacity, new List<SeatModel>())
     { }
+    /// <summary>
+    /// parameterless ctor to please the json serialiser gods
+    /// </summary>
+    public RoomModel()
+    {
+
+    }
     public RoomModel(string name, int capacity, List<SeatModel> seats)
     {
         Name = name;
