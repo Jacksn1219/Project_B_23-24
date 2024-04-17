@@ -5,10 +5,6 @@ namespace DataAccessLibrary;
 
 public class ReservationModel : DbItem
 {
-    /// <summary>
-    /// the db Id of the Reservation. must be positive and should be readonly for external classes.
-    /// </summary>
-    public override int? ID { get; set; }
     public CustomerModel? Customer;
     public int? CustomerID { get; set; }
     public TimeTableModel? TimeTable;

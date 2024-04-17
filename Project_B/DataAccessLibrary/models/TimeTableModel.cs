@@ -8,7 +8,6 @@ namespace DataAccessLibrary.models
 {
     public class TimeTableModel : DbItem
     {
-        public override int? ID { get; set; }
         internal int? MovieID { get; set; }
         public readonly MovieModel? Movie;
         internal int? RoomID { get; set; }

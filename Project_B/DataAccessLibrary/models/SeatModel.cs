@@ -8,7 +8,6 @@ public class SeatModel : DbItem
     private string _rank;
     private string _type;
 
-    public override int? ID { get; set; }
     internal int? RoomID { get; set; }
     public RoomModel? Room;
     public string Name

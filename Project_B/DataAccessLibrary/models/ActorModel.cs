@@ -7,8 +7,6 @@ public class ActorModel : DbItem
     private string _name;
     private string _description;
     private int age;
-
-    public override int? ID { get; set; }
     public string Name
     {
         get => _name;

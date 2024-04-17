@@ -4,7 +4,6 @@ namespace DataAccessLibrary;
 
 public class RoomModel : DbItem
 {
-    public override int? ID { get; set; }
     private string _name;
     public string Name
     {

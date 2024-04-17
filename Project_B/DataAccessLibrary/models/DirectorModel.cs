@@ -4,7 +4,6 @@ namespace DataAccessLibrary;
 
 public class DirectorModel : DbItem
 {
-    public override int? ID { get; set; }
     private string _name;
     public string Name
     {

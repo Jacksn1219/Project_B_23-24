@@ -19,10 +19,6 @@ public class MovieModel : DbItem
     private int _durationInMin;
 
     /// <summary>
-    /// the db Id of the movie. must be positive and should be readonly for external classes.
-    /// </summary>
-    public override int? ID { get; set; }
-    /// <summary>
     /// the title of the movie
     /// </summary>
     private string? _name;
