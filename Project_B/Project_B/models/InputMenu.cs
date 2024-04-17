@@ -34,9 +34,10 @@ namespace Models
         /// <summary>
         /// Print menu to screen
         /// </summary>
-        public void Draw(int cursor)
+        public void Draw(int cursor, ConsoleColor changeColorHeader)
         {
             Console.Clear();
+            Layout.ChangeColour(changeColorHeader);
             Console.WriteLine(this.introduction);
             for (int i = 0; i <= this.menuoptions.Count; i++)
             {
@@ -68,7 +69,7 @@ namespace Models
         /// Activating the menu
         /// </summary>
         /// <param name="row"></param>
-        public void UseMenu()
+        public void UseMenu(ConsoleColor changeColorHeader = ConsoleColor.White)
         {
             Console.CursorVisible = false;
             int cursor = 0;
@@ -76,7 +77,7 @@ namespace Models
             //Main loop
             while (userInput != ConsoleKey.Q)
             {
-                Draw(cursor);
+                Draw(cursor, changeColorHeader);
 
                 //Getting User choice
                 userInput = Console.ReadKey().Key;
