@@ -34,7 +34,7 @@ namespace DataAccessLibraryTest
             var rf = new RoomFactory(_db, _sf);
             var tf = new TimeTableFactory(_db, mf, rf);
             SeatModel seat = new SeatModel("seat1", "1", "1");
-            RoomModel room = new RoomModel("room1", 10, new List<SeatModel>() { seat });
+            RoomModel room = new RoomModel("room1", 10, 1, new List<SeatModel>() { seat });
             MovieModel mov = new MovieModel("movie1", "descr1", 3, 300, "genre");
             testTimeTable = new TimeTableModel(
                 room, mov, DateTime.Now

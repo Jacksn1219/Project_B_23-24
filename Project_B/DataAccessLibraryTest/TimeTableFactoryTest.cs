@@ -36,7 +36,7 @@ namespace DataAccessLibraryTest
         public void TestAddTimeTable()
         {
             RoomModel room = new RoomModel(
-                "a room", 10
+                "a room", 10, 1
             );
             room.AddSeat(new SeatModel("a seat", "1", "1"));
             MovieModel mov = new(
@@ -54,7 +54,7 @@ namespace DataAccessLibraryTest
         public void TestGetTimeTable()
         {
             RoomModel room = new RoomModel(
-                "room2", 99
+                "room2", 99, 2
             );
             MovieModel mov = new(
                 "mama mia", "here we go again", 3, 999, "pain"
@@ -70,7 +70,7 @@ namespace DataAccessLibraryTest
         public void TestUpdateTimeTable()
         {
             RoomModel room = new RoomModel(
-                "lastRoom", 9
+                "lastRoom", 9, 9
             );
             MovieModel mov = new(
                 "aliens", "are real, source: trust me bro", 18, 13, "pain"

@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using DataAccessLibrary.logic;
+using Models;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.SQLite;
@@ -9,6 +10,13 @@ namespace DataAccessLibrary;
 
 public class Layout
 {
+    private readonly RoomFactory _rf;
+    private readonly SeatFactory _sf;
+    public Layout(RoomFactory rf, SeatFactory sf)
+    {
+        _rf = rf;
+        _sf = sf;
+    }
     /// <summary>
     /// Create folder if it doesnt exsist
     /// </summary>
@@ -57,8 +65,10 @@ public class Layout
     /// </summary>
     /// <param name="layout"></param>
     /// <param name="room"></param>
-    public static void upload_to_database(List<Seat> seats, Room room)
+    public void upload_to_database(RoomModel room)
     {
+        _rf.ItemToDb(room);
+        /*
         SQLiteConnection sqlite_conn;
         sqlite_conn = CreateConnection();
 
@@ -73,7 +83,7 @@ public class Layout
                     {room.Capacity},
                     {room.RowWidth}
                 ); ");
-            foreach (Seat seat in seats)
+            foreach (SeatModel seat in seats)
             {
                 ExcecuteQuerry(sqlite_conn, $@"INSERT INTO Seat(
                     RoomID,
@@ -89,9 +99,10 @@ public class Layout
             }
         } catch { sqlite_conn.Close(); }
         sqlite_conn.Close();
+        */
     }
     public static void ChangeColour(ConsoleColor colour) => Console.ForegroundColor = colour;
-    public static void drawLayout(List<Seat> layout, Room room)
+    public static void drawLayout(List<SeatModel> layout, RoomModel room)
     {
         Console.Clear();
         Console.ResetColor();
@@ -115,21 +126,21 @@ public class Layout
             else if (layout[i].Rank == " ") { Console.Write("   "); }
             else { Console.Write($" []"); }
         }
-        Console.Write($"[{room.RowWidth - 8 / 2}Screen{room.RowWidth-8/2}]");
+        Console.Write($"[{room.RowWidth - 8 / 2}Screen{room.RowWidth - 8 / 2}]");
         Console.ResetColor();
     }
-    public static void selectSeat(List<Seat> layout, Room room)
+    public static void selectSeat(List<SeatModel> layout, RoomModel room)
     {
         //List<Seat> layout = getSeatsFromDatabase(); - Aymane
         //drawLayout(layout, room);
 
-        InputMenu seatSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth);
-        foreach (Seat seat in layout)
+        InputMenu seatSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth ?? 0);
+        foreach (SeatModel seat in layout)
         {
             string seatName = seat.Type == " " ? "   " : $" []";
             seatSelectionMenu.Add($"{seat.Type[0]}", (x) =>
             {
-                Seat selectedSeat = seat;
+                SeatModel selectedSeat = seat;
                 Console.Clear();
                 //ShowSeatInfo(selectedSeat); - Jelle
                 Console.WriteLine("Not yet implemented - ShowSeatInfo");
@@ -144,23 +155,23 @@ public class Layout
         Console.Write(toPrint);
         Console.ForegroundColor = ConsoleColor.White;
     }
-    public static void editLayout(List<Seat> layout, Room room)
+    public static void editLayout(List<SeatModel> layout, RoomModel room)
     {
         //List<Seat> layout = getSeatsFromDatabase(); - Aymane
         //Room room = getRoomFromDatabase(); - Aymane
 
-        InputMenu seatSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth);
+        InputMenu seatSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth ?? 0);
         string seatName;
         string getType;
         string getRank;
-        foreach (Seat seat in layout)
+        foreach (SeatModel seat in layout)
         {
             seatName = seat.Type == " " ? "   " : $" []";
             seatSelectionMenu.Add($"{seat.Type[0]}", (x) =>
             {
                 getType = seat.Type;
                 getRank = seat.Rank;
-                Seat selectedSeat = seat;
+                SeatModel selectedSeat = seat;
                 Console.Clear();
 
                 ConsoleKey userInput = ConsoleKey.Delete;
@@ -219,7 +230,7 @@ public class Layout
                     Console.Write("Uitleg:\n  (");
                     WriteColor("N", ConsoleColor.Blue);
                     Console.Write(") = Normaal                (1) = Betaal niveau 1        (Spatiebalk) = Lege plek instellen\n  (");
-                    WriteColor ("E", ConsoleColor.DarkYellow);
+                    WriteColor("E", ConsoleColor.DarkYellow);
                     Console.Write(") = Extra beenruimte       (2) = Betaal niveau 2        (Enter) = goedkeuren aanpassing\n  (");
                     WriteColor("L", ConsoleColor.Magenta);
                     Console.Write(") = Love Seat              (3) = Betaal niveau 3");
@@ -270,14 +281,14 @@ public class Layout
         }
         seatSelectionMenu.UseMenu();
     }
-    public static void MakeNewLayout()
+    public void MakeNewLayout()
     {
         //Getting the correct room ID
         /*int Room_ID = getRoomsFromDatabase().Count;*/
 
-        List<Seat> seats = new List<Seat>();
+        List<SeatModel> seats = new List<SeatModel>();
         /*Room currentRoom = new Room(Room_ID, $"Room{Room_ID}", seats.Count)*/
-        Room currentRoom = new Room(1, "Room1", seats.Count);
+        RoomModel currentRoom = new RoomModel("Room1", seats.Count, 6);
 
         Console.Clear();
         Console.WriteLine("  [   screen   ]");
@@ -335,7 +346,7 @@ public class Layout
             Console.Write(", ");
             WriteColor("E", ConsoleColor.DarkYellow);
             Console.Write(", ");
-            WriteColor ("L", ConsoleColor.Magenta);
+            WriteColor("L", ConsoleColor.Magenta);
             Console.Write(", 1, 2, 3, Enter, Backspace, ");
             WriteColor("Q", ConsoleColor.Red);
             Console.Write(", Spatiebalk, A)\n\n");
@@ -382,7 +393,7 @@ public class Layout
             {
                 if (getType == "0" || getRank == "0") Console.WriteLine("Not all required fields are filled in...");
                 //new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", getRank, getType),
-                else seats.Add(new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", getRank, getType));
+                else seats.Add(new SeatModel($"test", getRank, getType));
             }
             else
             {
@@ -423,17 +434,19 @@ public class Layout
                     "Love Seat" => ConsoleColor.Magenta,
                     _ => ConsoleColor.Gray
                 };
-                if (i == 0 || currentRoom.RowWidth == 1) Console.Write(seats[i].Type == " " ? " []" : " " + seats[i].Type[0] + seats[i].Rank );
-                else Console.Write( (i % currentRoom.RowWidth == 0) ? (seats[i].Type == " ") ? "\n []" : "\n " + seats[i].Type[0] + seats[i].Rank : (seats[i].Type == " ") ? " []" : " " + seats[i].Type[0] + seats[i].Rank);
+                if (i == 0 || currentRoom.RowWidth == 1) Console.Write(seats[i].Type == " " ? " []" : " " + seats[i].Type[0] + seats[i].Rank);
+                else Console.Write((i % currentRoom.RowWidth == 0) ? (seats[i].Type == " ") ? "\n []" : "\n " + seats[i].Type[0] + seats[i].Rank : (seats[i].Type == " ") ? " []" : " " + seats[i].Type[0] + seats[i].Rank);
             }
         }
         //Adding the seats to the database
-        upload_to_database(seats, currentRoom);
-        
+        currentRoom.AddSeats(seats.ToArray());
+
+        upload_to_database(currentRoom);
+
         Console.WriteLine("\n\nList<Seat> layout = new List<Seat> {");
-        foreach (Seat seat in seats)
+        foreach (SeatModel seat in currentRoom.Seats)
         {
-            Console.WriteLine($"new Seat({seat.ID}, {seat.RoomID}, \"{seat.Name}\", \"{seat.Rank}\", \"{seat.Type}\"),");
+            Console.WriteLine($"new Seat({seat.ID}, {currentRoom.ID}, \"{seat.Name}\", \"{seat.Rank}\", \"{seat.Type}\"),");
         }
         Console.WriteLine("};");
         Console.ReadLine();

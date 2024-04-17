@@ -26,7 +26,7 @@ namespace DataAccessLibraryTest
             _sf = new SeatFactory(_db);
             var rf = new RoomFactory(_db, _sf);
             _room = new RoomModel(
-                    "test", 10
+                    "test", 10, 10
                 );
             rf.ItemToDb(
                 _room

@@ -51,6 +51,7 @@ namespace DataAccessLibraryTest
             Assert.IsNotNull(actors[0].ID);
             Assert.IsNotNull(dir.ID);
         }
+        [TestMethod]
         public void TestGetMovieNoOtherFactories()
         {
             MovieModel movie = new MovieModel(
@@ -60,6 +61,7 @@ namespace DataAccessLibraryTest
             var newMovie = _mf.GetItemFromId(movie.ID ?? 1);
             Assert.AreEqual(movie.Name, newMovie.Name);
         }
+        [TestMethod]
         public void TestGetMovieWithOtherFactories()
         {
             List<ActorModel> actors = new(){

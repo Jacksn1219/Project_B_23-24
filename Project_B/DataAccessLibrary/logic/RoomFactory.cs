@@ -21,12 +21,14 @@ namespace DataAccessLibrary.logic
             item.ID = _db.CreateData(
                 @"INSERT INTO Room(
                     Name,
-                    Capacity
+                    Capacity,
+                    RowWidth
                 )
-                VALUES ($1,$2)",
+                VALUES ($1,$2,$3)",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
-                    {"$2", item.Capacity}
+                    {"$2", item.Capacity},
+                    {"$3", item.RowWidth}
                 }
             );
             bool result = RelatedItemsToDb(item);
@@ -40,7 +42,8 @@ namespace DataAccessLibrary.logic
                 @"CREATE TABLE IF NOT EXISTS Room(
                     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
                     Name TEXT NOT NULL,
-                    Capacity INTEGER NOT NULL
+                    Capacity INTEGER NOT NULL,
+                    RowWidth INTEGER NOT NULL
                 )"
             );
         }
@@ -81,12 +84,14 @@ namespace DataAccessLibrary.logic
             result = _db.SaveData(
                 @"UPDATE Room
                 SET Name = $1,
-                    Capacity = $2
-                where ID = $3",
+                    Capacity = $2,
+                    RowWidth = $3
+                where ID = $4",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.Capacity},
-                    {"$3", item.ID}
+                    {"$3", item.RowWidth},
+                    {"$4", item.ID}
                 }
             );
             if (result) item.IsChanged = false;

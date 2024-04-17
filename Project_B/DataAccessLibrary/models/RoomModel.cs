@@ -26,8 +26,21 @@ public class RoomModel : DbItem
         }
     }
     public readonly List<SeatModel> Seats;
-    public RoomModel(string name, int capacity)
-    : this(name, capacity, new List<SeatModel>())
+    private int? _rowWidth;
+    public int? RowWidth
+    {
+        get
+        {
+            return _rowWidth;
+        }
+        set
+        {
+            _rowWidth = value;
+            IsChanged = true;
+        }
+    }
+    public RoomModel(string name, int capacity, int rowWidth)
+    : this(name, capacity, rowWidth, new List<SeatModel>())
     { }
     /// <summary>
     /// parameterless ctor to please the json serialiser gods
@@ -36,11 +49,12 @@ public class RoomModel : DbItem
     {
 
     }
-    public RoomModel(string name, int capacity, List<SeatModel> seats)
+    public RoomModel(string name, int capacity, int rowWidth, List<SeatModel> seats)
     {
         Name = name;
         Capacity = capacity;
         Seats = seats;
+        RowWidth = rowWidth;
     }
     public bool AddSeat(SeatModel seat)
     {

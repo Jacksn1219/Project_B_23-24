@@ -22,7 +22,7 @@ namespace Models
         /// <param name="Name"></param>
         /// <param name="Act"></param>
         /// <param name="isTaken"></param>
-        public void Add(string Name, Action<string> Act, bool? isTaken = null, int? ID = null) => this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken, ID));
+        public void Add(string Name, Action<string> Act, bool? isTaken = null, int? ID = null) => this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken));
 
         /// <summary>
         /// Remove item from menu option list

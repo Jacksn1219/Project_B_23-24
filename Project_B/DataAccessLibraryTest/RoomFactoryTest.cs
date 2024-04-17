@@ -28,7 +28,7 @@ namespace DataAccessLibraryTest
         [TestMethod]
         public void TestAddRoomNoChairsTest()
         {
-            RoomModel room = new("room", 10);
+            RoomModel room = new("room", 10, 3);
             Assert.IsTrue(_rf.ItemToDb(room));
             Assert.IsTrue(room.Exists);
         }
@@ -36,7 +36,7 @@ namespace DataAccessLibraryTest
         public void TestAddRoomWithChairsTest()
         {
             RoomModel room = new(
-                "roomier room", 11
+                "roomier room", 11, 4
             );
             room.AddSeats(new SeatModel[]{
                 new SeatModel("myseat1", "1", "cool", room),
@@ -49,7 +49,7 @@ namespace DataAccessLibraryTest
         [TestMethod]
         public void TestToManyChairsError()
         {
-            RoomModel room = new("fakeroom", 1);
+            RoomModel room = new("fakeroom", 1, 1);
             Assert.IsFalse(
                 room.AddSeats
                 (
@@ -64,7 +64,7 @@ namespace DataAccessLibraryTest
         [TestMethod]
         public void TestGetRoomDb()
         {
-            RoomModel room = new("roomest room", 13);
+            RoomModel room = new("roomest room", 13, 2);
             Assert.IsTrue(_rf.ItemToDb(room));
             var newRoom = _rf.GetItemFromId(room.ID ?? 1);
             Assert.AreEqual(room.Name, newRoom.Name);
@@ -72,7 +72,7 @@ namespace DataAccessLibraryTest
         [TestMethod]
         public void TestUpdateRoomNoSeats()
         {
-            RoomModel room = new("what's rooming on", 3);
+            RoomModel room = new("what's rooming on", 3, 1);
             Assert.IsTrue(_rf.ItemToDb(room));
             room.Capacity = 100;
             Assert.IsTrue(_rf.ItemToDb(room));
@@ -82,7 +82,7 @@ namespace DataAccessLibraryTest
         [TestMethod]
         public void TestUpdateRoomWithSeats()
         {
-            RoomModel room = new RoomModel("lastroomtest", 3);
+            RoomModel room = new RoomModel("lastroomtest", 3, 1);
             room.AddSeats(
                 new SeatModel[]{
                     new SeatModel("1", "1", "1"),
