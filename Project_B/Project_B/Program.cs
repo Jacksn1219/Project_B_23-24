@@ -27,7 +27,7 @@ namespace Project_B
 
 
             InputMenu menu = new InputMenu("| Main menu |", true);
-            menu.Add("Setup Database", (x) =>
+            /*menu.Add("Setup Database", (x) =>
             {
                 //Opzet Sqlite database
                 //SQLite.SetupProjectB();
@@ -38,7 +38,7 @@ namespace Project_B
                 ActorModel testAuthor = new ActorModel("John", "Not succesfull", 25);
                 Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
                 Console.ReadLine();
-            });
+            });*/
             menu.Add("Layout creator", (x) =>
             {
                 Layout l = new Layout(roomf, sf);
