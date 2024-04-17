@@ -374,7 +374,7 @@ public class Layout
 
             Console.Clear();
             if (userInput == ConsoleKey.Backspace && seats.Count > 0) seats.RemoveAt(seats.Count - 1);
-            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1)
+            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1 && seats.Count > 0)
             {
                 currentRoom.RowWidth = seats.Count;
             }
