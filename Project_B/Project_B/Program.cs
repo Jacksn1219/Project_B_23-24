@@ -27,6 +27,12 @@ namespace Project_B
 
 
             InputMenu menu = new InputMenu("| Main menu |", true);
+            menu.Add("Setup Database", (x) =>
+            {
+                //Opzet Sqlite database
+                //SQLite.SetupProjectB();
+                Console.ReadLine();
+            });
             menu.Add("Test Author", (x) =>
             {
                 ActorModel testAuthor = new ActorModel("John", "Not succesfull", 25);
@@ -52,9 +58,9 @@ namespace Project_B
                     new SeatModel("4", "1", "Normaal"),
                     new SeatModel("5", "1", "Normaal"),
                     new SeatModel("6", "1", "Normaal"),
-                    new SeatModel("7", "1", "Normaal"),
+                    new SeatModel( "7", "1", "Normaal"),
                     new SeatModel("8", "1", "Normaal"),
-                    new SeatModel("9", "1", "Normaal"),
+                    new SeatModel( "9", "1", "Normaal"),
                     new SeatModel("10", " ", " "),
                     new SeatModel("11", " ", " "),
                     new SeatModel("12", " ", " "),
@@ -70,8 +76,8 @@ namespace Project_B
             });
             menu.Add("Timetable", (x) =>
             {
-                MovieModel movie1 = new MovieModel("KUNG FU PANDA 4", "everybody was kung fu fighting", 12, 120, "Horror"); //Film 1 wordt lokaal toegevoegd
-                MovieModel movie2 = new MovieModel("DUNE: PART TWO", "I don't like sand. It's coarse and rough and irritating and it gets everywhere.", 16, 150, "Kids");  //Film 2 wordt lokaal toegevoegd
+                MovieModel movie1 = new MovieModel("KUNG FU PANDA 4", "", 12, 120, "horor"); //Film 1 wordt toegevoegd
+                MovieModel movie2 = new MovieModel("DUNE: PART TWO", "", 16, 150, "horor");  //Film 2 wordt toegevoegd
 
                 RoomModel room1 = new RoomModel("Room_1", 150, 6); //Room 1 heeft 150 plekken
                 RoomModel room2 = new RoomModel("Room_2", 300, 6); //Room 2 heeft 300 plekken
@@ -86,6 +92,61 @@ namespace Project_B
                 // Tonen van de timetable
                 timetable.DisplayTimetable();
                 Console.ReadLine();
+            });
+
+            menu.Add("Reserve Seats", (x) =>
+            {
+                // Ask for user's age
+                Console.Write("Enter your age: ");
+                if (int.TryParse(Console.ReadLine(), out int userAge))
+                { }
+                // Display available rooms
+                //ReservationService.DisplayAvailableRooms();
+
+                /* Ask user to choose a room
+
+                Console.Write("Choose a room (1, 2, or 3): ");
+                if (int.TryParse(Console.ReadLine(), out int selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
+                {
+                    // Display the layout of the selected room
+                    ReservationService.DisplayRoomLayout(selectedRoomID);
+
+                    // Display available seats
+                    var availableSeats = ReservationService.GetAvailableSeats(selectedRoomID);
+                    Console.WriteLine("Available Seats:");
+                    foreach (var seat in availableSeats)
+                    {
+                        Console.WriteLine($"Seat ID: {seat.ID}, Room ID: {seat.RoomID}, Name: {seat.Name}, Rank: {seat.Rank}, Type: {seat.Type}");
+                    }
+
+                    // Ask user to choose seats
+                    Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
+                    var input = Console.ReadLine();
+                    var seatNumbers = new List<int>();
+
+                    foreach (var seatNumber in input.Split(','))
+                    {
+                        if (int.TryParse(seatNumber.Trim(), out int num))
+                        {
+                            seatNumbers.Add(num);
+                        }
+                    }
+
+                    // Reserve seats
+                    //ReservationService.ReserveSeats(selectedRoomID, seatNumbers, userAge);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid room selection.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid age input.");
+            }
+
+            Console.ReadLine();
+            */
             });
 
             menu.UseMenu();

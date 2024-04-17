@@ -30,7 +30,7 @@ public class Layout
     /// Create database connection
     /// </summary>
     /// <returns>SQLiteConnection object</returns>
-    static SQLiteConnection CreateConnection()
+    public static SQLiteConnection CreateConnection()
     {
         SQLiteConnection sqlite_conn;
         // Create a new database connection:
@@ -385,7 +385,7 @@ public class Layout
 
             Console.Clear();
             if (userInput == ConsoleKey.Backspace && seats.Count > 0) seats.RemoveAt(seats.Count - 1);
-            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1)
+            else if (userInput == ConsoleKey.Enter && currentRoom.RowWidth == 1 && seats.Count > 0)
             {
                 currentRoom.RowWidth = seats.Count;
             }
