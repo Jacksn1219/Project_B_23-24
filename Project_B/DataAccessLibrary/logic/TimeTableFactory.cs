@@ -1,6 +1,7 @@
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
+using Newtonsoft.Json;
 
 public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 {
@@ -19,9 +20,9 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         if (item.ID != null) throw new InvalidDataException("the timetable is already in the db.");
         if (!item.IsChanged) return true;
         bool result = RelatedItemsToDb(item);
+        if (!result) return false;
         item.ID = _db.CreateData(
-            @"INSERT INTO TimeTable
-            VALUES(
+            @"INSERT INTO TimeTable(
                 MovieID,
                 RoomID,
                 StartDate,
@@ -32,11 +33,12 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             {
                 {"$1", item.MovieID},
                 {"$2", item.RoomID},
-                {"$3", item.StartDate.ToString()},
-                {"$4", item.EndDate.ToString()}
+                {"$3", item.StartDate},
+                {"$4", item.EndDate}
             }
         );
-        return item.ID > 0 && result;
+        if (item.ID > 0) item.IsChanged = false;
+        return item.ID > 0;
     }
 
     public void CreateTable()
@@ -75,21 +77,25 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     {
         if (item.ID == null) throw new InvalidDataException("timetable is not in the db.");
         if (!item.IsChanged) return true;
-        return RelatedItemsToDb(item)
-            && _db.SaveData(
+        bool result = RelatedItemsToDb(item);
+        if (!result) return result;
+        result = _db.SaveData(
             @"UPDATE TimeTable
-            SET RoomID,
-                MovieID,
-                StartDate,
-                EndDate
-            VALUES($1,$2,$3,$4)",
+            SET RoomID = $1,
+                MovieID = $2,
+                StartDate = $3,
+                EndDate = $4
+            WHERE ID = $5",
             new Dictionary<string, dynamic?>(){
                 {"$1", item.RoomID},
                 {"$2", item.MovieID},
-                {"$3", item.StartDate.ToString()},
-                {"$4", item.EndDate.ToString()}
+                {"$3", item.StartDate},
+                {"$4", item.EndDate},
+                {"$5", item.ID}
             }
         );
+        item.IsChanged = !result;
+        return result;
     }
     private bool RelatedItemsToDb(TimeTableModel item)
     {

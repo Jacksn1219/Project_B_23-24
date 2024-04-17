@@ -1,8 +1,8 @@
 using System.Data;
 using System.Data.Common;
 using System.Reflection;
-using System.Text.Json;
 using DataAccessLibrary.models.interfaces;
+using Newtonsoft.Json;
 
 namespace DataAccessLibrary
 {
@@ -63,8 +63,8 @@ namespace DataAccessLibrary
                 typeOfT.Add(rowDict);
             }
             // make a class from the list of dicts
-            string Tstring = JsonSerializer.Serialize(typeOfT);
-            List<T>? items = JsonSerializer.Deserialize<List<T>>(Tstring);
+            string Tstring = JsonConvert.SerializeObject(typeOfT);
+            List<T>? items = JsonConvert.DeserializeObject<List<T>>(Tstring);
             return items;
         }
 

@@ -70,6 +70,18 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// <returns>true if succesfull, else false</returns>
     public bool ItemToDb(MovieModel item)
     {
+
+        bool directorchanged = item.Director != null && item.Director.IsChanged;
+        bool actorsChanged = false;
+        foreach (var act in item.Actors)
+        {
+            if (act.IsChanged)
+            {
+                actorsChanged = true;
+                break;
+            }
+        }
+        if (!item.IsChanged && (actorsChanged || directorchanged)) return RelatedItemsToDb(item);
         if (!item.IsChanged) return true;
         if (item.ID == null) return CreateItem(item);
         return UpdateItem(item);
@@ -86,6 +98,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         if (item.ID != null) throw new InvalidOperationException("this movie already exists in the db");
         if (!item.IsChanged) return true;
         bool result = RelatedItemsToDb(item);
+        if (!result) return result;
         item.ID = _db.CreateData(
             @"INSERT INTO Movie(
                 Name,
@@ -105,7 +118,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 {"$6", item.DurationInMin}
             }
         );
-        return item.ID > 0 && result;
+        if (item.ID > 0) item.IsChanged = true;
+        return item.ID > 0;
     }
     /// <summary>
     /// updates the movie
@@ -117,7 +131,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     {
         if (item.ID == null) throw new InvalidOperationException("cannot update a movie without an ID.");
         if (!item.IsChanged) return true;
-        return RelatedItemsToDb(item)
+        bool toReturn = RelatedItemsToDb(item)
             && _db.SaveData(
             @"UPDATE Movie
             SET Name = $1,
@@ -137,6 +151,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 {"$7", item.ID}
             }
         );
+        if (toReturn) item.IsChanged = false;
+        return toReturn;
     }
     private bool RelatedItemsToDb(MovieModel item)
     {
@@ -149,6 +165,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         {
             try
             {
+                // need a check for already existing actors of the movie...
                 _af.ItemToDb(actor);
                 var x = _db.SaveData(
                     @"INSERT INTO ActorInMovie(
@@ -163,8 +180,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 );
             }
             catch (Exception ex)
-            {
-                Console.WriteLine("Failed to add a seat to db.");
+            {// to be replaced with logger?
+                Console.WriteLine($"Failed to add a actor to db. ex: {ex.Message}");
             }
 
         }

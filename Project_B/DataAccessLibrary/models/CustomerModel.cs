@@ -4,7 +4,7 @@ namespace DataAccessLibrary;
 
 public class CustomerModel : DbItem
 {
-    public override int? ID { get; internal set; }
+    public override int? ID { get; set; }
     public string Name
     {
         get => _name;

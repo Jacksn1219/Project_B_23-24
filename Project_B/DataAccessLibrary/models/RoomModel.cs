@@ -4,7 +4,7 @@ namespace DataAccessLibrary;
 
 public class RoomModel : DbItem
 {
-    public override int? ID { get; internal set; }
+    public override int? ID { get; set; }
     private string _name;
     public string Name
     {
@@ -26,7 +26,7 @@ public class RoomModel : DbItem
             IsChanged = true;
         }
     }
-    internal List<SeatModel> Seats;
+    public readonly List<SeatModel> Seats;
     public RoomModel(string name, int capacity)
     : this(name, capacity, new List<SeatModel>())
     { }

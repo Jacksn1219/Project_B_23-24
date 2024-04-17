@@ -21,7 +21,7 @@ public class MovieModel : DbItem
     /// <summary>
     /// the db Id of the movie. must be positive and should be readonly for external classes.
     /// </summary>
-    public override int? ID { get; internal set; }
+    public override int? ID { get; set; }
     /// <summary>
     /// the title of the movie
     /// </summary>

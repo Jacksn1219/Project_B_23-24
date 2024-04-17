@@ -32,6 +32,7 @@ namespace DataAccessLibrary.logic
                     {"$5", item.IsSubscribed}
                 }
             );
+            if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
 
@@ -71,7 +72,7 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID == null) throw new InvalidDataException("the ID of the Customer is null. the Customer cannot be updated.");
             if (!item.IsChanged) return true;
-            return _db.SaveData(
+            bool toReturn = _db.SaveData(
                 @"UPDATE Customer
                 SET Name = $1,
                     Age = $2,
@@ -88,6 +89,8 @@ namespace DataAccessLibrary.logic
                     {"$6", item.ID}
                 }
             );
+            if (toReturn) item.IsChanged = false;
+            return toReturn;
         }
     }
 }

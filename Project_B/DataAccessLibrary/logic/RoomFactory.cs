@@ -30,6 +30,7 @@ namespace DataAccessLibrary.logic
                 }
             );
             bool result = RelatedItemsToDb(item);
+            if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0 && result;
         }
 
@@ -57,19 +58,29 @@ namespace DataAccessLibrary.logic
 
         public bool ItemToDb(RoomModel item)
         {
+            bool seatsChanged = false;
+            foreach (var seat in item.Seats)
+            {
+                if (seat.IsChanged)
+                {
+                    seatsChanged = true;
+                    break;
+                }
+            }
+            if (!item.IsChanged && seatsChanged) return RelatedItemsToDb(item);
             if (!item.IsChanged) return true;
             if (item.ID == null) return CreateItem(item);
             return UpdateItem(item);
         }
-
         public bool UpdateItem(RoomModel item)
         {
             if (item.ID == null) throw new InvalidDataException("the id of the room is null. the item cannot be updated.");
             if (!item.IsChanged) return true;
-            return RelatedItemsToDb(item)
-            && _db.SaveData(
+            bool result = RelatedItemsToDb(item);
+            if (!result) return result;
+            result = _db.SaveData(
                 @"UPDATE Room
-                SET Name = $1
+                SET Name = $1,
                     Capacity = $2
                 where ID = $3",
                 new Dictionary<string, dynamic?>(){
@@ -78,12 +89,15 @@ namespace DataAccessLibrary.logic
                     {"$3", item.ID}
                 }
             );
+            if (result) item.IsChanged = false;
+            return result;
         }
 
         private bool RelatedItemsToDb(RoomModel item)
         {
             foreach (SeatModel seat in item.Seats)
             {
+                if (!seat.IsChanged) continue;
                 seat.RoomID = item.ID;
                 _sf.ItemToDb(seat);
             }

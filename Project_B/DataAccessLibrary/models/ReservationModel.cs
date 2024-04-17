@@ -8,28 +8,35 @@ public class ReservationModel : DbItem
     /// <summary>
     /// the db Id of the Reservation. must be positive and should be readonly for external classes.
     /// </summary>
-    public override int? ID { get; internal set; }
+    public override int? ID { get; set; }
     public CustomerModel? Customer;
-    internal int? CostumerID { get; set; }
+    public int? CustomerID { get; set; }
     public TimeTableModel? TimeTable;
-    internal int TimeTableID { get; }
-    public string Note
+    public int? TimeTableID { get; set; }
+    public string? Note
     {
-        get => note;
+        get => _note;
         set
         {
-            note = value;
+            _note = value;
             IsChanged = true;
         }
     }
-    public List<SeatModel> ReservedSeats = new List<SeatModel>();
-    private string note;
-
-    public ReservationModel(int id, int costumerID, int timeTableID, string note)
+    public readonly List<SeatModel> ReservedSeats = new List<SeatModel>();
+    private string? _note;
+    public ReservationModel() { }
+    public ReservationModel(CustomerModel customer, TimeTableModel timeTable, List<SeatModel> seats, string? note = null)
+    : this(null, customer.ID, timeTable.ID, note)
+    {
+        Customer = customer;
+        TimeTable = timeTable;
+        ReservedSeats.AddRange(seats);
+    }
+    internal ReservationModel(int? id, int? customerId, int? timetableId, string? note)
     {
         ID = id;
-        CostumerID = costumerID;
-        TimeTableID = timeTableID;
+        CustomerID = customerId;
+        TimeTableID = timetableId;
         Note = note;
     }
 }

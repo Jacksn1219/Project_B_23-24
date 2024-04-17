@@ -8,7 +8,7 @@ namespace DataAccessLibraryTest
     public class SeatFactoryTest
     {
         private readonly SeatFactory _sf;
-        public const string TestDbPath = "actortest.db";
+        public const string TestDbPath = "seatTest.db";
         private DataAccess? _db;
         private RoomModel _room;
         public SeatFactoryTest()

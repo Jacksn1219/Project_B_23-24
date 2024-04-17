@@ -29,6 +29,7 @@ namespace DataAccessLibrary.logic
                     {"$4", item.RoomID}
                 }
             );
+            if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
 
@@ -68,7 +69,7 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID == null) throw new InvalidDataException("the seat has no ID therefore it cannot be updated.");
             if (!item.IsChanged) return true;
-            return _db.SaveData(
+            bool toReturn = _db.SaveData(
                 @"UPDATE Seat
                 SET RoomID = $1,
                     Name = $2,
@@ -83,6 +84,8 @@ namespace DataAccessLibrary.logic
                     {"$5", item.ID }
                 }
             );
+            item.IsChanged = !toReturn;
+            return toReturn;
         }
     }
 }

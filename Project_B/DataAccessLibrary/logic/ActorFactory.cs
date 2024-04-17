@@ -27,6 +27,7 @@ namespace DataAccessLibrary.logic
                     {"$3", item.Age}
                 }
             );
+            if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
 
@@ -64,7 +65,7 @@ namespace DataAccessLibrary.logic
         {
             if (!item.Exists) throw new InvalidDataException("this Actor's ID is null. this actor cannot be updated.");
             if (!item.IsChanged) return true;
-            return _db.SaveData(
+            bool toReturn = _db.SaveData(
                 @"UPDATE Actor
                 SET Name = $1,
                     Age = $2,
@@ -77,6 +78,8 @@ namespace DataAccessLibrary.logic
                     {"$4", item.ID}
                 }
             );
+            if (toReturn) item.IsChanged = false;
+            return toReturn;
         }
     }
 }

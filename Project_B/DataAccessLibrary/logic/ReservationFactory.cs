@@ -20,7 +20,8 @@ namespace DataAccessLibrary.logic
             if (item.ID != null) throw new InvalidDataException("the reservation is already in the db.");
             if (!item.IsChanged) return true;
             //add reservation
-            bool result = RelatedItemsToDb(item);
+            bool result = RelatedItemsItemDependsOnToDb(item);
+            if (!result) return false;
             item.ID = _db.CreateData(
                 @"INSERT INTO Reservation(
                     CustomerID,
@@ -29,11 +30,12 @@ namespace DataAccessLibrary.logic
                 )
                 VALUES($1,$2,$3)",
                 new Dictionary<string, dynamic?>(){
-                    {"$1", item.CostumerID},
+                    {"$1", item.CustomerID },
                     {"$2", item.TimeTableID},
                     {"$3", item.Note}
                 }
             );
+            result = RelatedItemsDependingOnItemToDb(item);
             return item.ID > 0 && result;
         }
 
@@ -42,10 +44,10 @@ namespace DataAccessLibrary.logic
             _db.SaveData(
                 @"CREATE TABLE IF NOT EXISTS Reservation(
                     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
-                    CostumerID INTEGER NOT NULL,
+                    CustomerID INTEGER NOT NULL,
                     TimeTableID INTEGER NOT NULL,
                     Note TEXT,
-                    FOREIGN KEY (CostumerID) REFERENCES Costumer (ID),
+                    FOREIGN KEY (CustomerID) REFERENCES Customer (ID),
                     FOREIGN KEY (TimeTableID) REFERENCES TimeTable (ID)
                 )"
             );
@@ -73,6 +75,23 @@ namespace DataAccessLibrary.logic
 
         public bool ItemToDb(ReservationModel item)
         {
+            bool customerChanged = item.Customer != null && item.Customer.IsChanged;
+            bool seatsChanged = false;
+            foreach (var seat in item.ReservedSeats)
+            {
+                if (seat.IsChanged)
+                {
+                    seatsChanged = true;
+                    break;
+                }
+            }
+            if (!item.IsChanged && item.Exists && (customerChanged || seatsChanged))
+            {
+                bool result = RelatedItemsItemDependsOnToDb(item);
+                if (!result) return result;
+                return RelatedItemsDependingOnItemToDb(item);
+            }
+
             if (!item.IsChanged) return true;
             if (item.ID == null) return CreateItem(item);
             else return UpdateItem(item);
@@ -82,28 +101,43 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID == null) throw new InvalidDataException("the Reservation does not have a value and cannot be updated.");
             if (!item.IsChanged) return true;
-            return RelatedItemsToDb(item)
-            && _db.SaveData(
+            bool result = RelatedItemsItemDependsOnToDb(item);
+            if (!result) { return result; }
+            result = _db.SaveData(
                 @"UPDATE Reservation
                 SET CustomerID = $1,
                     TimeTableID = $2,
                     Note = $3
-                WHERE ID = $4;",
+                WHERE ID = $4",
                 new Dictionary<string, dynamic?>(){
-                    {"$1", item.CostumerID},
+                    {"$1", item.CustomerID},
                     {"$2", item.TimeTableID},
                     {"$3", item.Note},
                     {"$4", item.ID}
                 }
             );
-
+            if (result)
+            {
+                item.IsChanged = false;
+                result = RelatedItemsDependingOnItemToDb(item);
+            }
+            return result;
         }
-        private bool RelatedItemsToDb(ReservationModel item)
+        private bool RelatedItemsItemDependsOnToDb(ReservationModel item)
         {
-            //add seats
+            // update/add the customer
+            if (item.Customer != null)
+            {
+                if (item.Customer.IsChanged) _cf.ItemToDb(item.Customer);
+                item.CustomerID = item.Customer.ID;
+            }
+            return true;
+        }
+        private bool RelatedItemsDependingOnItemToDb(ReservationModel item)
+        {
             foreach (SeatModel seat in item.ReservedSeats)
             {
-                _sf.ItemToDb(seat);
+                if (!seat.Exists) _sf.ItemToDb(seat);
                 _db.SaveData(
                     @"INSERT INTO ReservedSeat(
                         SeatID,
@@ -116,13 +150,8 @@ namespace DataAccessLibrary.logic
                     }
                 );
             }
-            // update/add the customer
-            if (item.Customer != null)
-            {
-                _cf.ItemToDb(item.Customer);
-                item.CostumerID = item.Customer.ID;
-            }
             return true;
         }
     }
+
 }

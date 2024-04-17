@@ -26,6 +26,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
                 {"$3", item.Description}
             }
         );
+        if (item.ID > 0) item.IsChanged = false;
         return item.ID > 0;
     }
 
@@ -62,7 +63,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
     {
         if (item.ID == null) throw new InvalidOperationException("cannot update a director without an ID.");
         if (!item.IsChanged) return true;
-        return _db.SaveData(
+        bool toReturn = _db.SaveData(
             @"UPDATE Director
             SET Name = $1,
                 Age = $2,
@@ -75,5 +76,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
                 {"$4", item.ID}
             }
         );
+        if (toReturn) item.IsChanged = false;
+        return toReturn;
     }
 }
