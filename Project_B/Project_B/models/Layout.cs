@@ -22,7 +22,7 @@ public class Layout
     /// Create database connection
     /// </summary>
     /// <returns>SQLiteConnection object</returns>
-    static SQLiteConnection CreateConnection()
+    public static SQLiteConnection CreateConnection()
     {
         SQLiteConnection sqlite_conn;
         // Create a new database connection:

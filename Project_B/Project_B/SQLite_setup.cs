@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Project_B
 {
-    class SQLite
+    public class SQLite
     {
         /// <summary>
         /// TEMPORARY FUNCTION : Made to upload a new Layout to the database.
@@ -1427,7 +1427,7 @@ namespace Project_B
         /// Create database connection
         /// </summary>
         /// <returns>SQLiteConnection object</returns>
-        static SQLiteConnection CreateConnection()
+        public static SQLiteConnection CreateConnection()
         {
             SQLiteConnection sqlite_conn;
             // Create a new database connection:
