@@ -340,25 +340,6 @@ public class Layout
             WriteColor("Q", ConsoleColor.Red);
             Console.Write(", Spatiebalk, A)\n\n");
 
-            /*Console.Write("Stoel types:\n (");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("N");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(") = Normaal\n (");
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.Write("E");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(") = Extra beenruimte\n (");
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.Write("L");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(") = Love Seat \n\nBetaal niveaus:\n (1) = niveau 1\n (2) = niveau 2\n (3) = niveau 3 \n\nAnders:\n (Enter) = 1x dan automatisch\n (Backspace) \n (");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("Q");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(") = goedkeuren volgorde \n");*/
-
-            //Console.Write("Stoel types:                 Betaal niveaus:              Anders:\n  (");
             Console.Write("Uitleg:\n  (");
             WriteColor("N", ConsoleColor.Blue);
             Console.Write(") = Normaal                (1) = Betaal niveau 1        (Enter) = 1x dan automatisch        (Spatiebalk) = Lege plek instellen\n  (");
@@ -381,7 +362,6 @@ public class Layout
             else if (userInput == ConsoleKey.A)
             {
                 if (getType == "0" || getRank == "0") Console.WriteLine("Not all required fields are filled in...");
-                //new Seat(seats.Count, Room_ID, $"{seats.Where(s => s.RoomID == 1).Count()}", getRank, getType),
                 else seats.Add(new Seat(seats.Count, 1, $"{seats.Where(s => s.RoomID == 1).Count()}", getRank, getType));
             }
             else

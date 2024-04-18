@@ -162,10 +162,15 @@ namespace Project_B
             , true);
             menu.Add("Klant", (x) => { klantMenu.UseMenu(); });
             menu.Add("Medewerker", (x) => {
-                Console.Write("| Inlog |\nWachtwoord: ");
-                string userInput = Console.ReadLine();
-                if (userInput != "w817") medewerkerMenu.UseMenu();
-            });
+            Console.Write("| Inlog |\nWachtwoord: ");
+            string userInput = Console.ReadLine();
+            if (userInput == "w817") medewerkerMenu.UseMenu();
+            else
+            {
+                Layout.ChangeColour(ConsoleColor.Red);
+                Console.WriteLine("Onjuist wachtwoord !");
+                Console.ReadLine();
+            }});
             menu.UseMenu(ConsoleColor.Gray);
         }
     }
