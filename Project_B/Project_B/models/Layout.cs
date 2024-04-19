@@ -90,7 +90,11 @@ public class Layout
         } catch { sqlite_conn.Close(); }
         sqlite_conn.Close();
     }
-    public static void ChangeColour(ConsoleColor colour) => Console.ForegroundColor = colour;
+    public static string ChangeColour(ConsoleColor colour)
+    {
+        Console.ForegroundColor = colour;
+        return "";
+    }
     public static void drawLayout(List<Seat> layout, Room room)
     {
         Console.Clear();
@@ -138,11 +142,12 @@ public class Layout
         }
         seatSelectionMenu.UseMenu();
     }
-    public static void WriteColor(string toPrint, ConsoleColor color)
+    public static string WriteColor(string toPrint, ConsoleColor color)
     {
         Console.ForegroundColor = color;
         Console.Write(toPrint);
         Console.ForegroundColor = ConsoleColor.White;
+        return "";
     }
     public static void editLayout(List<Seat> layout, Room room)
     {

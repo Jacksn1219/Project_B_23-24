@@ -2,14 +2,64 @@
 using Models;
 using Project_B.Services;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
 namespace Project_B
 {
     class Program
     {
+        public static string printAsTitle(string input)
+        {
+            input = input.Trim();
+            string toAdd = "";
+            for (int i = 0; i < Console.WindowWidth / 2 - (input.Length+6)/2-1; i++) toAdd += "-";
+            Layout.WriteColor(toAdd + "== ", ConsoleColor.Red);
+            Console.Write(input);
+            Layout.WriteColor(" ==" + toAdd, ConsoleColor.Red);
+            return ""; // (toAdd + input + toAdd).Substring(0, 119);
+        }
+        public static string centerToScreen(string input)
+        {
+            string toAdd = "";
+            for (int i = 0; i < Console.WindowWidth / 2 - input.Length / 2; i++) toAdd += " ";
+            return toAdd + input;
+        }
         public static void Main()
         {
+            List<Action> welcomeList = new List<Action>
+            {
+                () => {Layout.WriteColor("                    █████ █████", ConsoleColor.Cyan); Layout.WriteColor($"                              ", ConsoleColor.Gray); Layout.WriteColor(" ██████████", ConsoleColor.Cyan); Layout.WriteColor($"                            \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor("                   ░░███ ░░███ ", ConsoleColor.Cyan); Layout.WriteColor($"                              ", ConsoleColor.Gray); Layout.WriteColor("░░███░░░░░█", ConsoleColor.Cyan); Layout.WriteColor($"                            \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor("                    ░░███ ███  ", ConsoleColor.Cyan); Layout.WriteColor($"  ██████  █████ ████ ████████ ", ConsoleColor.Gray); Layout.WriteColor(" ░███  █ ░ ", ConsoleColor.Cyan); Layout.WriteColor($" █████ ████  ██████   █████ \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor("                     ░░█████   ", ConsoleColor.Cyan); Layout.WriteColor($" ███░░███░░███ ░███ ░░███░░███", ConsoleColor.Gray); Layout.WriteColor(" ░██████   ", ConsoleColor.Cyan); Layout.WriteColor($"░░███ ░███  ███░░███ ███░░  \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor("                      ░░███    ", ConsoleColor.Cyan); Layout.WriteColor($"░███ ░███ ░███ ░███  ░███ ░░░ ", ConsoleColor.Gray); Layout.WriteColor(" ░███░░█   ", ConsoleColor.Cyan); Layout.WriteColor($" ░███ ░███ ░███████ ░░█████ \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor("                       ░███    ", ConsoleColor.Cyan); Layout.WriteColor($"░███ ░███ ░███ ░███  ░███     ", ConsoleColor.Gray); Layout.WriteColor(" ░███ ░   █", ConsoleColor.Cyan); Layout.WriteColor($" ░███ ░███ ░███░░░   ░░░░███\n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor("                       █████   ", ConsoleColor.Cyan); Layout.WriteColor($"░░██████  ░░████████ █████    ", ConsoleColor.Gray); Layout.WriteColor(" ██████████", ConsoleColor.Cyan); Layout.WriteColor($" ░░███████ ░░██████  ██████ \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor("                      ░░░░░    ", ConsoleColor.Cyan); Layout.WriteColor($" ░░░░░░    ░░░░░░░░ ░░░░░     ", ConsoleColor.Gray); Layout.WriteColor("░░░░░░░░░░ ", ConsoleColor.Cyan); Layout.WriteColor($"  ░░░░░███  ░░░░░░  ░░░░░░  \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor($"                                                                          ███ ░███                  \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor($"                                                                         ░░██████                   \n", ConsoleColor.Gray);},
+                () => {Layout.WriteColor($"                                                                          ░░░░░░                    ", ConsoleColor.Gray); }
+            };
+            Console.CursorVisible = false;
+            Console.WriteLine("\n\n\n");
+            for (int i = 0; i < welcomeList.Count(); i++)
+            {
+                welcomeList[i]();
+                Thread.Sleep(100);
+            }
+            Thread.Sleep(400);
+            Console.Write("\n\n\n\n\n                                               ");
+            for (int i = 0; i < "Press <Any> key to continue...".Count();i++)
+            {
+                Console.Write("Press <Any> key to continue..."[i]);
+                Thread.Sleep(50);
+            }
+            Console.ReadLine();
+            Console.Clear();
+            Console.CursorVisible = true;
+
             // ------ Klant menu met menu opties ------//
             InputMenu klantMenu = new InputMenu("| Klant Menu |");
             klantMenu.Add("Timetable", (x) =>
@@ -147,31 +197,33 @@ namespace Project_B
 
                 Console.ReadLine();
             });
-            InputMenu menu = new InputMenu(@$"
- █████ █████                               ██████████                            
-░░███ ░░███                               ░░███░░░░░█                            
- ░░███ ███    ██████  █████ ████ ████████  ░███  █ ░  █████ ████  ██████   █████ 
-  ░░█████    ███░░███░░███ ░███ ░░███░░███ ░██████   ░░███ ░███  ███░░███ ███░░  
-   ░░███    ░███ ░███ ░███ ░███  ░███ ░░░  ░███░░█    ░███ ░███ ░███████ ░░█████ 
-    ░███    ░███ ░███ ░███ ░███  ░███      ░███ ░   █ ░███ ░███ ░███░░░   ░░░░███
-    █████   ░░██████  ░░████████ █████     ██████████ ░░███████ ░░██████  ██████ 
-   ░░░░░     ░░░░░░    ░░░░░░░░ ░░░░░     ░░░░░░░░░░   ░░░░░███  ░░░░░░  ░░░░░░  
-                                                       ███ ░███                  
-                                                      ░░██████                   
-                                                       ░░░░░░                    "
-            , true);
+            
+            InputMenu menu = new InputMenu("useLambda", true);
             menu.Add("Klant", (x) => { klantMenu.UseMenu(); });
-            menu.Add("Medewerker", (x) => {
-            Console.Write("| Inlog |\nWachtwoord: ");
-            string userInput = Console.ReadLine();
-            if (userInput == "w817") medewerkerMenu.UseMenu();
-            else
+            menu.Add("Medewerker", (x) =>
             {
-                Layout.ChangeColour(ConsoleColor.Red);
-                Console.WriteLine("Onjuist wachtwoord !");
-                Console.ReadLine();
-            }});
-            menu.UseMenu(ConsoleColor.Gray);
+                Console.Write("| Inlog |\nWachtwoord: ");
+                string userInput = Console.ReadLine();
+                if (userInput == "w817") medewerkerMenu.UseMenu();
+                else
+                {
+                    Layout.ChangeColour(ConsoleColor.Red);
+                    Console.WriteLine("Onjuist wachtwoord !");
+                    Console.ReadLine();
+                }
+            });
+            menu.UseMenu(() => { printAsTitle("Main Menu"); });
         }
     }
 }
+
+/*
+ * Unit tests Inputmenu
+ * Als klant wil ik zien welke stoelen al bezet zijn zodat ik niet per ongeluk een al gereserveerde stoel pak
+ * Als administratie wil ik de gereserveerde stoelen terugzien, zodat ik de klanten naar hun stoel kan begeleiden
+ * Als administratie wil ik graag zien hoe vol een zaal is, zodat ik kan zien of de desbetreffende film een grotere zaal nodig heeft of niet zo populair is
+ * Als administratie wil ik een nieuwe film toevoegen, zodat we telkens de nieuwste films kunnen laten zien.
+ * Als administratie wil ik slecht lopende films verwijderen, zodat we geen films laten zien die niet populair zijn.
+ * Als administratie wil ik films kunnen aanpassen, zodat als ik een fout maak ik de film niet opnieuw aan moet maken.
+ * Als medewerker wil ik in kunnen loggen, zodat niet iedereen administratorrechten heeft
+*/

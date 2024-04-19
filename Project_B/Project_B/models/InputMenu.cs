@@ -1,4 +1,5 @@
 ﻿using DataAccessLibrary;
+using Project_B;
 
 namespace Models
 {
@@ -34,18 +35,19 @@ namespace Models
         /// <summary>
         /// Print menu to screen
         /// </summary>
-        public void Draw(int cursor, ConsoleColor changeColorHeader)
+        public void Draw(int cursor, Action? printMenu)
         {
-            Console.Clear();
-            Layout.ChangeColour(changeColorHeader);
-            Console.WriteLine(this.introduction);
+            //Console.Clear();
+            Console.SetCursorPosition(0, 0);
+            if (this.introduction == "useLambda" && printMenu != null) printMenu();
+            else Console.WriteLine(this.introduction);
             for (int i = 0; i <= this.menuoptions.Count; i++)
             {
                 if (i % row == 0) Console.Write("\n");
                 if (i == cursor)
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write((i == this.menuoptions.Count) ? (this.exit) ? "> Exit" : "> Back" : $"> {this.menuoptions[i].Name}");
+                    Console.Write((i == this.menuoptions.Count) ? (this.exit) ? Program.centerToScreen("Exit") : Program.centerToScreen("Back") : Program.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 else
                 {
@@ -59,7 +61,7 @@ namespace Models
                             _ => ConsoleColor.Gray
                         };
                     } catch { }
-                    Console.Write(i == this.menuoptions.Count ? this.exit ? "  Exit" : "  Back" : $"  {this.menuoptions[i].Name}");
+                    Console.Write(i == this.menuoptions.Count ? this.exit ? Program.centerToScreen("Exit") : Program.centerToScreen("Back") : Program.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 Console.ResetColor();
             };
@@ -69,7 +71,7 @@ namespace Models
         /// Activating the menu
         /// </summary>
         /// <param name="row"></param>
-        public void UseMenu(ConsoleColor changeColorHeader = ConsoleColor.White)
+        public void UseMenu(Action? printMenu = null)
         {
             Console.CursorVisible = false;
             int cursor = 0;
@@ -77,7 +79,7 @@ namespace Models
             //Main loop
             while (userInput != ConsoleKey.Q)
             {
-                Draw(cursor, changeColorHeader);
+                Draw(cursor, printMenu);
 
                 //Getting User choice
                 userInput = Console.ReadKey().Key;
@@ -108,13 +110,17 @@ namespace Models
                 }
                 else if (userInput == ConsoleKey.Enter)
                 {
+                    Console.Clear();
                     if (cursor == this.menuoptions.Count)
                     {
                         Console.Clear();
                         if (this.exit) Environment.Exit(0);
                         return;
                     }
-                    else { this.menuoptions[cursor].Act(""); }
+                    else {
+                        this.menuoptions[cursor].Act("");
+                        Console.Clear();
+                    }
                 }
             }
         }
