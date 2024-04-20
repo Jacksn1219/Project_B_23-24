@@ -14,16 +14,16 @@ namespace Project_B
         {
             input = input.Trim();
             string toAdd = "";
-            for (int i = 0; i < Console.WindowWidth / 2 - (input.Length+6)/2-1; i++) toAdd += "-";
-            Layout.WriteColor(toAdd + "== ", ConsoleColor.Red);
+            for (int i = 0; i < Console.WindowWidth / 2/4 - (input.Length+6)/2-1; i++) toAdd += "-";
+            Layout.WriteColor(toAdd + "== ", ConsoleColor.Blue);
             Console.Write(input);
-            Layout.WriteColor(" ==" + toAdd, ConsoleColor.Red);
+            Layout.WriteColor(" ==" + toAdd, ConsoleColor.Blue);
             return ""; // (toAdd + input + toAdd).Substring(0, 119);
         }
         public static string centerToScreen(string input)
         {
             string toAdd = "";
-            for (int i = 0; i < Console.WindowWidth / 2 - input.Length / 2; i++) toAdd += " ";
+            for (int i = 0; i < Console.WindowWidth / 2/4; i++) toAdd += " ";
             return toAdd + input;
         }
         public static void Main()
@@ -50,13 +50,34 @@ namespace Project_B
                 Thread.Sleep(100);
             }
             Thread.Sleep(400);
-            Console.Write("\n\n\n\n\n                                               ");
-            for (int i = 0; i < "Press <Any> key to continue...".Count();i++)
+            Console.Write("\n\n\n\n\n                                               Loading data...");
+            Console.SetCursorPosition(Console.CursorLeft - 15, Console.CursorTop);
+
+            // setup starting data
+            SQLite.SetupProjectB();
+
+            ConsoleKey key;
+            do
+            {
+                Console.Write("Press <Any> key to continue...");
+                Thread.Sleep(700);
+                Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+                if(Console.KeyAvailable) break;
+                Console.Write("                              ");
+                Thread.Sleep(700);
+                Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+            } while (!Console.KeyAvailable);
+
+            // Key is available - read it
+            key = Console.ReadKey(true).Key;
+
+
+            /*for (int i = 0; i < "Press <Any> key to continue...".Count();i++)
             {
                 Console.Write("Press <Any> key to continue..."[i]);
-                Thread.Sleep(50);
-            }
-            Console.ReadLine();
+                Thread.Sleep(100);
+            }*/
+            //Console.ReadLine();
             Console.Clear();
             Console.CursorVisible = true;
 
@@ -212,7 +233,7 @@ namespace Project_B
                     Console.ReadLine();
                 }
             });
-            menu.UseMenu(() => { printAsTitle("Main Menu"); });
+            menu.UseMenu(() => printAsTitle("Main Menu"));
         }
     }
 }

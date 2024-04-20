@@ -46,8 +46,10 @@ namespace Models
                 if (i % row == 0) Console.Write("\n");
                 if (i == cursor)
                 {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write((i == this.menuoptions.Count) ? (this.exit) ? Program.centerToScreen("Exit") : Program.centerToScreen("Back") : Program.centerToScreen($"{this.menuoptions[i].Name}"));
+                    Console.BackgroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write((i == this.menuoptions.Count) ? this.exit ? "Exit" : "Back" : $"{this.menuoptions[i].Name}");
+                    Console.ResetColor();
                 }
                 else
                 {
@@ -61,7 +63,7 @@ namespace Models
                             _ => ConsoleColor.Gray
                         };
                     } catch { }
-                    Console.Write(i == this.menuoptions.Count ? this.exit ? Program.centerToScreen("Exit") : Program.centerToScreen("Back") : Program.centerToScreen($"{this.menuoptions[i].Name}"));
+                    Console.Write(i == this.menuoptions.Count ? this.exit ? "Exit" : "Back" : $"{this.menuoptions[i].Name}");
                 }
                 Console.ResetColor();
             };
@@ -76,6 +78,7 @@ namespace Models
             Console.CursorVisible = false;
             int cursor = 0;
             ConsoleKey userInput = ConsoleKey.Delete;
+            Console.Clear();
             //Main loop
             while (userInput != ConsoleKey.Q)
             {
