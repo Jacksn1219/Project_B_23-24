@@ -41,14 +41,15 @@ namespace Models
             Console.SetCursorPosition(0, 0);
             if (this.introduction == "useLambda" && printMenu != null) printMenu();
             else Console.WriteLine(this.introduction);
+
             for (int i = 0; i <= this.menuoptions.Count; i++)
             {
                 if (i % row == 0) Console.Write("\n");
                 if (i == cursor)
                 {
-                    Console.BackgroundColor = ConsoleColor.Cyan;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.Write((i == this.menuoptions.Count) ? this.exit ? "Exit" : "Back" : $"{this.menuoptions[i].Name}");
+                    //Console.BackgroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write((i == this.menuoptions.Count) ? this.exit ? Program.centerToScreen("Exit") : Program.centerToScreen("Back") : Program.centerToScreen($"{this.menuoptions[i].Name}"));
                     Console.ResetColor();
                 }
                 else
@@ -63,7 +64,7 @@ namespace Models
                             _ => ConsoleColor.Gray
                         };
                     } catch { }
-                    Console.Write(i == this.menuoptions.Count ? this.exit ? "Exit" : "Back" : $"{this.menuoptions[i].Name}");
+                    Console.Write(i == this.menuoptions.Count ? this.exit ? Program.centerToScreen("Exit") : Program.centerToScreen("Back") : Program.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 Console.ResetColor();
             };

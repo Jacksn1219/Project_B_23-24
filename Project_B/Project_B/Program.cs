@@ -15,16 +15,16 @@ namespace Project_B
             input = input.Trim();
             string toAdd = "";
             for (int i = 0; i < Console.WindowWidth / 2/4 - (input.Length+6)/2-1; i++) toAdd += "-";
-            Layout.WriteColor(toAdd + "== ", ConsoleColor.Blue);
+            Layout.WriteColor(toAdd + "== ", ConsoleColor.Cyan);
             Console.Write(input);
-            Layout.WriteColor(" ==" + toAdd, ConsoleColor.Blue);
+            Layout.WriteColor(" ==" + toAdd, ConsoleColor.Cyan);
             return ""; // (toAdd + input + toAdd).Substring(0, 119);
         }
         public static string centerToScreen(string input)
         {
             string toAdd = "";
-            for (int i = 0; i < Console.WindowWidth / 2/4; i++) toAdd += " ";
-            return toAdd + input;
+            for (int i = 0; i < Console.WindowWidth / 2/ 4 - (input.Length + 6) / 2 - 1 + 4; i++) toAdd += " ";
+            return toAdd + input + toAdd;
         }
         public static void Main()
         {
