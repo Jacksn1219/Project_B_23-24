@@ -2,9 +2,9 @@
 using Models;
 using Project_B.Services;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using System.Net.Mail;
 
 namespace Project_B
 {
@@ -78,12 +78,20 @@ namespace Project_B
                 Thread.Sleep(100);
             }*/
             //Console.ReadLine();
-            Console.Clear();
             Console.CursorVisible = true;
 
             // ------ Klant menu met menu opties ------//
-            InputMenu klantMenu = new InputMenu("| Klant Menu |");
-            klantMenu.Add("Timetable", (x) =>
+            InputMenu klantMenu = new InputMenu("useLambda");
+            klantMenu.Add("Movies", (x) =>
+            {
+                //Show all movies that are in the timetable and load timetable from only the selected movie
+            });
+            klantMenu.Add("Schedule", (x) =>
+            {
+                //Show the timetable and the book ticket
+            });
+
+            /*klantMenu.Add("Timetable", (x) =>
             {
                 Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
                 Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
@@ -101,11 +109,52 @@ namespace Project_B
                 // Tonen van de timetable
                 timetable.DisplayTimetable();
                 Console.ReadLine();
-            });
+            });*/
 
             // ------ Medewerker menu met menu opties ------//
-            InputMenu medewerkerMenu = new InputMenu("| Medewerker Menu |");
-            medewerkerMenu.Add("Setup Database", (x) =>
+            InputMenu medewerkerMenu = new InputMenu("useLambda");
+            medewerkerMenu.Add("Planning", (x) =>
+            {
+                //Inplannen film en aanpassen wat er geplanned is en Kunnen zien notities klanten
+            });
+            medewerkerMenu.Add("Reservaties", (x) =>
+            {
+                //Zie gemaakte reservaties voor timetable films
+            });
+            medewerkerMenu.Add("Historie", (x) =>
+            {
+                //Zie verkoop per film, week en maand en kunnen filteren per verkoop hoeveelheid
+            });
+            medewerkerMenu.Add("Aanmaken", (x) =>
+            {
+                //Aanmaken nieuwe film, acteur, regiseur, zaal.
+            });
+            medewerkerMenu.Add("Send Mail", (x) =>
+            {
+                var email = new MimeMessage();
+
+                email.From.Add(new MailboxAddress("Sender Name", "sender@email.com"));
+                email.To.Add(new MailboxAddress("Receiver Name", "receiver@email.com"));
+
+                email.Subject = "Testing out email sending";
+                email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                {
+                    Text = "<b>Hello all the way from the land of C#</b>"
+                };
+
+                using (var smtp = new SmtpClient())
+                {
+                    smtp.Connect("smtp.server.address", 587, false);
+
+                    // Note: only needed if the SMTP server requires authentication
+                    smtp.Authenticate("smtp_username", "smtp_password");
+
+                    smtp.Send(email);
+                    smtp.Disconnect(true);
+                }
+            });
+
+            /*medewerkerMenu.Add("Setup Database", (x) =>
             {
                 //Opzet Sqlite database
                 SQLite.SetupProjectB();
@@ -141,9 +190,9 @@ namespace Project_B
                 };
                 List<Room> roomList = new List<Room> { new Room(1, "Room1", layout1.Count, 6) };
                 InputMenu selectRoom = new InputMenu("| Select room to edit |");
-                foreach (Room room in roomList/*getRoomFromDatabase() - Aymane*/)
+                foreach (Room room in roomList) //getRoomFromDatabase() - Aymane
                 {
-                    selectRoom.Add($"{room.Name}", (x) => DataAccessLibrary.Layout.editLayout(layout1/*getLayoutFromDatabase() - Aymane*/, room));
+                    selectRoom.Add($"{room.Name}", (x) => DataAccessLibrary.Layout.editLayout(layout1 getLayoutFromDatabase() - Aymane, room));
                 }
                 selectRoom.UseMenu();
             });
@@ -165,7 +214,7 @@ namespace Project_B
                 // Tonen van de timetable
                 timetable.DisplayTimetable();
                 Console.ReadLine();
-            });
+            });*/
             medewerkerMenu.Add("Reserve Seats", (x) =>
             {
                 // Ask for user's age
@@ -220,12 +269,12 @@ namespace Project_B
             });
             
             InputMenu menu = new InputMenu("useLambda", true);
-            menu.Add("Klant", (x) => { klantMenu.UseMenu(); });
+            menu.Add("Klant", (x) => { klantMenu.UseMenu(() => printAsTitle("Klant Menu")); });
             menu.Add("Medewerker", (x) =>
             {
                 Console.Write("| Inlog |\nWachtwoord: ");
                 string userInput = Console.ReadLine();
-                if (userInput == "w817") medewerkerMenu.UseMenu();
+                if (userInput == "w817") medewerkerMenu.UseMenu(() => printAsTitle("Medewerker Menu"));
                 else
                 {
                     Layout.ChangeColour(ConsoleColor.Red);
