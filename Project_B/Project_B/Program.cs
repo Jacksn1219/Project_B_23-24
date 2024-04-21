@@ -4,7 +4,6 @@ using Project_B.Services;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
-using System.Net.Mail;
 
 namespace Project_B
 {
