@@ -12,11 +12,11 @@ public class Movie
     public Movie(int id, string title, int directorID, int pegiAge, string discription, string genre, int durationInMin)
     {
         ID = id;
+        Title = title;
         DirectorID = directorID;
         this.pegiAge = pegiAge;
         Discription = discription;
         Genre = genre;
         DurationInMin = durationInMin;
-        Title = title;
     }
 }
