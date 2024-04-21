@@ -2,6 +2,7 @@
 using Models;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using TimeTablemodels;
 
 namespace Project_B
 {
@@ -58,6 +59,11 @@ namespace Project_B
             });
             menu.Add("Timetable", (x) =>
             {
+                List<Movie> movieLayout1 = new List<Movie>{
+                    new Movie(0, "Rocky", 0, 14, "Much action and good plot", "Action", 120)
+                };
+                List<TimeTable> timeTableList = new List<TimeTable> { new TimeTable(0, 0, 1, "2024-3-24 12:00:00", "2024-3-24 14:00:00")};
+                InputMenuTT selectTimeTable = new InputMenuTT("| Select TimeTable |");
                 Console.ReadLine();
             });
 

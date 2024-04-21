@@ -14,7 +14,7 @@ namespace Project_B
         /// </summary>
         /// <param name="layout"></param>
         /// <param name="room"></param>
-        public static void upload_to_database(List<Seat> seats, Room room, TimeTable timeTable)
+        public static void upload_to_database(List<Seat> seats, Room room, TimeTable timeTable, List<Movie> movies)
         {
             SQLiteConnection sqlite_conn;
             sqlite_conn = CreateConnection();
@@ -279,7 +279,7 @@ namespace Project_B
                     //Saving to DB
                     List<int> RowWidthsLayouts = new List<int> { 12, 18, 30 };
                     foreach (List<Seat> layout in _layoutList) {
-                        upload_to_database(layout, new Room(layout[0].RoomID, $"Room{layout[0].RoomID}", layout.Count, RowWidthsLayouts[layout[0].RoomID - 1]));
+                        upload_to_database(layout, new Room(layout[0].RoomID, $"Room{layout[0].RoomID}", layout.Count, RowWidthsLayouts[layout[0].RoomID - 1]), new TimeTable(0, 0, 1, "2024-3-24 12:00:00", "2024-3-24 14:00:00"), movieLayout1);
                     }
                     Console.WriteLine("\n--- 100% ---\nLayout database setup!");
                 }
