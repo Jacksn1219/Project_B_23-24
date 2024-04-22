@@ -24,8 +24,8 @@ namespace Project_B.Services
             // This is a placeholder; you'd replace this with actual database fetching logic
 
             // For now, let's use the example layout creation logic from Layout class
-            var seats = new List<Seat>(); // Placeholder for fetched seats from the database
-            var room = new Room(roomID, $"Room{roomID}", 10); // Example room with RowWidth 10
+            var seats = new List<SeatModel>(); // Placeholder for fetched seats from the database
+            var room = new RoomModel($"Room{roomID}", 10, 10); // Example room with RowWidth 10
             Layout.drawLayout(seats, room);
         }
 
@@ -53,15 +53,15 @@ namespace Project_B.Services
             }
         }
 
-        public static List<Seat> GetAvailableSeats(int roomID)
+        public static List<SeatModel> GetAvailableSeats(int roomID)
         {
             // Fetch available seats for the selected room from the database
             // This is a placeholder; you'd replace this with actual database fetching logic
-            var availableSeats = new List<Seat>
+            var availableSeats = new List<SeatModel>
             {
                 // Sample seats; replace with actual fetched data
-                new Seat(1, roomID, "A1", "1", "Normaal"),
-                new Seat(2, roomID, "A2", "1", "Normaal"),
+                new SeatModel("A1", "1", "Normaal"),
+                new SeatModel("A2", "1", "Normaal"),
                 // ... add more seats
             };
 

@@ -1,8 +1,6 @@
-﻿using DataAccessLibrary;
+using System.Text.Json;
 using Models;
-using Project_B.Services;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
 namespace Project_B
@@ -195,6 +193,14 @@ namespace Project_B
                 // Ask for user's age
                 Console.Write("Enter your age: ");
                 if (int.TryParse(Console.ReadLine(), out int userAge))
+                { }
+                // Display available rooms
+                //ReservationService.DisplayAvailableRooms();
+
+                /* Ask user to choose a room
+
+                Console.Write("Choose a room (1, 2, or 3): ");
+                if (int.TryParse(Console.ReadLine(), out int selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
                 {
                     // Display available rooms
                     ReservationService.DisplayAvailableRooms();
@@ -203,41 +209,28 @@ namespace Project_B
                     Console.Write("Choose a room (1, 2, or 3): ");
                     if (int.TryParse(Console.ReadLine(), out int selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
                     {
-                        // Display the layout of the selected room
-                        ReservationService.DisplayRoomLayout(selectedRoomID);
-
-                        // Display available seats
-                        var availableSeats = ReservationService.GetAvailableSeats(selectedRoomID);
-                        Console.WriteLine("Available Seats:");
-                        foreach (var seat in availableSeats)
-                        {
-                            Console.WriteLine($"Seat ID: {seat.ID}, Room ID: {seat.RoomID}, Name: {seat.Name}, Rank: {seat.Rank}, Type: {seat.Type}");
-                        }
-
-                        // Ask user to choose seats
-                        Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
-                        var input = Console.ReadLine();
-                        var seatNumbers = new List<int>();
-
-                        foreach (var seatNumber in input.Split(','))
-                        {
-                            if (int.TryParse(seatNumber.Trim(), out int num))
-                            {
-                                seatNumbers.Add(num);
-                            }
-                        }
-
-                        // Reserve seats
-                        ReservationService.ReserveSeats(selectedRoomID, seatNumbers, userAge);
+                        Console.WriteLine($"Seat ID: {seat.ID}, Room ID: {seat.RoomID}, Name: {seat.Name}, Rank: {seat.Rank}, Type: {seat.Type}");
                     }
-                    else
+
+                    // Ask user to choose seats
+                    Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
+                    var input = Console.ReadLine();
+                    var seatNumbers = new List<int>();
+
+                    foreach (var seatNumber in input.Split(','))
                     {
-                        Console.WriteLine("Invalid room selection.");
+                        if (int.TryParse(seatNumber.Trim(), out int num))
+                        {
+                            seatNumbers.Add(num);
+                        }
                     }
+
+                    // Reserve seats
+                    //ReservationService.ReserveSeats(selectedRoomID, seatNumbers, userAge);
                 }
                 else
                 {
-                    Console.WriteLine("Invalid age input.");
+                    Console.WriteLine("Invalid room selection.");
                 }
 
                 Console.ReadLine();

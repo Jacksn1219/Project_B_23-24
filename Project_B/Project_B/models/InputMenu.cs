@@ -23,7 +23,7 @@ namespace Models
         /// <param name="Name"></param>
         /// <param name="Act"></param>
         /// <param name="isTaken"></param>
-        public void Add(string Name, Action<string> Act, bool? isTaken = null, int? ID = null) => this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken, ID));
+        public void Add(string Name, Action<string> Act, bool? isTaken = null, int? ID = null) => this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken));
 
         /// <summary>
         /// Remove item from menu option list
@@ -95,7 +95,7 @@ namespace Models
                     while (cursor > 0 && this.menuoptions[cursor].Name == " ") cursor = Math.Max(cursor - row, 0);
                     while (this.menuoptions[cursor].Name == " " && cursor < this.menuoptions.Count) cursor++;
                 }
-                else if ((userInput == ConsoleKey.DownArrow || userInput ==  ConsoleKey.S) && cursor < this.menuoptions.Count)
+                else if ((userInput == ConsoleKey.DownArrow || userInput == ConsoleKey.S) && cursor < this.menuoptions.Count)
                 {
                     cursor = Math.Min(cursor + row, this.menuoptions.Count);
                     while (cursor < this.menuoptions.Count && this.menuoptions[cursor].Name == " ") cursor = Math.Min(cursor + row, this.menuoptions.Count);
