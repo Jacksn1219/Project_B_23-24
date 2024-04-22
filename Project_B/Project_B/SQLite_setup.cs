@@ -319,9 +319,19 @@ namespace Project_B
             try
             {
                 ExcecuteQuerry(sqlite_conn, @$"INSERT INTO Movie( Title, DirectorID, pegiAge, Discription, Genre, DurationInMin ) VALUES (
-                    {title}
-                )")
+                    '{title}', '{directorID}', '{pegiAge}', '{discription}', '{genre}', '{durationInMin}'
+                ); ");
+                sqlite_conn.Close();
             }
+            catch
+            {
+                sqlite_conn.Close();
+            }
+        }
+
+        public static void addMovieToDatabase(List<Movie> movies)
+        {
+            foreach (Movie movie in movies) { addMovieToDatabase(movie.Title, movie.DirectorID, movie.pegiAge, movie.Discription, movie.Genre, movie.DurationInMin); }
         }
 
         /// <summary>

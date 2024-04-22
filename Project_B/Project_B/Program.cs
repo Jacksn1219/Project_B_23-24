@@ -60,10 +60,21 @@ namespace Project_B
             menu.Add("Timetable", (x) =>
             {
                 List<Movie> movieLayout1 = new List<Movie>{
-                    new Movie(0, "Rocky", 0, 14, "Much action and good plot", "Action", 120)
+                    new Movie(1, "Rocky", 1, 14, "Much action and good plot", "Action", 120),
+                    new Movie(2, "Indiana Jones and The Lost Ark", 1, 16, "Wereldreiziger en archeoloog Indiana Jones wordt net voor de Tweede Wereldoorlog door de Amerikaanse overheid ingehuurd om een religieus relikwie op te sporen, voordat dit artefact in de handen van de Nazi's valt.", "Adventure, Action", 150),
+                    new Movie(3, "Gone In 60 Seconds", 1, 18, "Randall Raines, een ex-autodief, leidt al een aantal jaren een rustig leven. Maar als zijn broer zich in de nesten werkt moet Randall zijn oude activiteiten weer oppakken om zijn broeder te redden.", "Action, Adventure, Thriller, Drama, Horror, Detective", 180),
+                    new Movie(4, "Interstellar", 1, 12, "Terwijl de aarde niet meer in staat is om de mensheid in haar levensbehoefte te voorzien, gaat een groep ontdekkingsreizigers, ver buiten het melkwegstelsel, op zoek naar een toekomst voor de mens achter de sterren.", "drama, adventure, and speculative fiction", 90),
+                    new Movie(5, "Cars 2", 1, 6, "Racecar Lightning McQueen en Mater besluiten mee te doen aan de World Grand Prix. Mater raakt onderweg echter betrokken bij spionage.", "action, comedy, and spy thriller", 120)
                 };
-                List<TimeTable> timeTableList = new List<TimeTable> { new TimeTable(0, 0, 1, "2024-3-24 12:00:00", "2024-3-24 14:00:00")};
-                InputMenuTT selectTimeTable = new InputMenuTT("| Select TimeTable |");
+                List<TimeTable> timeTableList = new List<TimeTable> { new TimeTable(1, 1, 1, "2024-3-24 12:00:00", "2024-3-24 14:00:00")};
+                foreach (TimeTable timeTable in timeTableList)
+                {
+                    IEnumerable<Movie> query = movieLayout1.Where(movie => movie.ID == timeTable.MovieID);
+                    foreach (Movie movie in query)
+                    {
+                        Console.WriteLine($"Movie: {movie.Title}");
+                    }
+                }
                 Console.ReadLine();
             });
 
