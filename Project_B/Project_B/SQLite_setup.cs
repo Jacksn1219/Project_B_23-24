@@ -46,12 +46,14 @@ namespace Project_B
                 }
                 ExcecuteQuerry(sqlite_conn, $@"INSERT INTO TimeTable(
                     ID,
+                    Name,
                     MovieID,
                     RoomID,
                     StartDate,
                     EndDate
                 ) VALUES (
                     {timeTable.ID},
+                    {timeTable.Name},
                     {timeTable.MovieID},
                     {timeTable.RoomID},
                     {timeTable.StartDate},
@@ -279,7 +281,7 @@ namespace Project_B
                     //Saving to DB
                     List<int> RowWidthsLayouts = new List<int> { 12, 18, 30 };
                     foreach (List<Seat> layout in _layoutList) {
-                        upload_to_database(layout, new Room(layout[0].RoomID, $"Room{layout[0].RoomID}", layout.Count, RowWidthsLayouts[layout[0].RoomID - 1]), new TimeTable(0, 0, 0, "2024-3-24 12:00:00", "2024-3-24 14:00:00"), movieLayout1);
+                        upload_to_database(layout, new Room(layout[0].RoomID, $"Room{layout[0].RoomID}", layout.Count, RowWidthsLayouts[layout[0].RoomID - 1]), new TimeTable(0, "", 0, 0, "2024-3-24 12:00:00", "2024-3-24 14:00:00"), movieLayout1);
                     }
                     Console.WriteLine("\n--- 100% ---\nLayout database setup!");
                 }
