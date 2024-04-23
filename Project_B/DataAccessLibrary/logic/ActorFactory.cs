@@ -57,7 +57,7 @@ namespace DataAccessLibrary.logic
         public bool ItemToDb(ActorModel item)
         {
             if (!item.IsChanged) return true;
-            if (item.Exists) return CreateItem(item);
+            if (!item.Exists) return CreateItem(item);
             return UpdateItem(item);
         }
 
