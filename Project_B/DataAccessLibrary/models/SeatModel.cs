@@ -8,7 +8,7 @@ public class SeatModel : DbItem
     private string _rank;
     private string _type;
 
-    internal int? RoomID { get; set; }
+    public int? RoomID { get; set; }
     public RoomModel? Room;
     public string Name
     {

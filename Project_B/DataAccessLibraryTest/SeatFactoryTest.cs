@@ -5,13 +5,13 @@ using DataAccessLibrary.logic;
 namespace DataAccessLibraryTest
 {
     [TestClass]
-    public class SeatFactoryTest
+    public class SeatModelFactoryTest
     {
-        private readonly SeatFactory _sf;
-        public const string TestDbPath = "seatTest.db";
+        private readonly SeatModelFactory _sf;
+        public const string TestDbPath = "SeatModelTest.db";
         private DataAccess? _db;
         private RoomModel _room;
-        public SeatFactoryTest()
+        public SeatModelFactoryTest()
         {
             try
             {
@@ -23,7 +23,7 @@ namespace DataAccessLibraryTest
             }
 
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
-            _sf = new SeatFactory(_db);
+            _sf = new SeatModelFactory(_db);
             var rf = new RoomFactory(_db, _sf);
             _room = new RoomModel(
                     "test", 10, 10
@@ -33,7 +33,7 @@ namespace DataAccessLibraryTest
             );
         }
         [TestMethod]
-        public void AddSeatToDBTest()
+        public void AddSeatModelToDBTest()
         {
             SeatModel zetel = new SeatModel
             (
@@ -43,7 +43,7 @@ namespace DataAccessLibraryTest
             Assert.IsTrue(zetel.Exists);
         }
         [TestMethod]
-        public void GetSeatFromDbTest()
+        public void GetSeatModelFromDbTest()
         {
             SeatModel zetel = new(
                 "zetel 2", "ok", "zetel", _room
@@ -53,7 +53,7 @@ namespace DataAccessLibraryTest
             Assert.AreEqual(zetel.Name, newZetel.Name);
         }
         [TestMethod]
-        public void UpdateSeatToDBTest()
+        public void UpdateSeatModelToDBTest()
         {
             SeatModel zetel = new(
                 "zetel 3", "spelling error", "zetel", _room

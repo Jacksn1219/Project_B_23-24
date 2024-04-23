@@ -5,9 +5,9 @@ namespace DataAccessLibrary.logic
     public class RoomFactory : IDbItemFactory<RoomModel>
     {
         private readonly DataAccess _db;
-        private readonly SeatFactory _sf;
+        private readonly SeatModelFactory _sf;
 
-        public RoomFactory(DataAccess db, SeatFactory sf)
+        public RoomFactory(DataAccess db, SeatModelFactory sf)
         {
             _db = db;
             _sf = sf;
@@ -61,16 +61,16 @@ namespace DataAccessLibrary.logic
 
         public bool ItemToDb(RoomModel item)
         {
-            bool seatsChanged = false;
-            foreach (var seat in item.Seats)
+            bool SeatModelsChanged = false;
+            foreach (var SeatModel in item.SeatModels)
             {
-                if (seat.IsChanged)
+                if (SeatModel.IsChanged)
                 {
-                    seatsChanged = true;
+                    SeatModelsChanged = true;
                     break;
                 }
             }
-            if (!item.IsChanged && seatsChanged) return RelatedItemsToDb(item);
+            if (!item.IsChanged && SeatModelsChanged) return RelatedItemsToDb(item);
             if (!item.IsChanged) return true;
             if (item.ID == null) return CreateItem(item);
             return UpdateItem(item);
@@ -100,11 +100,11 @@ namespace DataAccessLibrary.logic
 
         private bool RelatedItemsToDb(RoomModel item)
         {
-            foreach (SeatModel seat in item.Seats)
+            foreach (SeatModel SeatModel in item.SeatModels)
             {
-                if (!seat.IsChanged) continue;
-                seat.RoomID = item.ID;
-                _sf.ItemToDb(seat);
+                if (!SeatModel.IsChanged) continue;
+                SeatModel.RoomID = item.ID;
+                _sf.ItemToDb(SeatModel);
             }
             return true;
         }

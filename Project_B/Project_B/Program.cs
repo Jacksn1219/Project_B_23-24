@@ -7,37 +7,21 @@ namespace Project_B
 {
     class Program
     {
-        public static string printAsTitle(string input)
-        {
-            input = input.Trim();
-            string toAdd = "";
-            for (int i = 0; i < Console.WindowWidth / 2/4 - (input.Length+6)/2-1; i++) toAdd += "-";
-            Layout.WriteColor(toAdd + "== ", ConsoleColor.Cyan);
-            Console.Write(input);
-            Layout.WriteColor(" ==" + toAdd, ConsoleColor.Cyan);
-            return ""; // (toAdd + input + toAdd).Substring(0, 119);
-        }
-        public static string centerToScreen(string input)
-        {
-            string toAdd = "";
-            for (int i = 0; i < Console.WindowWidth / 2/ 4 - (input.Length + 6) / 2 - 1 + 4; i++) toAdd += " ";
-            return toAdd + input + toAdd;
-        }
         public static void Main()
         {
             List<Action> welcomeList = new List<Action>
             {
-                () => {Layout.WriteColor("                    █████ █████", ConsoleColor.Cyan); Layout.WriteColor($"                              ", ConsoleColor.Gray); Layout.WriteColor(" ██████████", ConsoleColor.Cyan); Layout.WriteColor($"                            \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor("                   ░░███ ░░███ ", ConsoleColor.Cyan); Layout.WriteColor($"                              ", ConsoleColor.Gray); Layout.WriteColor("░░███░░░░░█", ConsoleColor.Cyan); Layout.WriteColor($"                            \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor("                    ░░███ ███  ", ConsoleColor.Cyan); Layout.WriteColor($"  ██████  █████ ████ ████████ ", ConsoleColor.Gray); Layout.WriteColor(" ░███  █ ░ ", ConsoleColor.Cyan); Layout.WriteColor($" █████ ████  ██████   █████ \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor("                     ░░█████   ", ConsoleColor.Cyan); Layout.WriteColor($" ███░░███░░███ ░███ ░░███░░███", ConsoleColor.Gray); Layout.WriteColor(" ░██████   ", ConsoleColor.Cyan); Layout.WriteColor($"░░███ ░███  ███░░███ ███░░  \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor("                      ░░███    ", ConsoleColor.Cyan); Layout.WriteColor($"░███ ░███ ░███ ░███  ░███ ░░░ ", ConsoleColor.Gray); Layout.WriteColor(" ░███░░█   ", ConsoleColor.Cyan); Layout.WriteColor($" ░███ ░███ ░███████ ░░█████ \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor("                       ░███    ", ConsoleColor.Cyan); Layout.WriteColor($"░███ ░███ ░███ ░███  ░███     ", ConsoleColor.Gray); Layout.WriteColor(" ░███ ░   █", ConsoleColor.Cyan); Layout.WriteColor($" ░███ ░███ ░███░░░   ░░░░███\n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor("                       █████   ", ConsoleColor.Cyan); Layout.WriteColor($"░░██████  ░░████████ █████    ", ConsoleColor.Gray); Layout.WriteColor(" ██████████", ConsoleColor.Cyan); Layout.WriteColor($" ░░███████ ░░██████  ██████ \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor("                      ░░░░░    ", ConsoleColor.Cyan); Layout.WriteColor($" ░░░░░░    ░░░░░░░░ ░░░░░     ", ConsoleColor.Gray); Layout.WriteColor("░░░░░░░░░░ ", ConsoleColor.Cyan); Layout.WriteColor($"  ░░░░░███  ░░░░░░  ░░░░░░  \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor($"                                                                          ███ ░███                  \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor($"                                                                         ░░██████                   \n", ConsoleColor.Gray);},
-                () => {Layout.WriteColor($"                                                                          ░░░░░░                    ", ConsoleColor.Gray); }
+                () => {Universal.WriteColor("                    █████ █████", ConsoleColor.Cyan); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Cyan); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                   ░░███ ░░███ ", ConsoleColor.Cyan); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor("░░███░░░░░█", ConsoleColor.Cyan); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                    ░░███ ███  ", ConsoleColor.Cyan); Universal.WriteColor($"  ██████  █████ ████ ████████ ", ConsoleColor.Gray); Universal.WriteColor(" ░███  █ ░ ", ConsoleColor.Cyan); Universal.WriteColor($" █████ ████  ██████   █████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                     ░░█████   ", ConsoleColor.Cyan); Universal.WriteColor($" ███░░███░░███ ░███ ░░███░░███", ConsoleColor.Gray); Universal.WriteColor(" ░██████   ", ConsoleColor.Cyan); Universal.WriteColor($"░░███ ░███  ███░░███ ███░░  \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                      ░░███    ", ConsoleColor.Cyan); Universal.WriteColor($"░███ ░███ ░███ ░███  ░███ ░░░ ", ConsoleColor.Gray); Universal.WriteColor(" ░███░░█   ", ConsoleColor.Cyan); Universal.WriteColor($" ░███ ░███ ░███████ ░░█████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                       ░███    ", ConsoleColor.Cyan); Universal.WriteColor($"░███ ░███ ░███ ░███  ░███     ", ConsoleColor.Gray); Universal.WriteColor(" ░███ ░   █", ConsoleColor.Cyan); Universal.WriteColor($" ░███ ░███ ░███░░░   ░░░░███\n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                       █████   ", ConsoleColor.Cyan); Universal.WriteColor($"░░██████  ░░████████ █████    ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Cyan); Universal.WriteColor($" ░░███████ ░░██████  ██████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                      ░░░░░    ", ConsoleColor.Cyan); Universal.WriteColor($" ░░░░░░    ░░░░░░░░ ░░░░░     ", ConsoleColor.Gray); Universal.WriteColor("░░░░░░░░░░ ", ConsoleColor.Cyan); Universal.WriteColor($"  ░░░░░███  ░░░░░░  ░░░░░░  \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor($"                                                                          ███ ░███                  \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor($"                                                                         ░░██████                   \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor($"                                                                          ░░░░░░                    ", ConsoleColor.Gray); }
             };
             Console.CursorVisible = false;
             Console.WriteLine("\n\n\n");
@@ -145,21 +129,21 @@ namespace Project_B
             });
             medewerkerMenu.Add("Edit layout item", (x) =>
             {
-                List<Seat> layout1 = new List<Seat>{
-                        new Seat(0, 1, "0", " ", " "),
-                        new Seat(1, 1, "1", " ", " "),
-                        new Seat(2, 1, "2", "1", "Normaal"),
-                        new Seat(3, 1, "3", "1", "Normaal"),
-                        new Seat(4, 1, "4", "1", "Normaal"),
-                        new Seat(5, 1, "5", "1", "Normaal"),
-                        new Seat(6, 1, "6", "1", "Normaal"),
-                        new Seat(7, 1, "7", "1", "Normaal"),
-                        new Seat(8, 1, "8", "1", "Normaal"),
-                        new Seat(9, 1, "9", "1", "Normaal"),
-                        new Seat(10, 1, "10", " ", " "),
-                        new Seat(11, 1, "11", " ", " "),
-                        new Seat(12, 1, "12", " ", " "),
-                        new Seat(13, 1, "13", " ", " ")
+                List<SeatModel> layout1 = new List<SeatModel>{
+                        new SeatModel(0, 1, "0", " ", " "),
+                        new SeatModel(1, 1, "1", " ", " "),
+                        new SeatModel(2, 1, "2", "1", "Normaal"),
+                        new SeatModel(3, 1, "3", "1", "Normaal"),
+                        new SeatModel(4, 1, "4", "1", "Normaal"),
+                        new SeatModel(5, 1, "5", "1", "Normaal"),
+                        new SeatModel(6, 1, "6", "1", "Normaal"),
+                        new SeatModel(7, 1, "7", "1", "Normaal"),
+                        new SeatModel(8, 1, "8", "1", "Normaal"),
+                        new SeatModel(9, 1, "9", "1", "Normaal"),
+                        new SeatModel(10, 1, "10", " ", " "),
+                        new SeatModel(11, 1, "11", " ", " "),
+                        new SeatModel(12, 1, "12", " ", " "),
+                        new SeatModel(13, 1, "13", " ", " ")
                 };
                 List<Room> roomList = new List<Room> { new Room(1, "Room1", layout1.Count, 6) };
                 InputMenu selectRoom = new InputMenu("| Select room to edit |");
@@ -188,7 +172,7 @@ namespace Project_B
                 timetable.DisplayTimetable();
                 Console.ReadLine();
             });*/
-            medewerkerMenu.Add("Reserve Seats", (x) =>
+            medewerkerMenu.Add("Reserve SeatModels", (x) =>
             {
                 // Ask for user's age
                 Console.Write("Enter your age: ");
@@ -209,48 +193,48 @@ namespace Project_B
                     Console.Write("Choose a room (1, 2, or 3): ");
                     if (int.TryParse(Console.ReadLine(), out int selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
                     {
-                        Console.WriteLine($"Seat ID: {seat.ID}, Room ID: {seat.RoomID}, Name: {seat.Name}, Rank: {seat.Rank}, Type: {seat.Type}");
+                        Console.WriteLine($"SeatModel ID: {SeatModel.ID}, Room ID: {SeatModel.RoomID}, Name: {SeatModel.Name}, Rank: {SeatModel.Rank}, Type: {SeatModel.Type}");
                     }
 
-                    // Ask user to choose seats
-                    Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
+                    // Ask user to choose SeatModels
+                    Console.WriteLine("Enter SeatModel numbers to reserve (comma-separated):");
                     var input = Console.ReadLine();
-                    var seatNumbers = new List<int>();
+                    var SeatModelNumbers = new List<int>();
 
-                    foreach (var seatNumber in input.Split(','))
+                    foreach (var SeatModelNumber in input.Split(','))
                     {
-                        if (int.TryParse(seatNumber.Trim(), out int num))
+                        if (int.TryParse(SeatModelNumber.Trim(), out int num))
                         {
-                            seatNumbers.Add(num);
+                            SeatModelNumbers.Add(num);
                         }
                     }
 
-                    // Reserve seats
-                    //ReservationService.ReserveSeats(selectedRoomID, seatNumbers, userAge);
+                    // Reserve SeatModels
+                    //ReservationService.ReserveSeatModels(selectedRoomID, SeatModelNumbers, userAge);
                 }
                 else
                 {
                     Console.WriteLine("Invalid room selection.");
                 }
 
-                Console.ReadLine();
+                Console.ReadLine();*/
             });
             
             InputMenu menu = new InputMenu("useLambda", true);
-            menu.Add("Klant", (x) => { klantMenu.UseMenu(() => printAsTitle("Klant Menu")); });
+            menu.Add("Klant", (x) => { klantMenu.UseMenu(() => Universal.printAsTitle("Klant Menu")); });
             menu.Add("Medewerker", (x) =>
             {
                 Console.Write("| Inlog |\nWachtwoord: ");
                 string userInput = Console.ReadLine();
-                if (userInput == "w817") medewerkerMenu.UseMenu(() => printAsTitle("Medewerker Menu"));
+                if (userInput == "w817") medewerkerMenu.UseMenu(() => Universal.printAsTitle("Medewerker Menu"));
                 else
                 {
-                    Layout.ChangeColour(ConsoleColor.Red);
+                    Universal.ChangeColour(ConsoleColor.Red);
                     Console.WriteLine("Onjuist wachtwoord !");
                     Console.ReadLine();
                 }
             });
-            menu.UseMenu(() => printAsTitle("Main Menu"));
+            menu.UseMenu(() => Universal.printAsTitle("Main Menu"));
         }
     }
 }

@@ -24,12 +24,12 @@ namespace Project_B.Services
             // This is a placeholder; you'd replace this with actual database fetching logic
 
             // For now, let's use the example layout creation logic from Layout class
-            var seats = new List<SeatModel>(); // Placeholder for fetched seats from the database
+            var SeatModels = new List<SeatModel>(); // Placeholder for fetched SeatModels from the database
             var room = new RoomModel($"Room{roomID}", 10, 10); // Example room with RowWidth 10
-            Layout.drawLayout(seats, room);
+            Layout.drawLayout(SeatModels, room);
         }
 
-        public static void ReserveSeats(int roomID, List<int> seatNumbers, int userAge)
+        public static void ReserveSeatModels(int roomID, List<int> SeatModelNumbers, int userAge)
         {
             // Check age requirement
             int ageRequirement = 18;  // Example age requirement, modify as needed
@@ -41,45 +41,45 @@ namespace Project_B.Services
 
             try
             {
-                foreach (var seatNumber in seatNumbers)
+                foreach (var SeatModelNumber in SeatModelNumbers)
                 {
-                    ReserveSeat(seatNumber); // Corrected the placement of this method call
-                    Console.WriteLine("Seat reserved successfully!");
+                    ReserveSeatModel(SeatModelNumber); // Corrected the placement of this method call
+                    Console.WriteLine("SeatModel reserved successfully!");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error reserving seats: {ex.Message}");
+                Console.WriteLine($"Error reserving SeatModels: {ex.Message}");
             }
         }
 
-        public static List<SeatModel> GetAvailableSeats(int roomID)
+        public static List<SeatModel> GetAvailableSeatModels(int roomID)
         {
-            // Fetch available seats for the selected room from the database
+            // Fetch available SeatModels for the selected room from the database
             // This is a placeholder; you'd replace this with actual database fetching logic
-            var availableSeats = new List<SeatModel>
+            var availableSeatModels = new List<SeatModel>
             {
-                // Sample seats; replace with actual fetched data
+                // Sample SeatModels; replace with actual fetched data
                 new SeatModel("A1", "1", "Normaal"),
                 new SeatModel("A2", "1", "Normaal"),
-                // ... add more seats
+                // ... add more SeatModels
             };
 
-            return availableSeats;
+            return availableSeatModels;
         }
 
-        private static void ReserveSeat(int seatNumber)
+        private static void ReserveSeatModel(int SeatModelNumber)
         {
-            // Update the seat status in the database to "Reserved"
+            // Update the SeatModel status in the database to "Reserved"
             // This is a placeholder; you'd replace this with actual database update logic
             try
             {
-                using var cmd = new SQLiteCommand($"UPDATE Seat SET Status = 'Reserved' WHERE SeatID = {seatNumber}", sqlite_conn);
+                using var cmd = new SQLiteCommand($"UPDATE SeatModel SET Status = 'Reserved' WHERE SeatModelID = {SeatModelNumber}", sqlite_conn);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error updating seat {seatNumber}: {ex.Message}");
+                throw new Exception($"Error updating SeatModel {SeatModelNumber}: {ex.Message}");
             }
         }
     }
