@@ -269,14 +269,14 @@ class Layout : LayoutModel
         }
         SeatModelSelectionMenu.UseMenu();
     }
-    public void MakeNewLayout()
+    public static void MakeNewLayout()
     {
         //Getting the correct room ID
         /*int Room_ID = getRoomsFromDatabase().Count;*/
 
         List<SeatModel> SeatModels = new List<SeatModel>();
         /*Room currentRoom = new Room(Room_ID, $"Room{Room_ID}", SeatModels.Count)*/
-        RoomModel currentRoom = new RoomModel("Room1", SeatModels.Count, 6);
+        RoomModel currentRoom = new RoomModel("Room1", SeatModels.Count, 1);
 
         Console.Clear();
         Console.WriteLine("  [   screen   ]");
@@ -361,7 +361,7 @@ class Layout : LayoutModel
             else if (userInput == ConsoleKey.A)
             {
                 if (getType == "0" || getRank == "0") Console.WriteLine("Not all required fields are filled in...");
-                else SeatModels.Add(new SeatModel( $"{SeatModels.Where(s => s.RoomID == 1).Count()}", getType, getRank, currentRoom)); //SeatModels.Count,
+                else SeatModels.Add(new SeatModel( $"{SeatModels.Where(s => s.RoomID == 1).Count()}", getRank, getType, currentRoom)); //SeatModels.Count,
             }
             else
             {
@@ -409,12 +409,12 @@ class Layout : LayoutModel
         //Adding the SeatModels to the database
         currentRoom.AddSeatModels(SeatModels.ToArray());
 
-        upload_to_database(currentRoom);
+        //upload_to_database(currentRoom);
 
         Console.WriteLine("\n\nList<SeatModel> layout = new List<SeatModel> {");
-        foreach (SeatModel SeatModel in currentRoom.SeatModels)
+        foreach (SeatModel SeatModel in SeatModels)
         {
-            Console.WriteLine($"new SeatModel(\"{SeatModel.Name}\", \"{SeatModel.Rank}\", \"{SeatModel.Type}\", currentRoom),");
+            Console.WriteLine($"new SeatModel(\"{SeatModel.Name}\", \"{SeatModel.Rank}\", \"{SeatModel.Type}\", Room3),");
         }
         Console.WriteLine("};");
         Console.ReadLine();

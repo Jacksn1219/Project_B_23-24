@@ -32,6 +32,14 @@ namespace DataAccessLibrary.logic
             if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
+        public bool CreateItem(SeatModel[] item)
+        {
+            foreach (SeatModel seat in item)
+            {
+                if ( !CreateItem(seat) ) return false;
+            }
+            return true;
+        }
 
         public void CreateTable()
         {

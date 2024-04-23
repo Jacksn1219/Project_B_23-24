@@ -50,8 +50,6 @@ namespace Models
                 {
                     //Console.BackgroundColor = ConsoleColor.Gray;
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write((i == this.menuoptions.Count) ? this.exit ? "\n" + Program.centerToScreen("Exit") : "\n" + Program.centerToScreen("Back") : Program.centerToScreen($"{this.menuoptions[i].Name}"));
-                    Console.ResetColor();
                 }
                 else
                 {
@@ -65,8 +63,8 @@ namespace Models
                             _ => ConsoleColor.Gray
                         };
                     } catch { }
-                    Console.Write(i == this.menuoptions.Count ? this.exit ? "\n" + Program.centerToScreen("Exit") : "\n" + Program.centerToScreen("Back") : Program.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
+                Console.Write((i == this.menuoptions.Count) ? this.exit ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 Console.ResetColor();
             };
         }

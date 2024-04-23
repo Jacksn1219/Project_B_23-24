@@ -110,22 +110,23 @@ namespace Project_B
             {
                 //Aanmaken nieuwe film, acteur, regiseur, zaal.
             });
-
-            /*medewerkerMenu.Add("Setup Database", (x) =>
+            medewerkerMenu.Add("Layout creator", (x) =>
+            {
+                Layout.MakeNewLayout();
+            });
+            medewerkerMenu.Add("Setup Database", (x) =>
             {
                 //Opzet Sqlite database
                 SQLite.SetupProjectB();
                 Console.ReadLine();
             });
+
+            /*
             medewerkerMenu.Add("Test Author", (x) =>
             {
                 Author testAuthor = new Author(1, "John", "Not succesfull", 25);
                 Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
                 Console.ReadLine();
-            });
-            medewerkerMenu.Add("Layout creator", (x) =>
-            {
-                DataAccessLibrary.Layout.MakeNewLayout();
             });
             medewerkerMenu.Add("Edit layout item", (x) =>
             {
@@ -225,7 +226,7 @@ namespace Project_B
             menu.Add("Medewerker", (x) =>
             {
                 Console.Write("| Inlog |\nWachtwoord: ");
-                string userInput = Console.ReadLine();
+                string? userInput = Console.ReadLine();
                 if (userInput == "w817") medewerkerMenu.UseMenu(() => Universal.printAsTitle("Medewerker Menu"));
                 else
                 {
