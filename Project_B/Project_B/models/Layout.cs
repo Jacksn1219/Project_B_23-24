@@ -12,8 +12,8 @@ namespace Project_B;
 
 class Layout : LayoutModel
 {
-    private readonly RoomFactory _rf;
-    private readonly SeatModelFactory _sf;
+    private readonly RoomFactory? _rf;
+    private readonly SeatModelFactory? _sf;
     public Layout(RoomFactory rf, SeatModelFactory sf, RoomModel room, List<SeatModel> SeatModelList) : base(room, SeatModelList)
     {
         _rf = rf;
@@ -143,18 +143,19 @@ class Layout : LayoutModel
         }
         SeatModelSelectionMenu.UseMenu();
     }
-    public static void editLayout(List<SeatModel> layout, RoomModel room)
+    public static void editLayout(RoomModel room)
     {
         //List<SeatModel> layout = getSeatModelsFromDatabase(); - Aymane
         //Room room = getRoomFromDatabase(); - Aymane
 
         InputMenu SeatModelSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth ?? 0);
-        string SeatModelName;
+        //string SeatModelName;
+
         string getType;
         string getRank;
-        foreach (SeatModel SeatModel in layout)
+        foreach (SeatModel SeatModel in room.SeatModels)
         {
-            SeatModelName = SeatModel.Type == " " ? "   " : $" []";
+            //SeatModelName = SeatModel.Type == "" ? "   " : $" []";
             SeatModelSelectionMenu.Add($"{SeatModel.Type[0]}", (x) =>
             {
                 getType = SeatModel.Type;
@@ -259,8 +260,8 @@ class Layout : LayoutModel
                         else
                         {
                             SeatModelSelectionMenu.Edit(Int32.Parse(SeatModel.Name), $"{getType[0]}");
-                            layout[Int32.Parse(selectedSeatModel.Name)].Type = getType;
-                            layout[Int32.Parse(selectedSeatModel.Name)].Rank = getRank;
+                            room.SeatModels[Int32.Parse(selectedSeatModel.Name)].Type = getType;
+                            room.SeatModels[Int32.Parse(selectedSeatModel.Name)].Rank = getRank;
                             userInput = ConsoleKey.Q;
                         }
                     }

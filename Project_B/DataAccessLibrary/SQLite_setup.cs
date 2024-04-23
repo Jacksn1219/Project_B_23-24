@@ -1,69 +1,38 @@
-﻿using DataAccessLibrary;
-using DataAccessLibrary.logic;
-using System;
-using System.Data.Entity;
-using System.Data.SQLite;
-using System.IO;
-using System.Text.Json;
-using System.Xml.Linq;
+﻿using DataAccessLibrary.logic;
 
-namespace Project_B
+namespace DataAccessLibrary;
+public class SQLite_setup
 {
-    public class SQLite
+    /// <summary>
+    /// Standard setup data and database tables needed for projectB to run (Tables, 3 x Room + Seats)
+    /// </summary>
+    /// <param name="databasePath"></param>
+    public static void SetupProjectB(SQliteDataAccess Db)
     {
-        /// <summary>
-        /// Database connection
-        /// </summary>
-        private static DataAccess? Db { get { return new SQliteDataAccess($"Data Source={Universal.databasePath()}\\database.db; Version = 3; New = True; Compress = True;"); } }
+        //----- Creating factories && Creating Tables -----//
+        ActorFactory actorFactory = new ActorFactory(Db);
+        CustomerFactory customerFactory = new CustomerFactory(Db);
+        DirectorFactory directorFactory = new DirectorFactory(Db);
+        MovieFactory movieFactory = new MovieFactory(Db, directorFactory, actorFactory);
+        SeatModelFactory seatModelFactory = new SeatModelFactory(Db);
+        RoomFactory roomFactory = new RoomFactory(Db, seatModelFactory);
+        ReservationFactory reservationFactory = new ReservationFactory(Db, customerFactory, seatModelFactory);
+        TimeTableFactory timeTableFactory = new TimeTableFactory(Db, movieFactory, roomFactory);
 
-        /// <summary>
-        /// Standard setup data and database tables needed for projectB to run (Tables, 3 x Room + Seats)
-        /// </summary>
-        public static void SetupProjectB()
+        if (roomFactory.GetItemFromId(1) == null)
         {
-            try
-            {
-                //----- Creating factories -----//
-                ActorFactory actorFactory = new ActorFactory(Db);
-                CustomerFactory customerFactory = new CustomerFactory(Db);
-                DirectorFactory directorFactory = new DirectorFactory(Db);
-                MovieFactory movieFactory = new MovieFactory(Db, directorFactory, actorFactory);
-                SeatModelFactory seatModelFactory = new SeatModelFactory(Db);
-                RoomFactory roomFactory = new RoomFactory(Db, seatModelFactory);
-                ReservationFactory reservationFactory = new ReservationFactory(Db, customerFactory, seatModelFactory);
-                TimeTableFactory timeTableFactory = new TimeTableFactory(Db, movieFactory, roomFactory);
+            //Row widths Layouts
+            List<int> RowWidthsLayouts = new List<int> { 12, 18, 30 };
 
-                //----- Creating Tables -----//
-                actorFactory.CreateTable();
-                customerFactory.CreateTable();
-                directorFactory.CreateTable();
-                movieFactory.CreateTable(); // Ook AuthorinMovie
-                seatModelFactory.CreateTable();
-                roomFactory.CreateTable();
-                reservationFactory.CreateTable(); // Ook reservedSeat
-                timeTableFactory.CreateTable();
+            //Capacities Layouts
+            List<int> capacitiesLayouts = new List<int> { 168, 342, 600 };
 
-                //Console.WriteLine("\n--- 50% ---\nDatabase setup!");
-            }
-            catch (Exception ex) { 
-                Console.WriteLine("X Database setup : Something went wrong!\n" + ex.ToString);
-                Console.ReadLine();
-            }
+            //New rooms creation
+            RoomModel Room1 = new RoomModel($"Room1", 168, 12);
+            RoomModel Room2 = new RoomModel($"Room2", 342, 18);
+            RoomModel Room3 = new RoomModel($"Room3", 600, 30);
 
-            if (true /* getRoomsFromDatabase().Count() >= 3 - Aymane */)
-            {
-                //Row widths Layouts
-                List<int> RowWidthsLayouts = new List<int> { 12, 18, 30 };
-
-                //Capacities Layouts
-                List<int> capacitiesLayouts = new List<int> { 168, 342, 600 };
-
-                //New rooms creation
-                RoomModel Room1 = new RoomModel($"Room1", 168, 12);
-                RoomModel Room2 = new RoomModel($"Room2", 342, 18);
-                RoomModel Room3 = new RoomModel($"Room3", 600, 30);
-
-                SeatModel[] layout1 = new SeatModel[] {
+            SeatModel[] layout1 = new SeatModel[] {
                     new SeatModel("0", " ", " ", Room1),
                     new SeatModel("1", " ", " ", Room1),
                     new SeatModel("2", "1", "Normaal", Room1),
@@ -232,8 +201,8 @@ namespace Project_B
                     new SeatModel("165", "1", "Normaal", Room1),
                     new SeatModel("166", " ", " ", Room1),
                     new SeatModel("167", " ", " ", Room1)
-                };
-                SeatModel[] layout2 = new SeatModel[] {
+            };
+            SeatModel[] layout2 = new SeatModel[] {
                     new SeatModel("0", " ", " ", Room2),
                     new SeatModel("1", " ", " ", Room2),
                     new SeatModel("2", " ", " ", Room2),
@@ -576,8 +545,8 @@ namespace Project_B
                     new SeatModel("339", "1", "Normaal", Room2),
                     new SeatModel("340", "1", "Normaal", Room2),
                     new SeatModel("341", " ", " ", Room2)
-                };
-                SeatModel[] layout3 = new SeatModel[] {
+            };
+            SeatModel[] layout3 = new SeatModel[] {
                     new SeatModel("0", " ", " ", Room3),
                     new SeatModel("1", " ", " ", Room3),
                     new SeatModel("2", " ", " ", Room3),
@@ -1178,29 +1147,27 @@ namespace Project_B
                     new SeatModel("597", " ", " ", Room3),
                     new SeatModel("598", " ", " ", Room3),
                     new SeatModel("599", " ", " ", Room3)
-                };
+            };
 
-                try
-                {
+            try
+            {
 
-                    //Saving to Db
-                    Room1.AddSeatModels(layout1);
-                    Room2.AddSeatModels(layout2);
-                    Room3.AddSeatModels(layout3);
+                //----- Assigning seats to the rooms -----//
+                Room1.AddSeatModels(layout1);
+                Room2.AddSeatModels(layout2);
+                Room3.AddSeatModels(layout3);
 
-                    //----- Database preperation -----//
-                    SeatModelFactory seatModelFactory = new SeatModelFactory(Db);
-                    RoomFactory roomModelFactory = new RoomFactory(Db, seatModelFactory );
-                    roomModelFactory.CreateItem(Room1);
-                    roomModelFactory.CreateItem(Room2);
-                    roomModelFactory.CreateItem(Room3);
-                    
-                    //Console.WriteLine("\n--- 100% ---\nLayout database setup!");
-                }
-                catch (Exception ex) {
-                    Console.WriteLine("X Layout database setup : Something went wrong!\n" + ex);
-                    Console.ReadLine();
-                }
+                //----- Saving to Database -----//
+                roomFactory.CreateItem(Room1);
+                roomFactory.CreateItem(Room2);
+                roomFactory.CreateItem(Room3);
+
+                //Console.WriteLine("\n--- 100% ---\nLayout database setup!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("X Layout database setup : Something went wrong!\n" + ex);
+                Console.ReadLine();
             }
         }
     }

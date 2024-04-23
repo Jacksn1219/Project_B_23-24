@@ -3,6 +3,16 @@
 namespace Project_B;
 static class Universal
 {
+    /// <summary>
+    /// Database connection
+    /// </summary>
+    public static SQliteDataAccess Db { get { return new SQliteDataAccess($"Data Source={Universal.databasePath()}\\database.db; Version = 3; New = True; Compress = True;"); } }
+
+    public static void setupDatabase()
+    {
+        DataAccessLibrary.SQLite_setup.SetupProjectB(Db);
+    }
+
     public static string printAsTitle(string input)
     {
         input = input.Trim();

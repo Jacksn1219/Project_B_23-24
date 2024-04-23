@@ -2,6 +2,8 @@ using System.Text.Json;
 using Models;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using DataAccessLibrary;
+using DataAccessLibrary.logic;
 
 namespace Project_B
 {
@@ -9,6 +11,7 @@ namespace Project_B
     {
         public static void Main()
         {
+            //----- Welkom scherm -----//
             List<Action> welcomeList = new List<Action>
             {
                 () => {Universal.WriteColor("                    █████ █████", ConsoleColor.Cyan); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Cyan); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
@@ -31,11 +34,11 @@ namespace Project_B
                 Thread.Sleep(100);
             }
             Thread.Sleep(400);
-            Console.Write("\n\n\n\n\n                                               Loading data...");
+            Console.Write($"\n\n\n\n\n                                               Loading data...");
             Console.SetCursorPosition(Console.CursorLeft - 15, Console.CursorTop);
 
-            // setup starting data
-            SQLite.SetupProjectB();
+            //----- Setup starting data -----//
+            Universal.setupDatabase();
 
             ConsoleKey key;
             do
@@ -49,16 +52,7 @@ namespace Project_B
                 Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
             } while (!Console.KeyAvailable);
 
-            // Key is available - read it
             key = Console.ReadKey(true).Key;
-
-
-            /*for (int i = 0; i < "Press <Any> key to continue...".Count();i++)
-            {
-                Console.Write("Press <Any> key to continue..."[i]);
-                Thread.Sleep(100);
-            }*/
-            //Console.ReadLine();
             Console.CursorVisible = true;
 
             // ------ Klant menu met menu opties ------//
@@ -114,45 +108,68 @@ namespace Project_B
             {
                 Layout.MakeNewLayout();
             });
+            medewerkerMenu.Add("Edit layout item", (x) =>
+            {
+                List<RoomModel> roomList = new List<RoomModel>();
+                try
+                {
+                    SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
+                    RoomFactory roomFactory = new RoomFactory(Universal.Db, seatModelFactory);
+                    int i = 1;
+                    RoomModel? room = null;
+                    do
+                    {
+                        room = roomFactory.GetItemFromId(i);
+                        if (room != null) roomList.Add(room);
+                        i++;
+                    } while (room != null);
+                } catch { }
+
+                List<SeatModel> seatList = new List<SeatModel>();
+                try
+                {
+                    SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
+
+                    int i = 1;
+                    SeatModel? seat = new SeatModel();
+                    while (seat != null)
+                    {
+                        seat = seatModelFactory.GetItemFromId(i);
+                        if (seat != null) seatList.Add(seat);
+                        i++;
+                    }
+                } catch { }
+                List<List<SeatModel>> layouts = new List<List<SeatModel>>();
+                foreach (SeatModel seat in seatList)
+                {
+                    if (seat == null) continue;
+                    else if (seat.RoomID > layouts.Count) layouts.Add(new List<SeatModel> { seat });
+                    else layouts[(seat.RoomID ?? 0) - 1].Add(seat);
+                }
+
+                InputMenu selectRoom = new InputMenu("useLambda");
+                foreach (RoomModel room in roomList) //getRoomFromDatabase() - Aymane
+                {
+                    selectRoom.Add($"{room.Name}", (x) => {
+                    room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
+                    Layout.editLayout(room);
+                    });
+                }
+                selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
+            });
+
+            /*
             medewerkerMenu.Add("Setup Database", (x) =>
             {
                 //Opzet Sqlite database
                 SQLite.SetupProjectB();
                 Console.ReadLine();
             });
-
-            /*
             medewerkerMenu.Add("Test Author", (x) =>
             {
                 Author testAuthor = new Author(1, "John", "Not succesfull", 25);
                 Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
                 Console.ReadLine();
-            });
-            medewerkerMenu.Add("Edit layout item", (x) =>
-            {
-                List<SeatModel> layout1 = new List<SeatModel>{
-                        new SeatModel(0, 1, "0", " ", " "),
-                        new SeatModel(1, 1, "1", " ", " "),
-                        new SeatModel(2, 1, "2", "1", "Normaal"),
-                        new SeatModel(3, 1, "3", "1", "Normaal"),
-                        new SeatModel(4, 1, "4", "1", "Normaal"),
-                        new SeatModel(5, 1, "5", "1", "Normaal"),
-                        new SeatModel(6, 1, "6", "1", "Normaal"),
-                        new SeatModel(7, 1, "7", "1", "Normaal"),
-                        new SeatModel(8, 1, "8", "1", "Normaal"),
-                        new SeatModel(9, 1, "9", "1", "Normaal"),
-                        new SeatModel(10, 1, "10", " ", " "),
-                        new SeatModel(11, 1, "11", " ", " "),
-                        new SeatModel(12, 1, "12", " ", " "),
-                        new SeatModel(13, 1, "13", " ", " ")
-                };
-                List<Room> roomList = new List<Room> { new Room(1, "Room1", layout1.Count, 6) };
-                InputMenu selectRoom = new InputMenu("| Select room to edit |");
-                foreach (Room room in roomList) //getRoomFromDatabase() - Aymane
-                {
-                    selectRoom.Add($"{room.Name}", (x) => DataAccessLibrary.Layout.editLayout(layout1 getLayoutFromDatabase() - Aymane, room));
-                }
-                selectRoom.UseMenu();
             });
             medewerkerMenu.Add("Timetable", (x) =>
             {
@@ -173,16 +190,16 @@ namespace Project_B
                 timetable.DisplayTimetable();
                 Console.ReadLine();
             });*/
-            medewerkerMenu.Add("Reserve SeatModels", (x) =>
+            medewerkerMenu.Add("Reserve Seat", (x) =>
             {
                 // Ask for user's age
                 Console.Write("Enter your age: ");
                 if (int.TryParse(Console.ReadLine(), out int userAge))
                 { }
                 // Display available rooms
-                //ReservationService.DisplayAvailableRooms();
+                /*ReservationService.DisplayAvailableRooms();
 
-                /* Ask user to choose a room
+                //Ask user to choose a room
 
                 Console.Write("Choose a room (1, 2, or 3): ");
                 if (int.TryParse(Console.ReadLine(), out int selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
@@ -211,14 +228,14 @@ namespace Project_B
                     }
 
                     // Reserve SeatModels
-                    //ReservationService.ReserveSeatModels(selectedRoomID, SeatModelNumbers, userAge);
-                }
+                    ReservationService.ReserveSeatModels(selectedRoomID, SeatModelNumbers, userAge);
+                }*/
                 else
                 {
                     Console.WriteLine("Invalid room selection.");
                 }
 
-                Console.ReadLine();*/
+                Console.ReadLine();
             });
             
             InputMenu menu = new InputMenu("useLambda", true);

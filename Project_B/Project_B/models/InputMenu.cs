@@ -30,7 +30,7 @@ namespace Models
         /// </summary>
         public void Remove() => this.menuoptions.Remove(this.menuoptions[this.menuoptions.Count - 1]);
 
-        public void Edit(int ID, string newName) => this.menuoptions[this.menuoptions.FindIndex(x => x.ID == ID)].Name = newName;
+        public void Edit(int ID, string newName) => this.menuoptions[this.menuoptions.FindIndex((x) => x.ID == ID)].Name = newName;
 
         /// <summary>
         /// Print menu to screen
