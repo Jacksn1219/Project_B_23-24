@@ -123,25 +123,82 @@ class Layout : LayoutModel
         Console.Write($"[{room.RowWidth - 8 / 2}Screen{room.RowWidth - 8 / 2}]");
         Console.ResetColor();
     }
-    public static void selectSeatModel(List<SeatModel> layout, RoomModel room)
+    public static SeatModel? selectSeatModel(List<SeatModel> layout, RoomModel room)
     {
         //List<SeatModel> layout = getSeatModelsFromDatabase(); - Aymane
         //drawLayout(layout, room);
 
-        InputMenu SeatModelSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth ?? 0);
+        SeatModel? selectedOption = null;
+
+        InputMenu SeatModelSelectionMenu = new InputMenu($"  [   Screen   ]", null, room.RowWidth ?? 0);
         foreach (SeatModel SeatModel in layout)
         {
             string SeatModelName = SeatModel.Type == " " ? "   " : $" []";
             SeatModelSelectionMenu.Add($"{SeatModel.Type[0]}", (x) =>
             {
                 SeatModel selectedSeatModel = SeatModel;
+                selectedOption = selectedSeatModel;
                 Console.Clear();
                 //ShowSeatModelInfo(selectedSeatModel); - Jelle
-                Console.WriteLine("Not yet implemented - ShowSeatModelInfo");
-                Console.ReadLine();
+                //Console.WriteLine("Not yet implemented - ShowSeatModelInfo");
+                //Console.ReadLine();
             });
         }
         SeatModelSelectionMenu.UseMenu();
+        return selectedOption;
+    }
+    public static SeatModel? selectSeatPerRoom()
+    {
+        List<RoomModel> roomList = new List<RoomModel>();
+        SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
+        RoomFactory roomFactory = new RoomFactory(Universal.Db, seatModelFactory);
+        try
+        {
+            int i = 1;
+            RoomModel? room = null;
+            do
+            {
+                room = roomFactory.GetItemFromId(i);
+                if (room != null) roomList.Add(room);
+                i++;
+            } while (room != null);
+        }
+        catch { }
+
+        List<SeatModel> seatList = new List<SeatModel>();
+        try
+        {
+            int i = 1;
+            SeatModel? seat = new SeatModel();
+            while (seat != null)
+            {
+                seat = seatModelFactory.GetItemFromId(i);
+                if (seat != null) seatList.Add(seat);
+                i++;
+            }
+        }
+        catch { }
+
+        List<List<SeatModel>> layouts = new List<List<SeatModel>>();
+        foreach (SeatModel seat in seatList)
+        {
+            if (seat == null) continue;
+            else if (seat.RoomID > layouts.Count) layouts.Add(new List<SeatModel> { seat });
+            else layouts[(seat.RoomID ?? 0) - 1].Add(seat);
+        }
+
+        SeatModel? selectedOption = null;
+
+        InputMenu selectRoom = new InputMenu("useLambda", null);
+        foreach (RoomModel room in roomList)
+        {
+            selectRoom.Add($"{room.Name}", (x) => {
+                room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
+                selectedOption = Layout.selectSeatModel(room.SeatModels, room);
+            });
+        }
+        selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
+        return selectedOption;
     }
     public static void editLayout(RoomModel room)
     {
@@ -266,9 +323,59 @@ class Layout : LayoutModel
                         }
                     }
                 };
-            }, null, Int32.Parse(SeatModel.Name));
+            }, false, Convert.ToInt16(SeatModel.Name));
         }
         SeatModelSelectionMenu.UseMenu();
+    }
+    public static void editLayoutPerRoom()
+    {
+        List<RoomModel> roomList = new List<RoomModel>();
+        SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
+        RoomFactory roomFactory = new RoomFactory(Universal.Db, seatModelFactory);
+        try
+        {
+            int i = 1;
+            RoomModel? room = null;
+            do
+            {
+                room = roomFactory.GetItemFromId(i);
+                if (room != null) roomList.Add(room);
+                i++;
+            } while (room != null);
+        }
+        catch { }
+
+        List<SeatModel> seatList = new List<SeatModel>();
+        try
+        {
+            int i = 1;
+            SeatModel? seat = new SeatModel();
+            while (seat != null)
+            {
+                seat = seatModelFactory.GetItemFromId(i);
+                if (seat != null) seatList.Add(seat);
+                i++;
+            }
+        }
+        catch { }
+        List<List<SeatModel>> layouts = new List<List<SeatModel>>();
+        foreach (SeatModel seat in seatList)
+        {
+            if (seat == null) continue;
+            else if (seat.RoomID > layouts.Count) layouts.Add(new List<SeatModel> { seat });
+            else layouts[(seat.RoomID ?? 0) - 1].Add(seat);
+        }
+
+        InputMenu selectRoom = new InputMenu("useLambda");
+        foreach (RoomModel room in roomList)
+        {
+            selectRoom.Add($"{room.Name}", (x) => {
+                room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
+                Layout.editLayout(room);
+                roomFactory.ItemToDb(room);
+            });
+        }
+        selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
     }
     public static void MakeNewLayout()
     {

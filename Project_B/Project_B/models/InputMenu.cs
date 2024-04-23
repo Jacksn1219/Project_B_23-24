@@ -1,21 +1,25 @@
 ﻿using DataAccessLibrary;
 using Project_B;
+using System.Linq;
 
 namespace Models
 {
     public class InputMenu
     {
         string introduction;
-        bool exit;
-        List<InputMenuOption> menuoptions = new List<InputMenuOption>();
+        bool? exit;
+        List<InputMenuOption> menuoptions;
         int row;
 
-        public InputMenu(string introduction = "", bool exit = false, int row = 1)
+        public InputMenu(string introduction = "", bool? exit = false, int row = 1)
         {
             this.introduction = introduction;
             this.exit = exit;
+            this.menuoptions = new List<InputMenuOption>();
             this.row = row;
         }
+
+        public int GetMenuOptionsCount() => menuoptions.Count;
 
         /// <summary>
         /// Add item to menu option list
@@ -23,12 +27,22 @@ namespace Models
         /// <param name="Name"></param>
         /// <param name="Act"></param>
         /// <param name="isTaken"></param>
-        public void Add(string Name, Action<string> Act, bool? isTaken = null, int? ID = null) => this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken));
+        public void Add(string Name, Action<string> Act, bool? isTaken = null, int? ID = null)
+        {
+            if (this.menuoptions.Where(x => x.Name == Name).Count() == 0)
+            { 
+                this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken, ID));
+            }
+        }
 
         /// <summary>
         /// Remove item from menu option list
         /// </summary>
         public void Remove() => this.menuoptions.Remove(this.menuoptions[this.menuoptions.Count - 1]);
+        public void Remove(string optionName)
+        {
+            this.menuoptions.Remove(this.menuoptions[this.menuoptions.FindIndex(menuoption => menuoption.Name == optionName)]);
+        }
 
         public void Edit(int ID, string newName) => this.menuoptions[this.menuoptions.FindIndex((x) => x.ID == ID)].Name = newName;
 
@@ -64,7 +78,7 @@ namespace Models
                         };
                     } catch { }
                 }
-                Console.Write((i == this.menuoptions.Count) ? this.exit ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
+                Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 Console.ResetColor();
             };
         }
@@ -117,12 +131,13 @@ namespace Models
                     if (cursor == this.menuoptions.Count)
                     {
                         Console.Clear();
-                        if (this.exit) Environment.Exit(0);
+                        if (this.exit == true) Environment.Exit(0);
                         return;
                     }
                     else {
                         this.menuoptions[cursor].Act("");
                         Console.Clear();
+                        if (this.exit == null) return;
                     }
                 }
             }

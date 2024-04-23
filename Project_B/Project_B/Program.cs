@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
+using DataAccessLibrary.models;
+using System.IO;
 
 namespace Project_B
 {
@@ -104,92 +106,142 @@ namespace Project_B
             {
                 //Aanmaken nieuwe film, acteur, regiseur, zaal.
             });
-            medewerkerMenu.Add("Layout creator", (x) =>
+            medewerkerMenu.Add("Edit layout", (x) =>
             {
-                Layout.MakeNewLayout();
+                Layout.editLayoutPerRoom();
             });
-            medewerkerMenu.Add("Edit layout item", (x) =>
+            medewerkerMenu.Add("Select a seat", (x) =>
             {
-                List<RoomModel> roomList = new List<RoomModel>();
+                Console.WriteLine(Layout.selectSeatPerRoom());
+                Console.ReadLine();
+            });
+            medewerkerMenu.Add("Maak nieuwe film", (x) =>
+            {
+                ActorFactory actorFactory = new ActorFactory(Universal.Db);
+                DirectorFactory directorFactory = new DirectorFactory(Universal.Db);
+                MovieFactory movieFactory = new MovieFactory(Universal.Db, directorFactory, actorFactory);
+
+                // Name //
+                Console.WriteLine("What is the name of the movie?");
+                string Name = Console.ReadLine() ?? "";
+
+                // Discription //
+                Console.WriteLine("What is the discription of the movie?");
+                string Discription = Console.ReadLine() ?? "";
+
+                // pegiAge //
+                int pegiAge = 0;
+                Console.WriteLine("What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
+                int.TryParse(Console.ReadLine(), out pegiAge);
+                List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
+                while (!possiblePegiAges.Contains(pegiAge))
+                {
+                    try
+                    {
+                        Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
+                        Console.WriteLine("What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
+                        int.TryParse(Console.ReadLine(), out pegiAge);
+                    } catch { }
+                }
+
+                // Duration in minutes //
+                int Duration = 0;
+                Console.WriteLine("What is the Duration of the movie? (more than 0)");
+                int.TryParse(Console.ReadLine(), out Duration);
+                while (Duration == 0)
+                {
+                    Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
+                    Console.WriteLine("What is the Duration of the movie? (more than 0)");
+                    int.TryParse(Console.ReadLine(), out Duration);
+                }
+
+                // genre //
+                Console.WriteLine("What is the Genre of the movie?");
+                string Genre = Console.ReadLine() ?? "";
+
+                // Director //
+                DirectorModel Director = new DirectorModel("", "", 0);
+
+                List<DirectorModel> directorList = new List<DirectorModel>();
+                // Test directors
+                directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+                directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
+                // Get directors from database
                 try
                 {
-                    SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
-                    RoomFactory roomFactory = new RoomFactory(Universal.Db, seatModelFactory);
                     int i = 1;
-                    RoomModel? room = null;
-                    do
+                    DirectorModel? director = new DirectorModel("", "", 0);
+                    while (director != null)
                     {
-                        room = roomFactory.GetItemFromId(i);
-                        if (room != null) roomList.Add(room);
-                        i++;
-                    } while (room != null);
-                } catch { }
-
-                List<SeatModel> seatList = new List<SeatModel>();
-                try
-                {
-                    SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
-
-                    int i = 1;
-                    SeatModel? seat = new SeatModel();
-                    while (seat != null)
-                    {
-                        seat = seatModelFactory.GetItemFromId(i);
-                        if (seat != null) seatList.Add(seat);
+                        director = directorFactory.GetItemFromId(i);
+                        if (director != null) directorList.Add(director);
                         i++;
                     }
-                } catch { }
-                List<List<SeatModel>> layouts = new List<List<SeatModel>>();
-                foreach (SeatModel seat in seatList)
-                {
-                    if (seat == null) continue;
-                    else if (seat.RoomID > layouts.Count) layouts.Add(new List<SeatModel> { seat });
-                    else layouts[(seat.RoomID ?? 0) - 1].Add(seat);
                 }
+                catch { }
 
-                InputMenu selectRoom = new InputMenu("useLambda");
-                foreach (RoomModel room in roomList) //getRoomFromDatabase() - Aymane
+                // Menu to chose director
+                InputMenu directorMenu = new InputMenu(Universal.centerToScreen("Choose a director:"), null);
+                foreach (DirectorModel director in directorList)
                 {
-                    selectRoom.Add($"{room.Name}", (x) => {
-                    room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
-                    Layout.editLayout(room);
-                    });
+                    directorMenu.Add(director.Name, (x) => { Director = director; });
                 }
-                selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
+                if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
+
+                // Actors //
+                List<ActorModel> Actors = new List<ActorModel>();
+
+                List<ActorModel> actorList = new List<ActorModel>();
+                // Test actors
+                actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+                actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+                // Get directors from database
+                try
+                {
+                    int i = 1;
+                    ActorModel? actor = new ActorModel("", "", 0);
+                    while (actor != null)
+                    {
+                        actor = actorFactory.GetItemFromId(i);
+                        if (actor != null) actorList.Add(actor);
+                        i++;
+                    }
+                }
+                catch { }
+
+                // Menu to chose director
+                InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
+                foreach (ActorModel actor in actorList)
+                {
+                    actorMenu.Add(actor.Name, (x) => { Actors.Add(actor); });
+                }
+                actorMenu.UseMenu();
+                
+                // Deleting chosen actor
+                foreach (ActorModel actor in Actors) actorMenu.Remove(actor.Name);
+
+                // Menu to select more actors
+                InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to add another actor?\nIf not, click Back..."));
+                anotherActorMenu.Add("Yes", (x) =>
+                {
+                    if (actorMenu.GetMenuOptionsCount() > 0)
+                    {
+                        actorMenu.UseMenu();
+                        foreach (ActorModel actor in Actors) try { actorMenu.Remove(actor.Name); } catch { }
+                    }
+                    if (actorMenu.GetMenuOptionsCount() == 0)
+                    {
+                        anotherActorMenu.Remove("Yes");
+                        anotherActorMenu.Add("No more actors", (x) => { });
+                    }
+                });
+                anotherActorMenu.UseMenu();
+
+
+                //string name, string description, int pegiAge, int durationInMin, string genre, DirectorModel dir, List<ActorModel> actors
+                MovieModel newMovie = new MovieModel(Name, Discription, pegiAge, Duration, Genre, Director, Actors);
+                movieFactory.CreateItem(newMovie);
             });
-
-            /*
-            medewerkerMenu.Add("Setup Database", (x) =>
-            {
-                //Opzet Sqlite database
-                SQLite.SetupProjectB();
-                Console.ReadLine();
-            });
-            medewerkerMenu.Add("Test Author", (x) =>
-            {
-                Author testAuthor = new Author(1, "John", "Not succesfull", 25);
-                Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
-                Console.ReadLine();
-            });
-            medewerkerMenu.Add("Timetable", (x) =>
-            {
-                Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
-                Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
-
-                Room room1 = new Room(1, "Room_1", 150, 6); //Room 1 heeft 150 plekken
-                Room room2 = new Room(2, "Room_2", 300, 6); //Room 2 heeft 300 plekken
-                Room room3 = new Room(3, "Room_3", 500, 6); //Room 3 heeft 500 plekken
-
-                Timetable timetable = new Timetable();
-
-                // Toevoegen van films aan de timetable
-                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
-                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
-
-                // Tonen van de timetable
-                timetable.DisplayTimetable();
-                Console.ReadLine();
-            });*/
             medewerkerMenu.Add("Reserve Seat", (x) =>
             {
                 // Ask for user's age
@@ -237,7 +289,44 @@ namespace Project_B
 
                 Console.ReadLine();
             });
-            
+
+            /*
+            medewerkerMenu.Add("Setup Database", (x) =>
+            {
+                //Opzet Sqlite database
+                SQLite.SetupProjectB();
+                Console.ReadLine();
+            });
+            medewerkerMenu.Add("Layout creator", (x) =>
+            {
+                Layout.MakeNewLayout();
+            });
+            medewerkerMenu.Add("Test Author", (x) =>
+            {
+                Author testAuthor = new Author(1, "John", "Not succesfull", 25);
+                Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
+                Console.ReadLine();
+            });
+            medewerkerMenu.Add("Timetable", (x) =>
+            {
+                Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
+                Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
+
+                Room room1 = new Room(1, "Room_1", 150, 6); //Room 1 heeft 150 plekken
+                Room room2 = new Room(2, "Room_2", 300, 6); //Room 2 heeft 300 plekken
+                Room room3 = new Room(3, "Room_3", 500, 6); //Room 3 heeft 500 plekken
+
+                Timetable timetable = new Timetable();
+
+                // Toevoegen van films aan de timetable
+                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
+                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
+
+                // Tonen van de timetable
+                timetable.DisplayTimetable();
+                Console.ReadLine();
+            });*/
+
             InputMenu menu = new InputMenu("useLambda", true);
             menu.Add("Klant", (x) => { klantMenu.UseMenu(() => Universal.printAsTitle("Klant Menu")); });
             menu.Add("Medewerker", (x) =>

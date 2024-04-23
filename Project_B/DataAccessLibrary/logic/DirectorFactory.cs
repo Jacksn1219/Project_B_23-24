@@ -42,14 +42,17 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
         );
     }
 
-    public DirectorModel GetItemFromId(int id)
+    public DirectorModel? GetItemFromId(int id)
     {
-        return _db.ReadData<DirectorModel>(
+        try
+        {
+            return _db.ReadData<DirectorModel>(
             @"SELECT * FROM Director
             WHERE ID = $1",
             new Dictionary<string, dynamic?>(){
                 {"$1", id}
             }).First();
+        } catch (Exception ex) { return null; }
     }
 
     public bool ItemToDb(DirectorModel item)

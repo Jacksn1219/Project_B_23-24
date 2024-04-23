@@ -9,7 +9,6 @@ public enum PEGIAge
     PEGI12 = 12,
     PEGI16 = 16,
     PEGI18 = 18
-
 }
 
 public class MovieModel : DbItem
