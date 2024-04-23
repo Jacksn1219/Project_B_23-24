@@ -49,7 +49,7 @@ public class MovieModel : IDbItem
     /// <summary>
     /// the ID of the director of the movie
     /// </summary>
-    private int? DirectorID { get; set; }
+    public int? DirectorID { get; set; }
     public string Genre { set; get; }
     internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int directorId, string genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }

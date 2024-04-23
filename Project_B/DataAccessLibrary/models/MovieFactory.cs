@@ -80,7 +80,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             VALUES ($1,$2,$3,$4,$5,$6);",
             new Dictionary<string, dynamic?>(){
                 {"$1", movie.Name},
-                {"$2", movie.DirectorId},
+                {"$2", movie.DirectorID},
                 {"$3", (int)movie.PegiAge},
                 {"$4", movie.Description},
                 {"$5", movie.Genre},
@@ -108,7 +108,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             WHERE ID = $7;",
             new Dictionary<string, dynamic?>(){
                 {"$1", movie.Name},
-                {"$2", movie.DirectorId},
+                {"$2", movie.DirectorID},
                 {"$3", (int)movie.PegiAge},
                 {"$4", movie.Description},
                 {"$5", movie.Genre},

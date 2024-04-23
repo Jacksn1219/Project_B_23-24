@@ -29,8 +29,13 @@ namespace Project_B
                 Console.WriteLine(testDateTimeParse);
                 Console.ReadLine();
             });
-
-            //menu.UseMenu();
+            menu.Add("Test SeeActors", (x) =>
+            {
+                MovieModel movietje = new MovieModel("KUNG FU PANDA 4", "everybody was kung fu fighting", 12, 120, 1, "Horror");
+                Console.WriteLine(movietje.SeeActors());
+                Console.ReadLine();
+            });
+            menu.UseMenu();
 
 
             //start of app
