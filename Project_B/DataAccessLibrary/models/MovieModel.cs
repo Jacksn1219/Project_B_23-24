@@ -82,7 +82,7 @@ public class MovieModel : IDbItem
         {
             if (DirectorID == director.ID)
             {
-                return $"The director of this movie is: {director.Name}";
+                return $"The director of the movie {Name}: {director.Name}";
             }
         }
         return $"No director found for this {Name}";
@@ -92,6 +92,7 @@ public class MovieModel : IDbItem
         StringBuilder sb = new StringBuilder();
         sb.Append($"The minimum age for this movie is: {PegiAge}\n");
         sb.Append($"The genre of this movie is: {Genre}");
+        sb.Append($"\nDescription of this movie: \n{Description}");
         return sb.ToString();
     }
 }
