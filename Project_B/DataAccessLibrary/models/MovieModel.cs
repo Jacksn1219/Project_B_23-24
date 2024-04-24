@@ -87,7 +87,6 @@ public class MovieModel : DbItem
     {
         ID = id;
         Name = name;
-        AuthorsInMovie = new List<AuthorModel>();
         Description = description;
         PegiAge = pegiAge;
         DurationInMin = durationInMin;
@@ -113,9 +112,9 @@ public class MovieModel : DbItem
     {
         StringBuilder sb = new();
         sb.Append("All actors in this movie:\n");
-        foreach (AuthorModel author in AuthorsInMovie)
+        foreach (ActorModel actor in Actors)
         {
-            sb.Append($"{author.Name}\n");
+            sb.Append($"{actor.Name}\n");
         }
         return sb.ToString();
     }
