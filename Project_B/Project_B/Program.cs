@@ -1,6 +1,7 @@
 ﻿using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using Models;
+using Project_B.services;
 
 namespace Project_B
 {
@@ -145,7 +146,11 @@ namespace Project_B
             Console.ReadLine();
             */
             });
-
+            menu.Add("set prices", (x) =>
+            {
+                var prices = SeatPriceCalculator.GetCurrentPrices();
+                System.Console.WriteLine($"current prices:\n\nPrice tier I: {prices.PriceTierI}\nPrice tier ");
+            });
             menu.UseMenu();
         }
     }

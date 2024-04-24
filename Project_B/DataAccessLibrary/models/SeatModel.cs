@@ -1,7 +1,11 @@
 ﻿using DataAccessLibrary.models.interfaces;
 
 namespace DataAccessLibrary;
-
+public enum SeatType{
+    Normaal = 0,
+    ExtraBeenruimte = 1,
+    LoveSeat = 2,
+}
 public class SeatModel : DbItem
 {
     private string _name;
