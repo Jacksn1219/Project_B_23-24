@@ -31,8 +31,28 @@ namespace Project_B
             });
             menu.Add("Test SeeActors", (x) =>
             {
+                List<AuthorModel> authors = new List<AuthorModel>();
+                authors.Add(new AuthorModel(1, "Jack Black", "Plays Po", 43));
+                authors.Add(new AuthorModel(2, "Jackie Chan", "Plays Monkey", 57));
+                authors.Add(new AuthorModel(3, "Ada Wong", "Plays Viper", 27));
+                authors.Add(new AuthorModel(4, "Jada Pinket Smith", "Plays Tigress", 41));
                 MovieModel movietje = new MovieModel("KUNG FU PANDA 4", "everybody was kung fu fighting", 12, 120, 1, "Horror");
+                movietje.AuthorsInMovie.AddRange(authors);
                 Console.WriteLine(movietje.SeeActors());
+                Console.ReadLine();
+            });
+            menu.Add("Test SeeDirector", (x) =>
+            {
+                List<DirectorModel> directors = new List<DirectorModel>();
+                directors.Add(new DirectorModel(1, "Christopher Nolan", "Famous movie director known for several blockbuster movies such as Oppenheimer, Interstellar, Inception and many more", 53));
+                MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, 1, "Sci-Fi");
+                Console.WriteLine(interStellar.SeeDirector(directors));
+                Console.ReadLine();
+            });
+            menu.Add("Test SeeDescription", (x) =>
+            {
+                MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, 1, "Sci-Fi");
+                Console.WriteLine(interStellar.SeeDescription());
                 Console.ReadLine();
             });
             menu.UseMenu();
