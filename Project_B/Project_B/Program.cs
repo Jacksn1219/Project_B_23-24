@@ -60,18 +60,26 @@ namespace Project_B
             {
                 List<Movie> mondayMovies = new List<Movie>
                 {
-                    new Movie(1, "Rocky", 1, 14, "Rocky Balboa is een hardwerkende bokser die de top probeert te bereiken. Hij werkt in een vleesfabriek in Philadelphia en verdient wat extra geld als inner van schulden.", "Action, Sport, Drama", 120),
+                    new Movie(1, "Rocky", 1, 12, "Rocky Balboa is een hardwerkende bokser die de top probeert te bereiken. Hij werkt in een vleesfabriek in Philadelphia en verdient wat extra geld als inner van schulden.", "Action, Sport, Drama", 120),
                     new Movie(2, "Indiana Jones and The Lost Ark", 1, 16, "Wereldreiziger en archeoloog Indiana Jones wordt net voor de Tweede Wereldoorlog door de Amerikaanse overheid ingehuurd om een religieus relikwie op te sporen, voordat dit artefact in de handen van de Nazi's valt.", "Adventure, Action", 150),
                     new Movie(3, "Gone In 60 Seconds", 1, 18, "Randall Raines, een ex-autodief, leidt al een aantal jaren een rustig leven. Maar als zijn broer zich in de nesten werkt moet Randall zijn oude activiteiten weer oppakken om zijn broeder te redden.", "Action, Adventure, Thriller, Drama, Horror, Detective", 180),
                     new Movie(4, "Interstellar", 1, 12, "Terwijl de aarde niet meer in staat is om de mensheid in haar levensbehoefte te voorzien, gaat een groep ontdekkingsreizigers, ver buiten het melkwegstelsel, op zoek naar een toekomst voor de mens achter de sterren.", "drama, adventure, and speculative fiction", 90),
-                    new Movie(5, "Cars 2", 1, 6, "Racecar Lightning McQueen en Mater besluiten mee te doen aan de World Grand Prix. Mater raakt onderweg echter betrokken bij spionage.", "action, comedy, and spy thriller", 120)
+                    new Movie(5, "Cars 2", 1, 7, "Racecar Lightning McQueen en Mater besluiten mee te doen aan de World Grand Prix. Mater raakt onderweg echter betrokken bij spionage.", "action, comedy, and spy thriller", 120)
                 };
 
-                List<TimeTable> timeTableList = new List<TimeTable> { new TimeTable(1, "", 1, 1, "2024-3-24 12:00:00", "2024-3-24 14:00:00")};
-                InputMenu selectDay = new InputMenu("| Select a day|");
-                foreach (TimeTable timeTable in timeTableList)
+                List<Movie> tuesdayMovies = new List<Movie>
                 {
-                    selectDay.Add($"Monday", (x) =>
+                    new Movie(6, "Forest Gump", 1, 16, "Forrest Gump is een simpele jongen met een laag IQ. Dit weerhoudt hem er echter niet van om een grote rol te spelen bij belangrijke gebeurtenissen in de Amerikaanse geschiedenis. Zo vecht hij mee in Vietnam en ontmoet hij grootheden als Elvis en JFK.", "Actie, Thriller en Avontuur.", 90)
+                };
+
+                List<TimeTable> timeTableList = new List<TimeTable>
+                {
+                    new TimeTable(1, "", 1, 1, "2024-3-24 12:00:00", "2024-3-24 14:00:00")
+                };
+                InputMenu selectDay = new InputMenu("| Select a day|");
+                selectDay.Add($"Monday", (x) =>
+                {
+                    foreach (TimeTable timeTable in timeTableList)
                     {
                         Console.Clear();
                         IEnumerable<Movie> query = mondayMovies.Where(movie => movie.ID == timeTable.MovieID);
@@ -88,8 +96,8 @@ namespace Project_B
                         }
                         movieSelecter.UseMenu();
                         Console.ReadLine();
-                    });
-                }
+                    }
+                });
                 selectDay.UseMenu();
                 Console.ReadLine();
             });
