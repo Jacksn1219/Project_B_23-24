@@ -10,7 +10,7 @@ static class Universal
 
     public static void setupDatabase()
     {
-        DataAccessLibrary.SQLite_setup.SetupProjectB(Db);
+        DataAccessLibrary.SQLite_setup.SetupProjectB(Db, Universal.databasePath());
     }
 
     public static string printAsTitle(string input)

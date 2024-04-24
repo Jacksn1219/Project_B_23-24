@@ -1,4 +1,5 @@
 ﻿using DataAccessLibrary.logic;
+using System.Text.Json;
 
 namespace DataAccessLibrary;
 public class SQLite_setup
@@ -7,8 +8,13 @@ public class SQLite_setup
     /// Standard setup data and database tables needed for projectB to run (Tables, 3 x Room + Seats)
     /// </summary>
     /// <param name="databasePath"></param>
-    public static void SetupProjectB(SQliteDataAccess Db)
+    public static void SetupProjectB(SQliteDataAccess Db, string JSONPath)
     {
+        //----- Setting up JSON file for password -----//
+        string fileName = "Medewerker.json";
+        string jsonString = JsonSerializer.Serialize(new KeyValuePair<string, string>("PassWord", "w817"));
+        File.WriteAllText(JSONPath + "\\" + fileName, jsonString);
+
         //----- Creating factories && Creating Tables -----//
         ActorFactory actorFactory = new ActorFactory(Db);
         CustomerFactory customerFactory = new CustomerFactory(Db);

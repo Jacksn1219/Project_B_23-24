@@ -6,6 +6,8 @@ using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using System.IO;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Project_B
 {
@@ -212,9 +214,13 @@ namespace Project_B
             menu.Add("Klant", (x) => { klantMenu.UseMenu(() => Universal.printAsTitle("Klant Menu")); });
             menu.Add("Medewerker", (x) =>
             {
+                string fileName = "Medewerker.json";
+                JObject? jsonData = (JObject?)JsonConvert.DeserializeObject(File.ReadAllText(Universal.databasePath() + "\\" + fileName));
+                string passWord = jsonData["Value"].Value<string>() ?? "";
+
                 Console.Write("| Inlog |\nWachtwoord: ");
                 string? userInput = Console.ReadLine();
-                if (userInput == "w817") medewerkerMenu.UseMenu(() => Universal.printAsTitle("Medewerker Menu"));
+                if (userInput == passWord) medewerkerMenu.UseMenu(() => Universal.printAsTitle("Medewerker Menu"));
                 else
                 {
                     Universal.ChangeColour(ConsoleColor.Red);
@@ -232,8 +238,8 @@ namespace Project_B
  * Als klant wil ik zien welke stoelen al bezet zijn zodat ik niet per ongeluk een al gereserveerde stoel pak
  * Als administratie wil ik de gereserveerde stoelen terugzien, zodat ik de klanten naar hun stoel kan begeleiden
  * Als administratie wil ik graag zien hoe vol een zaal is, zodat ik kan zien of de desbetreffende film een grotere zaal nodig heeft of niet zo populair is
- * Als administratie wil ik een nieuwe film toevoegen, zodat we telkens de nieuwste films kunnen laten zien.
+ X Als administratie wil ik een nieuwe film toevoegen, zodat we telkens de nieuwste films kunnen laten zien.
  * Als administratie wil ik slecht lopende films verwijderen, zodat we geen films laten zien die niet populair zijn.
- * Als administratie wil ik films kunnen aanpassen, zodat als ik een fout maak ik de film niet opnieuw aan moet maken.
- * Als medewerker wil ik in kunnen loggen, zodat niet iedereen administratorrechten heeft
+ X Als administratie wil ik films kunnen aanpassen, zodat als ik een fout maak ik de film niet opnieuw aan moet maken.
+ X Als medewerker wil ik in kunnen loggen, zodat niet iedereen administratorrechten heeft
 */
