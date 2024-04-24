@@ -58,7 +58,7 @@ namespace Project_B
             });
             menu.Add("Timetable", (x) =>
             {
-                List<Movie> movieLayout1 = new List<Movie>
+                List<Movie> mondayMovies = new List<Movie>
                 {
                     new Movie(1, "Rocky", 1, 14, "Rocky Balboa is een hardwerkende bokser die de top probeert te bereiken. Hij werkt in een vleesfabriek in Philadelphia en verdient wat extra geld als inner van schulden.", "Action, Sport, Drama", 120),
                     new Movie(2, "Indiana Jones and The Lost Ark", 1, 16, "Wereldreiziger en archeoloog Indiana Jones wordt net voor de Tweede Wereldoorlog door de Amerikaanse overheid ingehuurd om een religieus relikwie op te sporen, voordat dit artefact in de handen van de Nazi's valt.", "Adventure, Action", 150),
@@ -67,60 +67,32 @@ namespace Project_B
                     new Movie(5, "Cars 2", 1, 6, "Racecar Lightning McQueen en Mater besluiten mee te doen aan de World Grand Prix. Mater raakt onderweg echter betrokken bij spionage.", "action, comedy, and spy thriller", 120)
                 };
 
-                Console.WriteLine("Timetable week 18 28apr till 3may");
-                Console.WriteLine("----------------------------------------------");
-                Console.WriteLine("Monday");
-                Console.WriteLine("Tuesday");
-                Console.WriteLine("Wednesday");
-                Console.WriteLine("Thursday");
-                Console.WriteLine("Friday");
-                Console.WriteLine("Saturday");
-                Console.WriteLine("Sunday");
-                Console.WriteLine("Back to Main Menu");
-
-                Console.Write("Select a day: ");
-                string choice = Console.ReadLine()?.Trim().ToLower();
-                switch(choice)
-                {
-                    case "monday":
-                        Console.WriteLine("Movies for Monday:");
-                        break;
-                    case "tuesday":
-                        Console.WriteLine("Movies for Tuesday:");
-                        break;
-                    case "wednesday":
-                        Console.WriteLine("Movies for Wednesday:");
-                        break;
-                    case "thursday":
-                        Console.WriteLine("Movies for Thursday:");
-                        break;
-                    case "friday":
-                        Console.WriteLine("Movies for Friday:");
-                        break;
-                    case "saturday":
-                        Console.WriteLine("Movies for Saturday:");
-                        break;
-                    case "sunday":
-                        Console.WriteLine("Movies for Sunday:");
-                        break;
-                    case "":
-                        return;
-                    default:
-                        Console.WriteLine("Invalid choice");
-                        break;
-                }
-                List<TimeTable> timeTableList = new List<TimeTable> { new TimeTable(1, "Timetable 1", 1, 1, "2024-3-24 12:00:00", "2024-3-24 14:00:00")};
+                List<TimeTable> timeTableList = new List<TimeTable> { new TimeTable(1, "", 1, 1, "2024-3-24 12:00:00", "2024-3-24 14:00:00")};
+                InputMenu selectDay = new InputMenu("| Select a day|");
                 foreach (TimeTable timeTable in timeTableList)
                 {
-                    IEnumerable<Movie> query = movieLayout1.Where(movie => movie.ID == timeTable.MovieID);
-                    foreach (Movie movie in query)
+                    selectDay.Add($"Monday", (x) =>
                     {
-                        Console.WriteLine("");
-                    }
+                        Console.Clear();
+                        IEnumerable<Movie> query = mondayMovies.Where(movie => movie.ID == timeTable.MovieID);
+                        InputMenu movieSelecter = new InputMenu("| Select a movie |");
+                        foreach (Movie movie in query)
+                        {
+                            Console.WriteLine(movie.Title);
+                            movieSelecter.Add(movie.Title, (x) =>
+                            {
+                                Console.Clear();
+                                Console.WriteLine($"Movie: {movie.Title}\nGenre: {movie.Genre}\nDescription: {movie.Discription}\nPEGI: {movie.pegiAge}\nDuration: {movie.DurationInMin}\nStartDate {timeTable.StartDate}\nEndDate: {timeTable.EndDate}");
+                                Console.ReadLine();
+                            });
+                        }
+                        movieSelecter.UseMenu();
+                        Console.ReadLine();
+                    });
                 }
+                selectDay.UseMenu();
                 Console.ReadLine();
             });
-
             menu.UseMenu();
         }
     }
