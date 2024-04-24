@@ -52,9 +52,11 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// </summary>
     /// <param name="id">the ID of the Movie</param>
     /// <returns>the first movie returned from the query</returns>
-    public MovieModel GetItemFromId(int id)
+    public MovieModel? GetItemFromId(int id)
     {
-        return _db.ReadData<MovieModel>(
+        try
+        {
+            return _db.ReadData<MovieModel>(
             @"SELECT * FROM Movie
             WHERE ID=$1",
             new Dictionary<string, dynamic?>()
@@ -62,6 +64,38 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 {"$1", id}
             }
             ).First();
+        } catch { return null; }
+    }
+    /// <summary>
+    /// Get the ActorModels related to a MovieModel from the ID
+    /// </summary>
+    /// <param name="id">the ID of the Movie</param>
+    /// <returns>the first movie returned from the query</returns>
+    public bool AddRelatedActors(MovieModel movieItem, SQliteDataAccess Db)
+    {
+        try
+        {
+            List<int> list = _db.ReadData<int>(
+            @"SELECT ActorID FROM ActorInMovie
+            WHERE MovieID=$1",
+            new Dictionary<string, dynamic?>()
+            {
+                {"$1", movieItem.ID}
+            });
+
+            ActorFactory actorFactory = new ActorFactory(Db);
+            List<ActorModel> actorList = new List<ActorModel>();
+            foreach (int actorid in list)
+            {
+                actorList.Add(actorFactory.GetItemFromId(actorid));
+            }
+            foreach (ActorModel actor in actorList)
+            {
+                movieItem.addActor(actor);
+            }
+            return true;
+        }
+        catch { return false; }
     }
     /// <summary>
     /// updates or creates the movie in the db
