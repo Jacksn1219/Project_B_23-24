@@ -67,6 +67,37 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         } catch { return null; }
     }
     /// <summary>
+    /// Get the ActorModels related to a MovieModel from the ID
+    /// </summary>
+    /// <param name="id">the ID of the Movie</param>
+    /// <returns>the first movie returned from the query</returns>
+    public bool AddRelatedActors(MovieModel movieItem, SQliteDataAccess Db)
+    {
+        try
+        {
+            List<int> list = _db.ReadData<int>(
+            @"SELECT ActorID FROM ActorInMovie
+            WHERE MovieID=$1",
+            new Dictionary<string, dynamic?>()
+            {
+                {"$1", movieItem.ID}
+            });
+
+            ActorFactory actorFactory = new ActorFactory(Db);
+            List<ActorModel> actorList = new List<ActorModel>();
+            foreach (int actorid in list)
+            {
+                actorList.Add(actorFactory.GetItemFromId(actorid));
+            }
+            foreach (ActorModel actor in actorList)
+            {
+                movieItem.addActor(actor);
+            }
+            return true;
+        }
+        catch { return false; }
+    }
+    /// <summary>
     /// updates or creates the movie in the db
     /// </summary>
     /// <param name="item">the movie to update or create</param>

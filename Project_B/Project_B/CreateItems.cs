@@ -173,13 +173,13 @@ namespace Project_B
             InputMenu whatToEditMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
             whatToEditMenu.Add("Name", (x) =>
             {
-                Console.WriteLine($"old director = {movieToEdit.Name}" + "\n" + "What is the new name of the movie?");
+                Console.WriteLine($"Current Name = {movieToEdit.Name}" + "\n" + "What is the new name of the movie?");
                 string Name = Console.ReadLine() ?? movieToEdit.Name ?? "";
                 movieToEdit.editName(Name);
             });
-            whatToEditMenu.Add("Discription", (x) =>
+            whatToEditMenu.Add("Description", (x) =>
             {
-                Console.WriteLine($"old director = {movieToEdit.Description}" + "\n" + "What is the new discription of the movie?");
+                Console.WriteLine($"Current Description = {movieToEdit.Description}" + "\n" + "What is the new discription of the movie?");
                 string Description = Console.ReadLine() ?? movieToEdit.Description ?? "";
                 movieToEdit.editName(Description);
             });
@@ -187,7 +187,7 @@ namespace Project_B
             {
 
                 int pegiAge = 0;
-                Console.WriteLine($"old director = {movieToEdit.PegiAge}" + "\n" + "What is the new PEGIage of the movie? (4, 7, 12, 16, 18)");
+                Console.WriteLine($"Current pegiAge = {movieToEdit.PegiAge}" + "\n" + "What is the new PEGIage of the movie? (4, 7, 12, 16, 18)");
                 int.TryParse(Console.ReadLine(), out pegiAge);
                 List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
                 while (!possiblePegiAges.Contains(pegiAge))
@@ -195,7 +195,7 @@ namespace Project_B
                     try
                     {
                         Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                        Console.WriteLine($"old director = {movieToEdit.PegiAge}" + "\n" + "What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
+                        Console.WriteLine($"Current pegiAge = {movieToEdit.PegiAge}" + "\n" + "What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
                         int.TryParse(Console.ReadLine(), out pegiAge);
                     }
                     catch { }
@@ -205,19 +205,19 @@ namespace Project_B
             whatToEditMenu.Add("Duration", (x) =>
             {
                 int Duration = 0;
-                Console.WriteLine($"old director = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
+                Console.WriteLine($"Current duration = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
                 int.TryParse(Console.ReadLine(), out Duration);
                 while (Duration == 0)
                 {
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                    Console.WriteLine($"old director = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
+                    Console.WriteLine($"Current duration = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
                     int.TryParse(Console.ReadLine(), out Duration);
                 }
                 movieToEdit.editDuration(Duration);
             });
             whatToEditMenu.Add("Genre", (x) =>
             {
-                Console.WriteLine($"old director = {movieToEdit.Genre}" + "\n" + "What is the new genre of the movie?");
+                Console.WriteLine($"Current genre = {movieToEdit.Genre}" + "\n" + "What is the new genre of the movie?");
                 string Genre = Console.ReadLine() ?? "";
                 movieToEdit.editGenre(Genre);
             });
@@ -243,11 +243,14 @@ namespace Project_B
                 }
                 catch { }
 
+                //Get directors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
+                movieToEdit.Director = directorFactory.GetItemFromId(movieToEdit.DirectorID ?? 1);
+
                 // Menu to chose director
-                InputMenu directorMenu = new InputMenu(Universal.centerToScreen($"old director = {movieToEdit.Director.Name}") + "\n" + Universal.centerToScreen("Choose a new director:"), null);
+                InputMenu directorMenu = new InputMenu(Universal.centerToScreen($"Current director = {movieToEdit.Director.Name}") + "\n" + Universal.centerToScreen("Choose a new director:"), null);
                 foreach (DirectorModel director in directorList)
                 {
-                    if (movieToEdit.Director == director) continue;
+                    if (movieToEdit.Director.Name == director.Name) continue;
                     directorMenu.Add(director.Name, (x) => { Director = director; });
                 }
                 if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
@@ -255,7 +258,9 @@ namespace Project_B
             });
             whatToEditMenu.Add("Actors", (x) =>
             {
-                InputMenu addOrRemove = new InputMenu(Universal.centerToScreen($"old director = {movieToEdit.Actors.ToString()}") + "\n" + Universal.centerToScreen("What would you like to do?"));
+                string addOrRemoveTitle = Universal.centerToScreen($"Current actors are: ");
+                foreach (ActorModel actor in movieToEdit.Actors) { addOrRemoveTitle += "\n" + actor.Name; }
+                InputMenu addOrRemove = new InputMenu(addOrRemoveTitle + "\n" + Universal.centerToScreen("What would you like to do?"));
                 addOrRemove.Add("Add an actor", (x) =>
                 {
                     List<ActorModel> Actors = new List<ActorModel>();
@@ -277,6 +282,10 @@ namespace Project_B
                         }
                     }
                     catch { }
+
+                    //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
+                    movieFactory.AddRelatedActors(movieToEdit, Universal.Db);
+                    movieToEdit.Actors.Add(actorFactory.GetItemFromId(1));
 
                     // Menu to chose director
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
@@ -340,7 +349,7 @@ namespace Project_B
                     foreach (ActorModel actor in Actors) actorMenu.Remove(actor.Name);
 
                     // Menu to select more actors
-                    InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to add another actor?\nIf not, click Back..."), null);
+                    InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to remove another actor?\nIf not, click Back..."), null);
                     anotherActorMenu.Add("Yes", (x) =>
                     {
                         if (actorMenu.GetMenuOptionsCount() > 0)
