@@ -1,7 +1,7 @@
 ﻿namespace DataAccessLibrary;
 
 public class ReservedSeat
-{
+{//denk niet dat deze uberhaubt nodig is
     public int ID { get; }
     public int SeatID { get; }
     public int ReservationID { get; }
