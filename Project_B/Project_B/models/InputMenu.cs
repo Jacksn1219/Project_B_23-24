@@ -29,10 +29,7 @@ namespace Models
         /// <param name="isTaken"></param>
         public void Add(string Name, Action<string> Act, bool? isTaken = null, int? ID = null)
         {
-            if (this.menuoptions.Where(x => x.Name == Name).Count() == 0)
-            { 
-                this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken, ID));
-            }
+            this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken, ID));
         }
 
         /// <summary>
@@ -64,6 +61,7 @@ namespace Models
                 {
                     //Console.BackgroundColor = ConsoleColor.Gray;
                     Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $">{this.menuoptions[i].Name}<" : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 else
                 {
@@ -77,8 +75,8 @@ namespace Models
                             _ => ConsoleColor.Gray
                         };
                     } catch { }
+                    Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
-                Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 Console.ResetColor();
             };
         }

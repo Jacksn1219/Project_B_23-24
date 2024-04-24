@@ -130,7 +130,7 @@ class Layout : LayoutModel
 
         SeatModel? selectedOption = null;
 
-        InputMenu SeatModelSelectionMenu = new InputMenu($"  [   Screen   ]", null, room.RowWidth ?? 0);
+        InputMenu SeatModelSelectionMenu = new InputMenu($"Soort Stoel:                  Betaal niveau (1 = laag)\n(N) = Normaal                 Blauw = Niveau 1\n(E) = Extra beenruimte        Geel = Niveau 2\n(L) = Love seat               Rood = Niveau 3\n\n [   Screen   ]", null, room.RowWidth ?? 0);
         foreach (SeatModel SeatModel in layout)
         {
             string SeatModelName = SeatModel.Type == " " ? "   " : $" []";
