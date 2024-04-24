@@ -228,7 +228,7 @@ namespace Project_B
             {
                 return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
             }
-            menu.Add("Test SeeActors", (x) =>
+            menu.Add("Test SeeActors", (x) => // Als klant wil ik de acteurs van een film bekijken
             {
                 List<ActorModel> authors = new List<ActorModel>();
                 authors.Add(new ActorModel("Jack Black", "Plays Po", 43));
@@ -241,7 +241,7 @@ namespace Project_B
                 Console.WriteLine(movietje.SeeActors());
                 Console.ReadLine();
             });
-            menu.Add("Test SeeDirector", (x) =>
+            menu.Add("Test SeeDirector", (x) => // Als klant wil ik de regisseur van een film zien
             {
                 List<DirectorModel> directors = new List<DirectorModel>();
                 directors.Add(new DirectorModel("Christopher Nolan", "Famous movie director known for several blockbuster movies such as Oppenheimer, Interstellar, Inception and many more", 53));
@@ -249,7 +249,7 @@ namespace Project_B
                 Console.WriteLine(interStellar.SeeDirector(directors));
                 Console.ReadLine();
             });
-            menu.Add("Test SeeDescription", (x) =>
+            menu.Add("Test SeeDescription", (x) => // Als klant wil ik de omschrijving (leeftijd + genre) van een film zien
             {
                 MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, "Sci-Fi");
                 Console.WriteLine(interStellar.SeeDescription());
