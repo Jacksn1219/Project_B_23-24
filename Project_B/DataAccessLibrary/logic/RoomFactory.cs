@@ -48,7 +48,7 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public RoomModel GetItemFromId(int id)
+        public RoomModel GetItemFromId(int id, int deepcopyLv = 0)
         {
             return _db.ReadData<RoomModel>(
                 @"SELECT * FROM Room

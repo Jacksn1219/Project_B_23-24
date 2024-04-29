@@ -52,7 +52,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// </summary>
     /// <param name="id">the ID of the Movie</param>
     /// <returns>the first movie returned from the query</returns>
-    public MovieModel GetItemFromId(int id)
+    public MovieModel GetItemFromId(int id, int deepcopyLv = 0)
     {
         return _db.ReadData<MovieModel>(
             @"SELECT * FROM Movie
@@ -68,7 +68,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// </summary>
     /// <param name="item">the movie to update or create</param>
     /// <returns>true if succesfull, else false</returns>
-    public bool ItemToDb(MovieModel item)
+    public bool ItemToDb(MovieModel item, int deepcopyLv = 0)
     {
 
         bool directorchanged = item.Director != null && item.Director.IsChanged;

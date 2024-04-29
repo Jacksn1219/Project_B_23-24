@@ -43,7 +43,7 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public ActorModel GetItemFromId(int id)
+        public ActorModel GetItemFromId(int id, int deepcopyLv = 0)
         {
             return _db.ReadData<ActorModel>(
                 @"SELECT * FROM Actor

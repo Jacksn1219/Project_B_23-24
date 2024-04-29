@@ -50,7 +50,7 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public CustomerModel GetItemFromId(int id)
+        public CustomerModel GetItemFromId(int id, int deepcopyLv = 0)
         {
             return _db.ReadData<CustomerModel>(
                 @"SELECT * FROM Customer
