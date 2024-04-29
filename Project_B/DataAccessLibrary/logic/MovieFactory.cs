@@ -68,7 +68,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// </summary>
     /// <param name="item">the movie to update or create</param>
     /// <returns>true if succesfull, else false</returns>
-    public bool ItemToDb(MovieModel item, int deepcopyLv = 0)
+    public bool ItemToDb(MovieModel item)
     {
 
         bool directorchanged = item.Director != null && item.Director.IsChanged;
