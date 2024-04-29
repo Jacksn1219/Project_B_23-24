@@ -1,7 +1,8 @@
 ﻿using DataAccessLibrary.models.interfaces;
 
 namespace DataAccessLibrary;
-public enum SeatType{
+public enum SeatType
+{
     Normaal = 0,
     ExtraBeenruimte = 1,
     LoveSeat = 2,
@@ -60,5 +61,9 @@ public class SeatModel : DbItem
         Name = name;
         Rank = rank;
         Type = type;
+    }
+    public override string ToString()
+    {
+        return $"Name: {Name}\nRank = {Rank}\nType: {Type}";
     }
 }

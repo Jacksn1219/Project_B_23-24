@@ -38,6 +38,10 @@ namespace Project_B.services
             catch { }
 
         }
+        public static void WritePrices()
+        {
+            System.Console.WriteLine($"current prices:\n\nPrice tier I: € {_prices.PriceTierI}\nPrice tier II: € {_prices.PriceTierII}\nPrice tier III: € {_prices.PriceTierIII}\nExtra space costs: € {_prices.ExtraSpace}\nLoveseat costs: € {_prices.LoveSeat}");
+        }
         public static SeatPricesModel GetCurrentPrices()
         {//return a copy of the current prices model.
             return new SeatPricesModel()
@@ -61,24 +65,24 @@ namespace Project_B.services
         public static decimal CalculatePrice(SeatModel seat)
         {
             decimal price = 0;
-            switch (seat.Rank)
+            switch (seat.Rank.ToLower())
             {
-                case "II":
+                case "ii":
                     price += _prices.PriceTierII;
                     break;
-                case "III":
+                case "iii":
                     price += _prices.PriceTierIII;
                     break;
                 default:
                     price += _prices.PriceTierI;
                     break;
             }
-            switch (seat.Type)
+            switch (seat.Type.ToLower())
             {
-                case "Extra beenruimte":
+                case "extra beenruimte":
                     price += _prices.ExtraSpace;
                     break;
-                case "LoveSeat":
+                case "loveseat":
                     price += _prices.LoveSeat;
                     break;
             }
@@ -87,24 +91,24 @@ namespace Project_B.services
         public static string ShowCalculation(SeatModel seat)
         {
             string toReturn = "Price:\n";
-            switch (seat.Rank)
+            switch (seat.Rank.ToLower())
             {
-                case "II":
+                case "ii":
                     toReturn += $"{seat.Rank} € {_prices.PriceTierII}";
                     break;
-                case "III":
+                case "iii":
                     toReturn += $"{seat.Rank} € {_prices.PriceTierIII}";
                     break;
                 default:
                     toReturn += $"{seat.Rank} € {_prices.PriceTierI}";
                     break;
             }
-            switch (seat.Type)
+            switch (seat.Type.ToLower())
             {
-                case "Extra beenruimte":
+                case "extra beenruimte":
                     toReturn += $"\n+ {seat.Type} € {_prices.ExtraSpace}";
                     break;
-                case "LoveSeat":
+                case "loveseat":
                     toReturn += $"\n+ {seat.Type} € {_prices.ExtraSpace}";
                     break;
             }
