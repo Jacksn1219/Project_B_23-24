@@ -5,7 +5,7 @@ using DataAccessLibrary;
 using Models;
 using Project_B.Services;
 
-namespace Project_B.Services
+namespace Project_B.services
 {
     public static class ReservationServices
     {
@@ -74,7 +74,7 @@ namespace Project_B.Services
             {
                 using var cmd = new SQLiteCommand($"SELECT pegiAge FROM Movie WHERE RoomID = {roomID}", sqlite_conn);
                 using var reader = cmd.ExecuteReader();
-                
+
                 if (reader.Read())
                 {
                     pegiAge = reader.GetInt32(0);

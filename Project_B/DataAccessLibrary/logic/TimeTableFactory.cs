@@ -56,7 +56,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         );
     }
 
-    public TimeTableModel GetItemFromId(int id)
+    public TimeTableModel GetItemFromId(int id, int deepcopyLv = 0)
     {
         return _db.ReadData<TimeTableModel>(
             @"SELECT * FROM TimeTable

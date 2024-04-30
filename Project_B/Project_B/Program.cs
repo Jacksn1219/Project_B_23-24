@@ -1,8 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using Models;
-using Project_B.Services;
+using Project_B.services;
 
 namespace Project_B
 {
@@ -219,7 +220,7 @@ namespace Project_B
                 // Reserve seats
                 ReservationServices.ReserveSeats(selectedRoomID, seatNumbers, userAge, fullName, email, phoneNumber);
 
-                
+
 
                 Console.ReadLine();
             });
@@ -253,6 +254,64 @@ namespace Project_B
             {
                 MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, "Sci-Fi");
                 Console.WriteLine(interStellar.SeeDescription());
+                Console.ReadLine();
+            });
+            menu.Add("set prices", (x) =>
+            {
+                var prices = SeatPriceCalculator.GetCurrentPrices();
+                SeatPriceCalculator.WritePrices();
+                System.Console.WriteLine("\nChange Prices? (Y/N)");
+                char input = Console.ReadKey().KeyChar;
+                if (input.Equals('Y') || input.Equals('y'))
+                {
+                    bool changing = true;
+                    while (changing)
+                    {
+                        System.Console.WriteLine("type price to change: (Q to quit)");
+                        string response = Console.ReadLine() ?? "";
+                        switch (response.ToLower())
+                        {
+                            case "price tier i" or "tier i" or "i" or "1":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.PriceTierI = decimal.Parse(response);
+                                break;
+                            case "price tier ii" or "tier ii" or "ii" or "2":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.PriceTierII = decimal.Parse(response);
+                                break;
+                            case "price tier iii" or "tier iii" or "iii" or "3":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.PriceTierIII = decimal.Parse(response);
+                                break;
+                            case "extra space" or "extra" or "space":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.ExtraSpace = decimal.Parse(response);
+                                break;
+                            case "loveseat" or "love" or "love seat":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.LoveSeat = decimal.Parse(response);
+                                break;
+                            case "q":
+                                changing = false;
+                                break;
+                        }
+                    }
+
+                }
+                SeatPriceCalculator.UpdatePrice(prices);
+                SeatPriceCalculator.WritePrices();
+                Console.ReadLine();
+
+            });
+            menu.Add("get seat PRICE info", (x) =>
+            {
+                SeatModel seat = new SeatModel("naam", "II", "loveseat");
+                Console.WriteLine(SeatPriceCalculator.ShowCalculation(seat));
                 Console.ReadLine();
             });
             menu.UseMenu();
