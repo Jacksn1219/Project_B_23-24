@@ -72,26 +72,137 @@ namespace Project_B
             {
                 //Show the timetable and the book ticket
             });
-
-            /*klantMenu.Add("Timetable", (x) =>
+            klantMenu.Add("Reserve Seat", (x) =>
             {
-                Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
-                Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
+                int selectedMovieID;
 
-                Room room1 = new Room(1, "Room_1", 150, 6); //Room 1 heeft 150 plekken
-                Room room2 = new Room(2, "Room_2", 300, 6); //Room 2 heeft 300 plekken
-                Room room3 = new Room(3, "Room_3", 500, 6); //Room 3 heeft 500 plekken
+                while (true)
+                {
+                    // Display available movies
+                    ReservationServices.DisplayAvailableMovies();
 
-                Timetable timetable = new Timetable();
+                    // Ask user to choose a movie
+                    Console.Write("Choose a movie (1 or 2): ");
+                    if (int.TryParse(Console.ReadLine(), out selectedMovieID) && (selectedMovieID == 1 || selectedMovieID == 2))
+                    {
+                        break;  // Exit the loop if a valid movie is selected
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid movie selection. Please choose either 1 or 2.");
+                    }
+                }
 
-                // Toevoegen van films aan de timetable
-                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
-                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
+                // Ask for user's information
+                string fullName;
+                while (true)
+                {
+                    Console.Write("Enter your full name: ");
+                    fullName = Console.ReadLine() ?? "";
+                    if (IsValidFullName(fullName))
+                    {
+                        break;  // Exit the loop if a valid full name is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid full name.");
+                    }
+                }
 
-                // Tonen van de timetable
-                timetable.DisplayTimetable();
+                // Ask for user's age
+                int userAge;
+                while (true)
+                {
+                    Console.Write("Enter your age: ");
+                    if (int.TryParse(Console.ReadLine(), out userAge) && userAge > 0 && userAge <= 100)
+                    {
+                        break;  // Exit the loop if a valid age is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid age between 1 and 100.");
+                    }
+                }
+
+                // Ask for user's email
+                string email;
+                while (true)
+                {
+                    Console.Write("Enter your email: ");
+                    email = Console.ReadLine() ?? "";
+                    if (IsValidEmail(email))
+                    {
+                        break;  // Exit the loop if a valid email is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid email.");
+                    }
+                }
+
+                // Ask for user's phone number
+                string phoneNumber;
+                while (true)
+                {
+                    Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
+                    phoneNumber = Console.ReadLine() ?? "";
+                    if (IsValidPhoneNumber(phoneNumber))
+                    {
+                        break;  // Exit the loop if a valid phone number is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid phone number starting with 0 and max 10 digits.");
+                    }
+                }
+
+                // Ask user to choose a room
+                int selectedRoomID;
+                while (true)
+                {
+                    Console.Write("Choose a room (1, 2, or 3): ");
+                    if (int.TryParse(Console.ReadLine(), out selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
+                    {
+                        break;  // Exit the loop if a valid room is selected
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid room selection.");
+                    }
+                }
+
+                // Display the layout of the selected room
+                ReservationServices.DisplayRoomLayout(selectedRoomID);
+
+                // Display available seats
+                var availableSeats = ReservationServices.GetAvailableSeats(selectedRoomID);
+                Console.WriteLine("Available Seats:");
+                foreach (var seat in availableSeats)
+                {
+                    Console.WriteLine($"Seat ID: {seat.ID}, Room ID: {seat.ID}, Name: {seat.Name}, Rank: {seat.Rank}, Type: {seat.Type}");
+                }
+
+                // Ask user to choose seats
+                Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
+                var input = Console.ReadLine() ?? "";
+                var seatNumbers = new List<int>();
+
+                foreach (var seatNumber in input.Split(','))
+                {
+                    if (int.TryParse(seatNumber.Trim(), out int num))
+                    {
+                        seatNumbers.Add(num);
+                    }
+                }
+
+                // Reserve seats
+                ReservationServices.ReserveSeats(selectedRoomID, seatNumbers, userAge, fullName, email, phoneNumber);
+
+
+
                 Console.ReadLine();
-            });*/
+            });
+
 
             // ------ Medewerker menu met menu opties ------//
             InputMenu medewerkerMenu = new InputMenu("useLambda");
@@ -115,18 +226,18 @@ namespace Project_B
             {
                 Layout.editLayoutPerRoom();
             });
-            medewerkerMenu.Add("Select a seat", (x) =>
-            {
-                Console.WriteLine(Layout.selectSeatPerRoom());
-                Console.ReadLine();
-            });
-            medewerkerMenu.Add("Maak nieuwe film", (x) =>
+            medewerkerMenu.Add("\n" + Universal.centerToScreen("Maak nieuwe film"), (x) =>
             {
                 CreateItems.CreateNewMovie();
             });
             medewerkerMenu.Add("Pas film aan", (x) =>
             {
                 CreateItems.ChangeMovie();
+            });
+            medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
+            {
+                Console.WriteLine(Layout.selectSeatPerRoom());
+                Console.ReadLine();
             });
             medewerkerMenu.Add("Reserve Seat", (x) =>
             {
@@ -263,7 +374,7 @@ namespace Project_B
             {
                 return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
             }
-            medewerkerMenu.Add("Test SeeActors", (x) => // Als klant wil ik de acteurs van een film bekijken
+            medewerkerMenu.Add("\n" + Universal.centerToScreen("Test SeeActors"), (x) => // Als klant wil ik de acteurs van een film bekijken
             {
                 List<ActorModel> authors = new List<ActorModel>();
                 authors.Add(new ActorModel("Jack Black", "Plays Po", 43));
@@ -290,7 +401,7 @@ namespace Project_B
                 Console.WriteLine(interStellar.SeeDescription());
                 Console.ReadLine();
             });
-            medewerkerMenu.Add("set prices", (x) =>
+            medewerkerMenu.Add("\n" + Universal.centerToScreen("set prices"), (x) =>
             {
                 var prices = SeatPriceCalculator.GetCurrentPrices();
                 SeatPriceCalculator.WritePrices();
