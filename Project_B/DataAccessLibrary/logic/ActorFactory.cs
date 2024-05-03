@@ -43,7 +43,7 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public ActorModel? GetItemFromId(int id)
+        public ActorModel GetItemFromId(int id, int deepcopyLv = 0)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace DataAccessLibrary.logic
         public bool ItemToDb(ActorModel item)
         {
             if (!item.IsChanged) return true;
-            if (item.ID == null) return CreateItem(item);
+            if (!item.Exists) return CreateItem(item);
             return UpdateItem(item);
         }
 

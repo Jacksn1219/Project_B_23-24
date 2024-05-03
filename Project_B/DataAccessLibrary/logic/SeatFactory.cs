@@ -55,7 +55,7 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public SeatModel GetItemFromId(int id)
+        public SeatModel GetItemFromId(int id, int deepcopyLv = 0)
         {
             return _db.ReadData<SeatModel>(
                 @"SELECT * FROM SeatModel

@@ -42,7 +42,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
         );
     }
 
-    public DirectorModel? GetItemFromId(int id)
+    public DirectorModel GetItemFromId(int id, int deepcopyLv = 0)
     {
         try
         {

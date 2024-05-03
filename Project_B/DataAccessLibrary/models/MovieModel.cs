@@ -1,6 +1,6 @@
 ﻿using System.Data.SQLite;
 using DataAccessLibrary.models.interfaces;
-
+using System.Text;
 namespace DataAccessLibrary;
 public enum PEGIAge
 {
@@ -16,7 +16,6 @@ public class MovieModel : DbItem
     private string? _description;
     private PEGIAge _pegiAge;
     private int _durationInMin;
-
     /// <summary>
     /// the title of the movie
     /// </summary>
@@ -118,4 +117,33 @@ public class MovieModel : DbItem
     public void editDirector(DirectorModel newDirector) => this.Director = newDirector;
     public void addActor(ActorModel newActors) => this.Actors.Add(newActors);
     public void removeActor(ActorModel newActors) => this.Actors.Remove(newActors);
+    public string SeeActors()
+    {
+        StringBuilder sb = new();
+        sb.Append("All actors in this movie:\n");
+        foreach (ActorModel actor in Actors)
+        {
+            sb.Append($"{actor.Name}\n");
+        }
+        return sb.ToString();
+    }
+    public string SeeDirector(List<DirectorModel> directors)
+    {
+        foreach (DirectorModel director in directors)
+        {
+            if (DirectorID == director.ID)
+            {
+                return $"The director of the movie {Name}: {director.Name}";
+            }
+        }
+        return $"No director found for this {Name}";
+    }
+    public string SeeDescription()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append($"The minimum age for this movie is: {PegiAge}\n");
+        sb.Append($"The genre of this movie is: {Genre}");
+        sb.Append($"\nDescription of this movie: \n{Description}");
+        return sb.ToString();
+    }
 }

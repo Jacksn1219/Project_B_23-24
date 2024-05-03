@@ -62,7 +62,7 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public ReservationModel GetItemFromId(int id)
+        public ReservationModel GetItemFromId(int id, int deepcopyLv = 0)
         {
             return _db.ReadData<ReservationModel>(
                 @"SELECT * FROM Reservation

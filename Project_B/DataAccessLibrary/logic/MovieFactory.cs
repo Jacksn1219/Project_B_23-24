@@ -52,7 +52,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// </summary>
     /// <param name="id">the ID of the Movie</param>
     /// <returns>the first movie returned from the query</returns>
-    public MovieModel? GetItemFromId(int id)
+    public MovieModel GetItemFromId(int id, int deepcopyLv = 0)
     {
         try
         {

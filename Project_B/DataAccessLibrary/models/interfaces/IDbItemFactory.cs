@@ -32,7 +32,7 @@ public interface IDbItemFactory<T>
     /// <typeparam name="T">the type of the DbItem</typeparam>
     /// <param name="id">the Id of the item</param>
     /// <returns>the DbItem as </returns>
-    public T GetItemFromId(int id);
+    public T GetItemFromId(int id, int deepcopyLv = 0);
 
 
 }

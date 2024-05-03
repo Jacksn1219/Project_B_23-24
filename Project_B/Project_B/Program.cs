@@ -8,6 +8,9 @@ using DataAccessLibrary.models;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using Project_B.services;
 
 namespace Project_B
 {
@@ -127,51 +130,239 @@ namespace Project_B
             });
             medewerkerMenu.Add("Reserve Seat", (x) =>
             {
-                // Ask for user's age
-                Console.Write("Enter your age: ");
-                if (int.TryParse(Console.ReadLine(), out int userAge))
-                { }
-                // Display available rooms
-                /*ReservationService.DisplayAvailableRooms();
+                int selectedMovieID;
 
-                //Ask user to choose a room
-
-                Console.Write("Choose a room (1, 2, or 3): ");
-                if (int.TryParse(Console.ReadLine(), out int selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
+                while (true)
                 {
-                    // Display available rooms
-                    ReservationService.DisplayAvailableRooms();
+                    // Display available movies
+                    ReservationServices.DisplayAvailableMovies();
 
-                    // Ask user to choose a room
-                    Console.Write("Choose a room (1, 2, or 3): ");
-                    if (int.TryParse(Console.ReadLine(), out int selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
+                    // Ask user to choose a movie
+                    Console.Write("Choose a movie (1 or 2): ");
+                    if (int.TryParse(Console.ReadLine(), out selectedMovieID) && (selectedMovieID == 1 || selectedMovieID == 2))
                     {
-                        Console.WriteLine($"SeatModel ID: {SeatModel.ID}, Room ID: {SeatModel.RoomID}, Name: {SeatModel.Name}, Rank: {SeatModel.Rank}, Type: {SeatModel.Type}");
+                        break;  // Exit the loop if a valid movie is selected
                     }
-
-                    // Ask user to choose SeatModels
-                    Console.WriteLine("Enter SeatModel numbers to reserve (comma-separated):");
-                    var input = Console.ReadLine();
-                    var SeatModelNumbers = new List<int>();
-
-                    foreach (var SeatModelNumber in input.Split(','))
+                    else
                     {
-                        if (int.TryParse(SeatModelNumber.Trim(), out int num))
-                        {
-                            SeatModelNumbers.Add(num);
-                        }
+                        Console.WriteLine("Invalid movie selection. Please choose either 1 or 2.");
                     }
-
-                    // Reserve SeatModels
-                    ReservationService.ReserveSeatModels(selectedRoomID, SeatModelNumbers, userAge);
-                }*/
-                else
-                {
-                    Console.WriteLine("Invalid room selection.");
                 }
+
+                // Ask for user's information
+                string fullName;
+                while (true)
+                {
+                    Console.Write("Enter your full name: ");
+                    fullName = Console.ReadLine();
+                    if (IsValidFullName(fullName))
+                    {
+                        break;  // Exit the loop if a valid full name is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid full name.");
+                    }
+                }
+
+                // Ask for user's age
+                int userAge;
+                while (true)
+                {
+                    Console.Write("Enter your age: ");
+                    if (int.TryParse(Console.ReadLine(), out userAge) && userAge > 0 && userAge <= 100)
+                    {
+                        break;  // Exit the loop if a valid age is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid age between 1 and 100.");
+                    }
+                }
+
+                // Ask for user's email
+                string email;
+                while (true)
+                {
+                    Console.Write("Enter your email: ");
+                    email = Console.ReadLine();
+                    if (IsValidEmail(email))
+                    {
+                        break;  // Exit the loop if a valid email is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid email.");
+                    }
+                }
+
+                // Ask for user's phone number
+                string phoneNumber;
+                while (true)
+                {
+                    Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
+                    phoneNumber = Console.ReadLine();
+                    if (IsValidPhoneNumber(phoneNumber))
+                    {
+                        break;  // Exit the loop if a valid phone number is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid phone number starting with 0 and max 10 digits.");
+                    }
+                }
+
+                // Ask user to choose a room
+                int selectedRoomID;
+                while (true)
+                {
+                    Console.Write("Choose a room (1, 2, or 3): ");
+                    if (int.TryParse(Console.ReadLine(), out selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
+                    {
+                        break;  // Exit the loop if a valid room is selected
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid room selection.");
+                    }
+                }
+
+                // Display the layout of the selected room
+                ReservationServices.DisplayRoomLayout(selectedRoomID);
+
+                // Display available seats
+                var availableSeats = ReservationServices.GetAvailableSeats(selectedRoomID);
+                Console.WriteLine("Available Seats:");
+                foreach (var seat in availableSeats)
+                {
+                    Console.WriteLine($"Seat ID: {seat.ID}, Room ID: {seat.ID}, Name: {seat.Name}, Rank: {seat.Rank}, Type: {seat.Type}");
+                }
+
+                // Ask user to choose seats
+                Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
+                var input = Console.ReadLine();
+                var seatNumbers = new List<int>();
+
+                foreach (var seatNumber in input.Split(','))
+                {
+                    if (int.TryParse(seatNumber.Trim(), out int num))
+                    {
+                        seatNumbers.Add(num);
+                    }
+                }
+
+                // Reserve seats
+                ReservationServices.ReserveSeats(selectedRoomID, seatNumbers, userAge, fullName, email, phoneNumber);
+
+
 
                 Console.ReadLine();
             });
+
+            static bool IsValidFullName(string fullName)
+            {
+                return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
+            }
+            menu.Add("Test SeeActors", (x) => // Als klant wil ik de acteurs van een film bekijken
+            {
+                List<ActorModel> authors = new List<ActorModel>();
+                authors.Add(new ActorModel("Jack Black", "Plays Po", 43));
+                authors.Add(new ActorModel("Jackie Chan", "Plays Monkey", 57));
+                authors.Add(new ActorModel("Ada Wong", "Plays Viper", 27));
+                authors.Add(new ActorModel("Jada Pinket Smith", "Plays Tigress", 41));
+                MovieModel movietje = new MovieModel("KUNG FU PANDA 4", "everybody was kung fu fighting", 12, 120, "Horror");
+                movietje.Director = new DirectorModel("Jaycey", "Director from netherlands", 20);
+                movietje.Actors.AddRange(authors);
+                Console.WriteLine(movietje.SeeActors());
+                Console.ReadLine();
+            });
+            menu.Add("Test SeeDirector", (x) => // Als klant wil ik de regisseur van een film zien
+            {
+                List<DirectorModel> directors = new List<DirectorModel>();
+                directors.Add(new DirectorModel("Christopher Nolan", "Famous movie director known for several blockbuster movies such as Oppenheimer, Interstellar, Inception and many more", 53));
+                MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, "Sci-Fi");
+                Console.WriteLine(interStellar.SeeDirector(directors));
+                Console.ReadLine();
+            });
+            menu.Add("Test SeeDescription", (x) => // Als klant wil ik de omschrijving (leeftijd + genre) van een film zien
+            {
+                MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, "Sci-Fi");
+                Console.WriteLine(interStellar.SeeDescription());
+                Console.ReadLine();
+            });
+            menu.Add("set prices", (x) =>
+            {
+                var prices = SeatPriceCalculator.GetCurrentPrices();
+                SeatPriceCalculator.WritePrices();
+                System.Console.WriteLine("\nChange Prices? (Y/N)");
+                char input = Console.ReadKey().KeyChar;
+                if (input.Equals('Y') || input.Equals('y'))
+                {
+                    bool changing = true;
+                    while (changing)
+                    {
+                        System.Console.WriteLine("type price to change: (Q to quit)");
+                        string response = Console.ReadLine() ?? "";
+                        switch (response.ToLower())
+                        {
+                            case "price tier i" or "tier i" or "i" or "1":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.PriceTierI = decimal.Parse(response);
+                                break;
+                            case "price tier ii" or "tier ii" or "ii" or "2":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.PriceTierII = decimal.Parse(response);
+                                break;
+                            case "price tier iii" or "tier iii" or "iii" or "3":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.PriceTierIII = decimal.Parse(response);
+                                break;
+                            case "extra space" or "extra" or "space":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.ExtraSpace = decimal.Parse(response);
+                                break;
+                            case "loveseat" or "love" or "love seat":
+                                Console.WriteLine("type new price:");
+                                response = Console.ReadLine() ?? "";
+                                prices.LoveSeat = decimal.Parse(response);
+                                break;
+                            case "q":
+                                changing = false;
+                                break;
+                        }
+                    }
+
+                }
+                SeatPriceCalculator.UpdatePrice(prices);
+                SeatPriceCalculator.WritePrices();
+                Console.ReadLine();
+
+            });
+            menu.Add("get seat PRICE info", (x) =>
+            {
+                SeatModel seat = new SeatModel("naam", "II", "loveseat");
+                Console.WriteLine(SeatPriceCalculator.ShowCalculation(seat));
+                Console.ReadLine();
+            });
+            menu.UseMenu();
+
+
+            static bool IsValidEmail(string email)
+            {
+                return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|hotmail\.nl)$");
+            }
+
+            static bool IsValidPhoneNumber(string phoneNumber)
+            {
+                // Phone number must start with '0' and have a maximum length of 10 characters
+                return phoneNumber.StartsWith("0") && phoneNumber.Length <= 10 && phoneNumber.All(char.IsDigit);
+            }
+
+
 
             /*
             medewerkerMenu.Add("Setup Database", (x) =>
@@ -232,14 +423,3 @@ namespace Project_B
         }
     }
 }
-
-/*
- * Unit tests Inputmenu
- * Als klant wil ik zien welke stoelen al bezet zijn zodat ik niet per ongeluk een al gereserveerde stoel pak
- * Als administratie wil ik de gereserveerde stoelen terugzien, zodat ik de klanten naar hun stoel kan begeleiden
- * Als administratie wil ik graag zien hoe vol een zaal is, zodat ik kan zien of de desbetreffende film een grotere zaal nodig heeft of niet zo populair is
- X Als administratie wil ik een nieuwe film toevoegen, zodat we telkens de nieuwste films kunnen laten zien.
- * Als administratie wil ik slecht lopende films verwijderen, zodat we geen films laten zien die niet populair zijn.
- X Als administratie wil ik films kunnen aanpassen, zodat als ik een fout maak ik de film niet opnieuw aan moet maken.
- X Als medewerker wil ik in kunnen loggen, zodat niet iedereen administratorrechten heeft
-*/
