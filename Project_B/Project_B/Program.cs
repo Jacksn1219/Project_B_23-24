@@ -71,63 +71,7 @@ namespace Project_B
             {
                 //Show the timetable and the book ticket
             });
-
-            /*klantMenu.Add("Timetable", (x) =>
-            {
-                Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
-                Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
-
-                Room room1 = new Room(1, "Room_1", 150, 6); //Room 1 heeft 150 plekken
-                Room room2 = new Room(2, "Room_2", 300, 6); //Room 2 heeft 300 plekken
-                Room room3 = new Room(3, "Room_3", 500, 6); //Room 3 heeft 500 plekken
-
-                Timetable timetable = new Timetable();
-
-                // Toevoegen van films aan de timetable
-                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
-                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
-
-                // Tonen van de timetable
-                timetable.DisplayTimetable();
-                Console.ReadLine();
-            });*/
-
-            // ------ Medewerker menu met menu opties ------//
-            InputMenu medewerkerMenu = new InputMenu("useLambda");
-            medewerkerMenu.Add("Planning", (x) =>
-            {
-                //Inplannen film en aanpassen wat er geplanned is en Kunnen zien notities klanten
-            });
-            medewerkerMenu.Add("Reservaties", (x) =>
-            {
-                //Zie gemaakte reservaties voor timetable films
-            });
-            medewerkerMenu.Add("Historie", (x) =>
-            {
-                //Zie verkoop per film, week en maand en kunnen filteren per verkoop hoeveelheid
-            });
-            medewerkerMenu.Add("Aanmaken", (x) =>
-            {
-                //Aanmaken nieuwe film, acteur, regiseur, zaal.
-            });
-            medewerkerMenu.Add("Edit layout", (x) =>
-            {
-                Layout.editLayoutPerRoom();
-            });
-            medewerkerMenu.Add("Select a seat", (x) =>
-            {
-                Console.WriteLine(Layout.selectSeatPerRoom());
-                Console.ReadLine();
-            });
-            medewerkerMenu.Add("Maak nieuwe film", (x) =>
-            {
-                CreateItems.CreateNewMovie();
-            });
-            medewerkerMenu.Add("Pas film aan", (x) =>
-            {
-                CreateItems.ChangeMovie();
-            });
-            medewerkerMenu.Add("Reserve Seat", (x) =>
+            klantMenu.Add("Reserve Seat", (x) =>
             {
                 int selectedMovieID;
 
@@ -272,8 +216,65 @@ namespace Project_B
             static bool IsValidPhoneNumber(string phoneNumber)
             {
                 // Phone number must start with '0' and have a maximum length of 10 characters
-                return phoneNumber.StartsWith("0") && phoneNumber.Length <= 10 && phoneNumber.All(char.IsDigit);
+                return phoneNumber.StartsWith("0") && phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
             }
+
+            /*klantMenu.Add("Timetable", (x) =>
+            {
+                Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
+                Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
+
+                Room room1 = new Room(1, "Room_1", 150, 6); //Room 1 heeft 150 plekken
+                Room room2 = new Room(2, "Room_2", 300, 6); //Room 2 heeft 300 plekken
+                Room room3 = new Room(3, "Room_3", 500, 6); //Room 3 heeft 500 plekken
+
+                Timetable timetable = new Timetable();
+
+                // Toevoegen van films aan de timetable
+                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
+                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
+
+                // Tonen van de timetable
+                timetable.DisplayTimetable();
+                Console.ReadLine();
+            });*/
+
+            // ------ Medewerker menu met menu opties ------//
+            InputMenu medewerkerMenu = new InputMenu("useLambda");
+            medewerkerMenu.Add("Planning", (x) =>
+            {
+                //Inplannen film en aanpassen wat er geplanned is en Kunnen zien notities klanten
+            });
+            medewerkerMenu.Add("Reservaties", (x) =>
+            {
+                //Zie gemaakte reservaties voor timetable films
+            });
+            medewerkerMenu.Add("Historie", (x) =>
+            {
+                //Zie verkoop per film, week en maand en kunnen filteren per verkoop hoeveelheid
+            });
+            medewerkerMenu.Add("Aanmaken", (x) =>
+            {
+                //Aanmaken nieuwe film, acteur, regiseur, zaal.
+            });
+            medewerkerMenu.Add("Edit layout", (x) =>
+            {
+                Layout.editLayoutPerRoom();
+            });
+            medewerkerMenu.Add("Select a seat", (x) =>
+            {
+                Console.WriteLine(Layout.selectSeatPerRoom());
+                Console.ReadLine();
+            });
+            medewerkerMenu.Add("Maak nieuwe film", (x) =>
+            {
+                CreateItems.CreateNewMovie();
+            });
+            medewerkerMenu.Add("Pas film aan", (x) =>
+            {
+                CreateItems.ChangeMovie();
+            });
+            
 
             /*
             medewerkerMenu.Add("Setup Database", (x) =>

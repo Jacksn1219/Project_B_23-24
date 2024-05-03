@@ -4,10 +4,10 @@ namespace DataAccessLibrary.logic
 {
     public class RoomFactory : IDbItemFactory<RoomModel>
     {
-        private readonly SQliteDataAccess _db;
+        private readonly DataAccess _db;
         private readonly SeatModelFactory _sf;
 
-        public RoomFactory(SQliteDataAccess db, SeatModelFactory sf)
+        public RoomFactory(DataAccess db, SeatModelFactory sf)
         {
             _db = db;
             _sf = sf;
