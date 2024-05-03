@@ -60,7 +60,7 @@ namespace Models
                 if (i == cursor)
                 {
                     //Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $">{this.menuoptions[i].Name}<" : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 else
@@ -75,6 +75,7 @@ namespace Models
                             _ => ConsoleColor.Gray
                         };
                     } catch { }
+                    try { if (this.menuoptions[i].isTaken == true) Console.ForegroundColor = ConsoleColor.DarkGray; } catch { }
                     Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 Console.ResetColor();
@@ -102,26 +103,26 @@ namespace Models
                 if ((userInput == ConsoleKey.UpArrow || userInput == ConsoleKey.W) && cursor > 0)
                 {
                     cursor = Math.Max(cursor - row, 0);
-                    while (cursor > 0 && this.menuoptions[cursor].Name == " ") cursor = Math.Max(cursor - row, 0);
-                    while (this.menuoptions[cursor].Name == " " && cursor < this.menuoptions.Count) cursor++;
+                    while (cursor > 0 && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].isTaken == true)) cursor = Math.Max(cursor - row, 0);
+                    while ((this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].isTaken == true) && cursor < this.menuoptions.Count) cursor++;
                 }
                 else if ((userInput == ConsoleKey.DownArrow || userInput == ConsoleKey.S) && cursor < this.menuoptions.Count)
                 {
                     cursor = Math.Min(cursor + row, this.menuoptions.Count);
-                    while (cursor < this.menuoptions.Count && this.menuoptions[cursor].Name == " ") cursor = Math.Min(cursor + row, this.menuoptions.Count);
+                    while (cursor < this.menuoptions.Count && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].isTaken == true)) cursor = Math.Min(cursor + row, this.menuoptions.Count);
                 }
                 else if ((userInput == ConsoleKey.LeftArrow || userInput == ConsoleKey.A) && cursor > 0)
                 {
                     if (this.menuoptions[cursor - 1].Name != " ")
                     {
                         cursor--;
-                        while (cursor > 0 && this.menuoptions[cursor].Name == " ") cursor--;
+                        while (cursor > 0 && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].isTaken == true)) cursor--;
                     }
                 }
                 else if ((userInput == ConsoleKey.RightArrow || userInput == ConsoleKey.D) && cursor < this.menuoptions.Count)
                 {
                     cursor++;
-                    while (cursor < this.menuoptions.Count && this.menuoptions[cursor].Name == " ") cursor++;
+                    while (cursor < this.menuoptions.Count && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].isTaken == true)) cursor++;
                 }
                 else if (userInput == ConsoleKey.Enter)
                 {

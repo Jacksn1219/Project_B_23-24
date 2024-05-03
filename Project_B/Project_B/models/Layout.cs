@@ -142,7 +142,7 @@ class Layout : LayoutModel
                 //ShowSeatModelInfo(selectedSeatModel); - Jelle
                 //Console.WriteLine("Not yet implemented - ShowSeatModelInfo");
                 //Console.ReadLine();
-            });
+            }, SeatModel.IsReserved);
         }
         SeatModelSelectionMenu.UseMenu();
         return selectedOption;

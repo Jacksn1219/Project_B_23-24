@@ -154,7 +154,7 @@ namespace Project_B
                 while (true)
                 {
                     Console.Write("Enter your full name: ");
-                    fullName = Console.ReadLine();
+                    fullName = Console.ReadLine() ?? "";
                     if (IsValidFullName(fullName))
                     {
                         break;  // Exit the loop if a valid full name is entered
@@ -185,7 +185,7 @@ namespace Project_B
                 while (true)
                 {
                     Console.Write("Enter your email: ");
-                    email = Console.ReadLine();
+                    email = Console.ReadLine() ?? "";
                     if (IsValidEmail(email))
                     {
                         break;  // Exit the loop if a valid email is entered
@@ -201,7 +201,7 @@ namespace Project_B
                 while (true)
                 {
                     Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                    phoneNumber = Console.ReadLine();
+                    phoneNumber = Console.ReadLine() ?? "";
                     if (IsValidPhoneNumber(phoneNumber))
                     {
                         break;  // Exit the loop if a valid phone number is entered
@@ -240,7 +240,7 @@ namespace Project_B
 
                 // Ask user to choose seats
                 Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
-                var input = Console.ReadLine();
+                var input = Console.ReadLine() ?? "";
                 var seatNumbers = new List<int>();
 
                 foreach (var seatNumber in input.Split(','))
@@ -263,7 +263,7 @@ namespace Project_B
             {
                 return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
             }
-            menu.Add("Test SeeActors", (x) => // Als klant wil ik de acteurs van een film bekijken
+            medewerkerMenu.Add("Test SeeActors", (x) => // Als klant wil ik de acteurs van een film bekijken
             {
                 List<ActorModel> authors = new List<ActorModel>();
                 authors.Add(new ActorModel("Jack Black", "Plays Po", 43));
@@ -276,7 +276,7 @@ namespace Project_B
                 Console.WriteLine(movietje.SeeActors());
                 Console.ReadLine();
             });
-            menu.Add("Test SeeDirector", (x) => // Als klant wil ik de regisseur van een film zien
+            medewerkerMenu.Add("Test SeeDirector", (x) => // Als klant wil ik de regisseur van een film zien
             {
                 List<DirectorModel> directors = new List<DirectorModel>();
                 directors.Add(new DirectorModel("Christopher Nolan", "Famous movie director known for several blockbuster movies such as Oppenheimer, Interstellar, Inception and many more", 53));
@@ -284,13 +284,13 @@ namespace Project_B
                 Console.WriteLine(interStellar.SeeDirector(directors));
                 Console.ReadLine();
             });
-            menu.Add("Test SeeDescription", (x) => // Als klant wil ik de omschrijving (leeftijd + genre) van een film zien
+            medewerkerMenu.Add("Test SeeDescription", (x) => // Als klant wil ik de omschrijving (leeftijd + genre) van een film zien
             {
                 MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, "Sci-Fi");
                 Console.WriteLine(interStellar.SeeDescription());
                 Console.ReadLine();
             });
-            menu.Add("set prices", (x) =>
+            medewerkerMenu.Add("set prices", (x) =>
             {
                 var prices = SeatPriceCalculator.GetCurrentPrices();
                 SeatPriceCalculator.WritePrices();
@@ -342,13 +342,13 @@ namespace Project_B
                 Console.ReadLine();
 
             });
-            menu.Add("get seat PRICE info", (x) =>
+            medewerkerMenu.Add("get seat PRICE info", (x) =>
             {
                 SeatModel seat = new SeatModel("naam", "II", "loveseat");
                 Console.WriteLine(SeatPriceCalculator.ShowCalculation(seat));
                 Console.ReadLine();
             });
-            menu.UseMenu();
+            //medewerkerMenu.UseMenu();
 
 
             static bool IsValidEmail(string email)
