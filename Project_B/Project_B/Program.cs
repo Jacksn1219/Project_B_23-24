@@ -1,100 +1,77 @@
-﻿using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
+﻿﻿using System.Text.Json;
+using Models;
+using System.Collections.Generic;
+using System.Xml.Linq;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
-using Models;
+using DataAccessLibrary.models;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using Project_B.services;
+using System.Text.RegularExpressions;
 
 namespace Project_B
 {
     class Program
     {
-        private const string DbPath = "database.db";
         public static void Main()
         {
-            //start of app
-            //create database connection
-            DataAccess db = new SQliteDataAccess($"Data Source={DbPath}; Version = 3; New = True; Compress = True;");
-            //create factories to add DbItems to the db
-            DirectorFactory df = new(db);
-            ActorFactory af = new(db);
-            MovieFactory mf = new(db, df, af);
-            SeatFactory sf = new(db);
-            RoomFactory roomf = new(db, sf);
-            TimeTableFactory tf = new(db, mf, roomf);
-            CustomerFactory cf = new(db);
-            ReservationFactory resf = new(db, cf, sf);
-
-
-            InputMenu menu = new InputMenu("| Main menu |", true);
-            /*menu.Add("Setup Database", (x) =>
+            //----- Welkom scherm -----//
+            List<Action> welcomeList = new List<Action>
             {
-                //Opzet Sqlite database
-                //SQLite.SetupProjectB();
-                Console.ReadLine();
+                () => {Universal.WriteColor("                    █████ █████", ConsoleColor.Cyan); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Cyan); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                   ░░███ ░░███ ", ConsoleColor.Cyan); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor("░░███░░░░░█", ConsoleColor.Cyan); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                    ░░███ ███  ", ConsoleColor.Cyan); Universal.WriteColor($"  ██████  █████ ████ ████████ ", ConsoleColor.Gray); Universal.WriteColor(" ░███  █ ░ ", ConsoleColor.Cyan); Universal.WriteColor($" █████ ████  ██████   █████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                     ░░█████   ", ConsoleColor.Cyan); Universal.WriteColor($" ███░░███░░███ ░███ ░░███░░███", ConsoleColor.Gray); Universal.WriteColor(" ░██████   ", ConsoleColor.Cyan); Universal.WriteColor($"░░███ ░███  ███░░███ ███░░  \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                      ░░███    ", ConsoleColor.Cyan); Universal.WriteColor($"░███ ░███ ░███ ░███  ░███ ░░░ ", ConsoleColor.Gray); Universal.WriteColor(" ░███░░█   ", ConsoleColor.Cyan); Universal.WriteColor($" ░███ ░███ ░███████ ░░█████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                       ░███    ", ConsoleColor.Cyan); Universal.WriteColor($"░███ ░███ ░███ ░███  ░███     ", ConsoleColor.Gray); Universal.WriteColor(" ░███ ░   █", ConsoleColor.Cyan); Universal.WriteColor($" ░███ ░███ ░███░░░   ░░░░███\n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                       █████   ", ConsoleColor.Cyan); Universal.WriteColor($"░░██████  ░░████████ █████    ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Cyan); Universal.WriteColor($" ░░███████ ░░██████  ██████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                      ░░░░░    ", ConsoleColor.Cyan); Universal.WriteColor($" ░░░░░░    ░░░░░░░░ ░░░░░     ", ConsoleColor.Gray); Universal.WriteColor("░░░░░░░░░░ ", ConsoleColor.Cyan); Universal.WriteColor($"  ░░░░░███  ░░░░░░  ░░░░░░  \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor($"                                                                          ███ ░███                  \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor($"                                                                         ░░██████                   \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor($"                                                                          ░░░░░░                    ", ConsoleColor.Gray); }
+            };
+            Console.CursorVisible = false;
+            Console.WriteLine("\n\n\n");
+            for (int i = 0; i < welcomeList.Count(); i++)
+            {
+                welcomeList[i]();
+                Thread.Sleep(100);
+            }
+            Thread.Sleep(400);
+            Console.Write($"\n\n\n\n\n                                               Loading data...");
+            Console.SetCursorPosition(Console.CursorLeft - 15, Console.CursorTop);
+
+            //----- Setup starting data -----//
+            Universal.setupDatabase();
+
+            ConsoleKey key;
+            do
+            {
+                Console.Write("Press <Any> key to continue...");
+                Thread.Sleep(700);
+                Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+                if(Console.KeyAvailable) break;
+                Console.Write("                              ");
+                Thread.Sleep(700);
+                Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+            } while (!Console.KeyAvailable);
+
+            key = Console.ReadKey(true).Key;
+            Console.CursorVisible = true;
+
+            // ------ Klant menu met menu opties ------//
+            InputMenu klantMenu = new InputMenu("useLambda");
+            klantMenu.Add("Movies", (x) =>
+            {
+                //Show all movies that are in the timetable and load timetable from only the selected movie
             });
-            menu.Add("Test Author", (x) =>
+            klantMenu.Add("Schedule", (x) =>
             {
-                ActorModel testAuthor = new ActorModel("John", "Not succesfull", 25);
-                Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
-                Console.ReadLine();
-            });*/
-            menu.Add("Layout creator", (x) =>
-            {
-                Layout l = new Layout(roomf, sf);
-                l.MakeNewLayout();
-                /*
-                Als klant wil ik de stoelen in een zaal zien omdat ik wil weten waar ik kan zitten. -Chris
-                Als klant wil ik zien wat voor type stoel een bepaalde stoel is, zodat ik mijn favoriete type kan kiezen.(Love-seat, regular, deluxe) -Chris
-                */
+                //Show the timetable and the book ticket
             });
-            menu.Add("Edit layout item", (x) =>
-            {
-                List<SeatModel> layout1 = new List<SeatModel>{
-                    new SeatModel("0", " ", " "),
-                    new SeatModel("1", " ", " "),
-                    new SeatModel("2", "1", "Normaal"),
-                    new SeatModel("3", "1", "Normaal"),
-                    new SeatModel("4", "1", "Normaal"),
-                    new SeatModel("5", "1", "Normaal"),
-                    new SeatModel("6", "1", "Normaal"),
-                    new SeatModel( "7", "1", "Normaal"),
-                    new SeatModel("8", "1", "Normaal"),
-                    new SeatModel( "9", "1", "Normaal"),
-                    new SeatModel("10", " ", " "),
-                    new SeatModel("11", " ", " "),
-                    new SeatModel("12", " ", " "),
-                    new SeatModel("13", " ", " ")
-                };
-                List<RoomModel> roomList = new List<RoomModel> { new RoomModel("Room1", layout1.Count, 6) };
-                InputMenu selectRoom = new InputMenu("| Select room to edit |");
-                foreach (RoomModel room in roomList/*getRoomFromDatabase() - Aymane*/)
-                {
-                    selectRoom.Add($"{room.Name}", (x) => DataAccessLibrary.Layout.editLayout(layout1/*getLayoutFromDatabase() - Aymane*/, room));
-                }
-                selectRoom.UseMenu();
-            });
-            menu.Add("Timetable", (x) =>
-            {
-                MovieModel movie1 = new MovieModel("KUNG FU PANDA 4", "", 12, 120, "horor"); //Film 1 wordt toegevoegd
-                MovieModel movie2 = new MovieModel("DUNE: PART TWO", "", 16, 150, "horor");  //Film 2 wordt toegevoegd
-
-                RoomModel room1 = new RoomModel("Room_1", 150, 6); //Room 1 heeft 150 plekken
-                RoomModel room2 = new RoomModel("Room_2", 300, 6); //Room 2 heeft 300 plekken
-                RoomModel room3 = new RoomModel("Room_3", 500, 6); //Room 3 heeft 500 plekken
-
-                Timetable timetable = new Timetable();
-
-                // Toevoegen van films aan de timetable
-                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
-                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
-
-                // Tonen van de timetable
-                timetable.DisplayTimetable();
-                Console.ReadLine();
-            });
-
-            menu.Add("Reserve Seats", (x) =>
+            klantMenu.Add("Reserve Seat", (x) =>
             {
                 int selectedMovieID;
 
@@ -229,7 +206,17 @@ namespace Project_B
             {
                 return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
             }
-            menu.Add("Test SeeActors", (x) => // Als klant wil ik de acteurs van een film bekijken
+            static bool IsValidEmail(string email)
+            {
+                return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|hotmail\.nl)$");
+            }
+
+            static bool IsValidPhoneNumber(string phoneNumber)
+            {
+                // Phone number must start with '0' and have a maximum length of 10 characters
+                return phoneNumber.StartsWith("0") && phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
+            }
+            klantMenu.Add("Test SeeActors", (x) => // Als klant wil ik de acteurs van een film bekijken
             {
                 List<ActorModel> authors = new List<ActorModel>();
                 authors.Add(new ActorModel("Jack Black", "Plays Po", 43));
@@ -242,7 +229,7 @@ namespace Project_B
                 Console.WriteLine(movietje.SeeActors());
                 Console.ReadLine();
             });
-            menu.Add("Test SeeDirector", (x) => // Als klant wil ik de regisseur van een film zien
+            klantMenu.Add("Test SeeDirector", (x) => // Als klant wil ik de regisseur van een film zien
             {
                 List<DirectorModel> directors = new List<DirectorModel>();
                 directors.Add(new DirectorModel("Christopher Nolan", "Famous movie director known for several blockbuster movies such as Oppenheimer, Interstellar, Inception and many more", 53));
@@ -250,13 +237,13 @@ namespace Project_B
                 Console.WriteLine(interStellar.SeeDirector(directors));
                 Console.ReadLine();
             });
-            menu.Add("Test SeeDescription", (x) => // Als klant wil ik de omschrijving (leeftijd + genre) van een film zien
+            klantMenu.Add("Test SeeDescription", (x) => // Als klant wil ik de omschrijving (leeftijd + genre) van een film zien
             {
                 MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, "Sci-Fi");
                 Console.WriteLine(interStellar.SeeDescription());
                 Console.ReadLine();
             });
-            menu.Add("set prices", (x) =>
+            klantMenu.Add("set prices", (x) =>
             {
                 var prices = SeatPriceCalculator.GetCurrentPrices();
                 SeatPriceCalculator.WritePrices();
@@ -308,29 +295,141 @@ namespace Project_B
                 Console.ReadLine();
 
             });
-            menu.Add("get seat PRICE info", (x) =>
+            klantMenu.Add("get seat PRICE info", (x) =>
             {
                 SeatModel seat = new SeatModel("naam", "II", "loveseat");
                 Console.WriteLine(SeatPriceCalculator.ShowCalculation(seat));
                 Console.ReadLine();
             });
-            menu.UseMenu();
+            klantMenu.UseMenu();
 
 
-            static bool IsValidEmail(string email)
+
+
+            /*klantMenu.Add("Timetable", (x) =>
             {
-                return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|hotmail\.nl)$");
-            }
+                Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
+                Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
 
-            static bool IsValidPhoneNumber(string phoneNumber)
+                Room room1 = new Room(1, "Room_1", 150, 6); //Room 1 heeft 150 plekken
+                Room room2 = new Room(2, "Room_2", 300, 6); //Room 2 heeft 300 plekken
+                Room room3 = new Room(3, "Room_3", 500, 6); //Room 3 heeft 500 plekken
+
+                Timetable timetable = new Timetable();
+
+                // Toevoegen van films aan de timetable
+                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
+                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
+
+                // Tonen van de timetable
+                timetable.DisplayTimetable();
+                Console.ReadLine();
+            });*/
+
+            // ------ Medewerker menu met menu opties ------//
+            InputMenu medewerkerMenu = new InputMenu("useLambda");
+            medewerkerMenu.Add("Planning", (x) =>
             {
-                // Phone number must start with '0' and have a maximum length of 10 characters
-                return phoneNumber.StartsWith("0") && phoneNumber.Length <= 10 && phoneNumber.All(char.IsDigit);
-            }
+                //Inplannen film en aanpassen wat er geplanned is en Kunnen zien notities klanten
+            });
+            medewerkerMenu.Add("Reservaties", (x) =>
+            {
+                //Zie gemaakte reservaties voor timetable films
+            });
+            medewerkerMenu.Add("Historie", (x) =>
+            {
+                //Zie verkoop per film, week en maand en kunnen filteren per verkoop hoeveelheid
+            });
+            medewerkerMenu.Add("Aanmaken", (x) =>
+            {
+                //Aanmaken nieuwe film, acteur, regiseur, zaal.
+            });
+            medewerkerMenu.Add("Edit layout", (x) =>
+            {
+                Layout.editLayoutPerRoom();
+            });
+            medewerkerMenu.Add("Select a seat", (x) =>
+            {
+                Console.WriteLine(Layout.selectSeatPerRoom());
+                Console.ReadLine();
+            });
+            medewerkerMenu.Add("Maak nieuwe film", (x) =>
+            {
+                CreateItems.CreateNewMovie();
+            });
+            medewerkerMenu.Add("Pas film aan", (x) =>
+            {
+                CreateItems.ChangeMovie();
+            });
+            
 
+            /*
+            medewerkerMenu.Add("Setup Database", (x) =>
+            {
+                //Opzet Sqlite database
+                SQLite.SetupProjectB();
+                Console.ReadLine();
+            });
+            medewerkerMenu.Add("Layout creator", (x) =>
+            {
+                Layout.MakeNewLayout();
+            });
+            medewerkerMenu.Add("Test Author", (x) =>
+            {
+                Author testAuthor = new Author(1, "John", "Not succesfull", 25);
+                Console.WriteLine($"{testAuthor.Name} - {testAuthor.Age} :\n{testAuthor.Description}");
+                Console.ReadLine();
+            });
+            medewerkerMenu.Add("Timetable", (x) =>
+            {
+                Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
+                Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
 
+                Room room1 = new Room(1, "Room_1", 150, 6); //Room 1 heeft 150 plekken
+                Room room2 = new Room(2, "Room_2", 300, 6); //Room 2 heeft 300 plekken
+                Room room3 = new Room(3, "Room_3", 500, 6); //Room 3 heeft 500 plekken
 
-            menu.UseMenu();
+                Timetable timetable = new Timetable();
+
+                // Toevoegen van films aan de timetable
+                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
+                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
+
+                // Tonen van de timetable
+                timetable.DisplayTimetable();
+                Console.ReadLine();
+            });*/
+
+            InputMenu menu = new InputMenu("useLambda", true);
+            menu.Add("Klant", (x) => { klantMenu.UseMenu(() => Universal.printAsTitle("Klant Menu")); });
+            menu.Add("Medewerker", (x) =>
+            {
+                string fileName = "Medewerker.json";
+                JObject? jsonData = (JObject?)JsonConvert.DeserializeObject(File.ReadAllText(Universal.databasePath() + "\\" + fileName));
+                string passWord = jsonData["Value"].Value<string>() ?? "";
+
+                Console.Write("| Inlog |\nWachtwoord: ");
+                string? userInput = Console.ReadLine();
+                if (userInput == passWord) medewerkerMenu.UseMenu(() => Universal.printAsTitle("Medewerker Menu"));
+                else
+                {
+                    Universal.ChangeColour(ConsoleColor.Red);
+                    Console.WriteLine("Onjuist wachtwoord !");
+                    Console.ReadLine();
+                }
+            });
+            menu.UseMenu(() => Universal.printAsTitle("Main Menu"));
         }
     }
 }
+
+/*
+ * Unit tests Inputmenu
+ * Als klant wil ik zien welke stoelen al bezet zijn zodat ik niet per ongeluk een al gereserveerde stoel pak
+ * Als administratie wil ik de gereserveerde stoelen terugzien, zodat ik de klanten naar hun stoel kan begeleiden
+ * Als administratie wil ik graag zien hoe vol een zaal is, zodat ik kan zien of de desbetreffende film een grotere zaal nodig heeft of niet zo populair is
+ X Als administratie wil ik een nieuwe film toevoegen, zodat we telkens de nieuwste films kunnen laten zien.
+ * Als administratie wil ik slecht lopende films verwijderen, zodat we geen films laten zien die niet populair zijn.
+ X Als administratie wil ik films kunnen aanpassen, zodat als ik een fout maak ik de film niet opnieuw aan moet maken.
+ X Als medewerker wil ik in kunnen loggen, zodat niet iedereen administratorrechten heeft
+*/

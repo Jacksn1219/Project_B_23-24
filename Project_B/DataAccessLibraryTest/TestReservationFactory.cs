@@ -10,7 +10,7 @@ namespace DataAccessLibraryTest
         public const string TestDbPath = "ReservationTest.db";
         private DataAccess? _db;
         private readonly ReservationFactory _rf;
-        private readonly SeatFactory _sf;
+        private readonly SeatModelFactory _sf;
         private readonly CustomerFactory _cf;
         private readonly TimeTableModel testTimeTable;
         public TestReservationFactory()
@@ -25,7 +25,7 @@ namespace DataAccessLibraryTest
             }
 
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
-            _sf = new SeatFactory(_db);
+            _sf = new SeatModelFactory(_db);
             _cf = new CustomerFactory(_db);
             _rf = new ReservationFactory(_db, _cf, _sf);
             var df = new DirectorFactory(_db);
@@ -33,8 +33,8 @@ namespace DataAccessLibraryTest
             var mf = new MovieFactory(_db, df, af);
             var rf = new RoomFactory(_db, _sf);
             var tf = new TimeTableFactory(_db, mf, rf);
-            SeatModel seat = new SeatModel("seat1", "1", "1");
-            RoomModel room = new RoomModel("room1", 10, 1, new List<SeatModel>() { seat });
+            SeatModel SeatModel = new SeatModel("SeatModel1", "1", "1");
+            RoomModel room = new RoomModel("room1", 10, 1, new List<SeatModel>() { SeatModel });
             MovieModel mov = new MovieModel("movie1", "descr1", 3, 300, "genre");
             testTimeTable = new TimeTableModel(
                 room, mov, DateTime.Now
@@ -49,7 +49,7 @@ namespace DataAccessLibraryTest
                 "someone", 21, "email@mail.mail", "123456789", true
             );
             ReservationModel reservation = new ReservationModel(
-                cust, testTimeTable, testTimeTable.Room.Seats, "hi"
+                cust, testTimeTable, testTimeTable.Room.SeatModels, "hi"
             );
             Assert.IsTrue(_rf.ItemToDb(reservation));
             Assert.IsTrue(reservation.Exists);
@@ -61,7 +61,7 @@ namespace DataAccessLibraryTest
                 "someone else", 12, "someone@mail.mail", "12344321", true
             );
             ReservationModel reservation = new ReservationModel(
-                cust, testTimeTable, testTimeTable.Room.Seats, "I do not like u"
+                cust, testTimeTable, testTimeTable.Room.SeatModels, "I do not like u"
             );
             Assert.IsTrue(_rf.ItemToDb(reservation));
             var newReservation = _rf.GetItemFromId(reservation.ID ?? 0);
@@ -75,7 +75,7 @@ namespace DataAccessLibraryTest
                 "him", 12, "him@mail.mail", "321654987", false
             );
             ReservationModel reservation = new ReservationModel(
-                cust, testTimeTable, testTimeTable.Room.Seats, "I do like u"
+                cust, testTimeTable, testTimeTable.Room.SeatModels, "I do like u"
             );
             Assert.IsTrue(_rf.ItemToDb(reservation));
             reservation.Customer.Name = "her";
