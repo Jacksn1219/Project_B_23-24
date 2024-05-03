@@ -206,39 +206,46 @@ namespace Project_B
 
             // ------ Medewerker menu met menu opties ------//
             InputMenu medewerkerMenu = new InputMenu("useLambda");
-            medewerkerMenu.Add("Planning", (x) =>
+            medewerkerMenu.Add("Timetable", (x) =>
             {
-                //Inplannen film en aanpassen wat er geplanned is en Kunnen zien notities klanten
+                //Planning movies and edit what has been planned and See the notes made by costumers
             });
-            medewerkerMenu.Add("Reservaties", (x) =>
+            medewerkerMenu.Add("Reservations", (x) =>
             {
-                //Zie gemaakte reservaties voor timetable films
+                //See created reservations for timetable movies
             });
-            medewerkerMenu.Add("Historie", (x) =>
+            medewerkerMenu.Add("History", (x) =>
             {
-                //Zie verkoop per film, week en maand en kunnen filteren per verkoop hoeveelheid
+                //See sales per movie, week and month and be able to filter on amount of sales
             });
-            medewerkerMenu.Add("Aanmaken", (x) =>
+            medewerkerMenu.Add("Create/Edit", (x) =>
             {
-                //Aanmaken nieuwe film, acteur, regiseur, zaal.
+                //Aanmaken nieuwe room, movie, actor, director.
+                InputMenu createMenu = new InputMenu("useLambda");
+
+                createMenu.Add("Create room", (x) =>
+                {
+                    Layout.MakeNewLayout();
+                });
+                createMenu.Add("Edit room", (x) =>
+                {
+                    Layout.editLayoutPerRoom();
+                });
+                createMenu.Add("\n" + Universal.centerToScreen("Create movie"), (x) =>
+                {
+                    CreateItems.CreateNewMovie();
+                });
+                createMenu.Add("Edit movie", (x) =>
+                {
+                    CreateItems.ChangeMovie();
+                });
+                createMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
             });
-            medewerkerMenu.Add("Edit layout", (x) =>
-            {
-                Layout.editLayoutPerRoom();
-            });
-            medewerkerMenu.Add("\n" + Universal.centerToScreen("Maak nieuwe film"), (x) =>
-            {
-                CreateItems.CreateNewMovie();
-            });
-            medewerkerMenu.Add("Pas film aan", (x) =>
-            {
-                CreateItems.ChangeMovie();
-            });
-            medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
+            /*medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
             {
                 Console.WriteLine(Layout.selectSeatPerRoom());
                 Console.ReadLine();
-            });
+            });*/
             medewerkerMenu.Add("Reserve Seat", (x) =>
             {
                 int selectedMovieID;
@@ -374,6 +381,7 @@ namespace Project_B
             {
                 return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
             }
+
             medewerkerMenu.Add("\n" + Universal.centerToScreen("Test SeeActors"), (x) => // Als klant wil ik de acteurs van een film bekijken
             {
                 List<ActorModel> authors = new List<ActorModel>();
@@ -401,7 +409,7 @@ namespace Project_B
                 Console.WriteLine(interStellar.SeeDescription());
                 Console.ReadLine();
             });
-            medewerkerMenu.Add("\n" + Universal.centerToScreen("set prices"), (x) =>
+            medewerkerMenu.Add("\n" + Universal.centerToScreen("Set prices"), (x) =>
             {
                 var prices = SeatPriceCalculator.GetCurrentPrices();
                 SeatPriceCalculator.WritePrices();
@@ -453,7 +461,7 @@ namespace Project_B
                 Console.ReadLine();
 
             });
-            medewerkerMenu.Add("get seat PRICE info", (x) =>
+            medewerkerMenu.Add("Get seat PRICE info", (x) =>
             {
                 SeatModel seat = new SeatModel("naam", "II", "loveseat");
                 Console.WriteLine(SeatPriceCalculator.ShowCalculation(seat));

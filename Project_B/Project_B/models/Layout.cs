@@ -519,12 +519,16 @@ class Layout : LayoutModel
 
         //upload_to_database(currentRoom);
 
-        Console.WriteLine("\n\nList<SeatModel> layout = new List<SeatModel> {");
+        /*Console.WriteLine("\n\nList<SeatModel> layout = new List<SeatModel> {");
         foreach (SeatModel SeatModel in SeatModels)
         {
             Console.WriteLine($"new SeatModel(\"{SeatModel.Name}\", \"{SeatModel.Rank}\", \"{SeatModel.Type}\", Room3),");
         }
         Console.WriteLine("};");
+        Console.ReadLine();*/
+
+        Console.Write("The room is created ");
+        Universal.WriteColor("succesfully", ConsoleColor.Green);
         Console.ReadLine();
 
         selectSeatModel(SeatModels, currentRoom);
