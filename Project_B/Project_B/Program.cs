@@ -301,7 +301,6 @@ namespace Project_B
                 Console.WriteLine(SeatPriceCalculator.ShowCalculation(seat));
                 Console.ReadLine();
             });
-            klantMenu.UseMenu();
 
 
 
