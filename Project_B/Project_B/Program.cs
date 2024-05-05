@@ -55,6 +55,12 @@ namespace Project_B
                 Console.WriteLine(interStellar.SeeDescription());
                 Console.ReadLine();
             });
+            menu.Add("Test AskForDetails", (x) =>
+            {
+                MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, 1, "Sci-Fi");
+                interStellar.AskForDetails();
+                Console.ReadLine();
+            });
             menu.UseMenu();
 
 
