@@ -9,7 +9,7 @@ namespace DataAccessLibraryTest
         public const string TestDbPath = "roomTest.db";
         private readonly DataAccess _db;
         private readonly RoomFactory _rf;
-        private readonly SeatFactory _sf;
+        private readonly SeatModelFactory _sf;
         public RoomFactoryTest()
         {
 
@@ -22,7 +22,7 @@ namespace DataAccessLibraryTest
                 System.Console.WriteLine($"cannot delete testdb {TestDbPath}: {ex.Message}");
             }
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
-            _sf = new SeatFactory(_db);
+            _sf = new SeatModelFactory(_db);
             _rf = new RoomFactory(_db, _sf);
         }
         [TestMethod]
@@ -38,25 +38,25 @@ namespace DataAccessLibraryTest
             RoomModel room = new(
                 "roomier room", 11, 4
             );
-            room.AddSeats(new SeatModel[]{
-                new SeatModel("myseat1", "1", "cool", room),
-                new SeatModel("myseat2", "2", "not cool", room)
+            room.AddSeatModels(new SeatModel[]{
+                new SeatModel("mySeatModel1", "1", "cool", room),
+                new SeatModel("mySeatModel2", "2", "not cool", room)
             });
             Assert.IsTrue(_rf.ItemToDb(room));
             Assert.IsTrue(room.Exists);
-            Assert.IsTrue(room.Seats[0].Exists);
+            Assert.IsTrue(room.SeatModels[0].Exists);
         }
         [TestMethod]
         public void TestToManyChairsError()
         {
             RoomModel room = new("fakeroom", 1, 1);
             Assert.IsFalse(
-                room.AddSeats
+                room.AddSeatModels
                 (
                     new SeatModel[]
                     {
-                            new SeatModel("myseat1", "1", "cool", room),
-                            new SeatModel("myseat2", "2", "not cool", room)
+                            new SeatModel("mySeatModel1", "1", "cool", room),
+                            new SeatModel("mySeatModel2", "2", "not cool", room)
                     }
                 )
             );
@@ -70,7 +70,7 @@ namespace DataAccessLibraryTest
             Assert.AreEqual(room.Name, newRoom.Name);
         }
         [TestMethod]
-        public void TestUpdateRoomNoSeats()
+        public void TestUpdateRoomNoSeatModels()
         {
             RoomModel room = new("what's rooming on", 3, 1);
             Assert.IsTrue(_rf.ItemToDb(room));
@@ -80,20 +80,20 @@ namespace DataAccessLibraryTest
             Assert.AreEqual(room.Capacity, newRoom.Capacity);
         }
         [TestMethod]
-        public void TestUpdateRoomWithSeats()
+        public void TestUpdateRoomWithSeatModels()
         {
             RoomModel room = new RoomModel("lastroomtest", 3, 1);
-            room.AddSeats(
+            room.AddSeatModels(
                 new SeatModel[]{
                     new SeatModel("1", "1", "1"),
                     new SeatModel("2", "2", "2"),
                     new SeatModel("3", "3", "3")
                 });
             Assert.IsTrue(_rf.ItemToDb(room));
-            room.Seats[0].Name = "hello there";
+            room.SeatModels[0].Name = "hello there";
             Assert.IsTrue(_rf.ItemToDb(room));
-            var newSeat = _sf.GetItemFromId(room.Seats[0].ID ?? 0);
-            Assert.AreEqual(room.Seats[0].Name, newSeat.Name);
+            var newSeatModel = _sf.GetItemFromId(room.SeatModels[0].ID ?? 0);
+            Assert.AreEqual(room.SeatModels[0].Name, newSeatModel.Name);
 
         }
     }

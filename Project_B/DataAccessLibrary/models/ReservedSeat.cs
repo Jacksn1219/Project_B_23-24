@@ -1,14 +1,14 @@
 ﻿namespace DataAccessLibrary;
 
-public class ReservedSeat
+public class ReservedSeatModel
 {//denk niet dat deze uberhaubt nodig is
     public int ID { get; }
-    public int SeatID { get; }
+    public int SeatModelID { get; }
     public int ReservationID { get; }
-    public ReservedSeat(int id, int seatID, int reservationID)
+    public ReservedSeatModel(int id, int seatModelID, int reservationID)
     {
         ID = id;
-        SeatID = seatID;
+        SeatModelID = seatModelID;
         ReservationID = reservationID;
     }
 }
