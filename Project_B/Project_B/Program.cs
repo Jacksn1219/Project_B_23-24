@@ -51,7 +51,7 @@ namespace Project_B
                 Console.Write("Press <Any> key to continue...");
                 Thread.Sleep(700);
                 Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-                if(Console.KeyAvailable) break;
+                if (Console.KeyAvailable) break;
                 Console.Write("                              ");
                 Thread.Sleep(700);
                 Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
@@ -370,8 +370,6 @@ namespace Project_B
                 // Reserve seats
                 ReservationServices.ReserveSeats(selectedRoomID, seatNumbers, userAge, fullName, email, phoneNumber);
 
-
-
                 Console.ReadLine();
             });
 
@@ -389,6 +387,7 @@ namespace Project_B
                 // Phone number must start with '0' and have a maximum length of 10 characters
                 return phoneNumber.StartsWith("0") && phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
             }
+
             medewerkerMenu.Add("\n" + Universal.centerToScreen("Test SeeActors"), (x) => // Als klant wil ik de acteurs van een film bekijken
             {
                 List<ActorModel> authors = new List<ActorModel>();
@@ -477,43 +476,6 @@ namespace Project_B
 
 
 
-            // ------ Medewerker menu met menu opties ------//
-            InputMenu medewerkerMenu = new InputMenu("useLambda");
-            medewerkerMenu.Add("Planning", (x) =>
-            {
-                //Inplannen film en aanpassen wat er geplanned is en Kunnen zien notities klanten
-            });
-            medewerkerMenu.Add("Reservaties", (x) =>
-            {
-                //Zie gemaakte reservaties voor timetable films
-            });
-            medewerkerMenu.Add("Historie", (x) =>
-            {
-                //Zie verkoop per film, week en maand en kunnen filteren per verkoop hoeveelheid
-            });
-            medewerkerMenu.Add("Aanmaken", (x) =>
-            {
-                //Aanmaken nieuwe film, acteur, regiseur, zaal.
-            });
-            medewerkerMenu.Add("Edit layout", (x) =>
-            {
-                Layout.editLayoutPerRoom();
-            });
-            medewerkerMenu.Add("Select a seat", (x) =>
-            {
-                Console.WriteLine(Layout.selectSeatPerRoom());
-                Console.ReadLine();
-            });
-            medewerkerMenu.Add("Maak nieuwe film", (x) =>
-            {
-                CreateItems.CreateNewMovie();
-            });
-            medewerkerMenu.Add("Pas film aan", (x) =>
-            {
-                CreateItems.ChangeMovie();
-            });
-            
-
             InputMenu menu = new InputMenu("useLambda", true);
             menu.Add("Klant", (x) => { klantMenu.UseMenu(() => Universal.printAsTitle("Klant Menu")); });
             menu.Add("Medewerker", (x) =>
@@ -533,55 +495,6 @@ namespace Project_B
                 }
             });
 
-            //create factories to add DbItems to the db
-            DirectorFactory df = new(Universal.Db);
-            ActorFactory af = new(Universal.Db);
-            MovieFactory mf = new(Universal.Db, df, af);
-            SeatModelFactory sf = new(Universal.Db);
-            RoomFactory roomf = new(Universal.Db, sf);
-            TimeTableFactory tf = new(Universal.Db, mf, roomf);
-            CustomerFactory cf = new(Universal.Db);
-            ReservationFactory resf = new(Universal.Db, cf, sf);
-
-    
-            menu.Add("Layout creator", (x) =>
-            {
-
-                RoomModel room = new RoomModel();
-                List<SeatModel> qwerty = new List<SeatModel>{};
-                Layout l = new Layout(roomf, sf, room, qwerty);
-                Layout.MakeNewLayout();
-                /*
-                Als klant wil ik de stoelen in een zaal zien omdat ik wil weten waar ik kan zitten. -Chris
-                Als klant wil ik zien wat voor type stoel een bepaalde stoel is, zodat ik mijn favoriete type kan kiezen.(Love-seat, regular, deluxe) -Chris
-                */
-            });
-            menu.Add("Edit layout item", (x) =>
-            {
-                List<SeatModel> layout1 = new List<SeatModel>{
-                    new SeatModel("0", " ", " "),
-                    new SeatModel("1", " ", " "),
-                    new SeatModel("2", "1", "Normaal"),
-                    new SeatModel("3", "1", "Normaal"),
-                    new SeatModel("4", "1", "Normaal"),
-                    new SeatModel("5", "1", "Normaal"),
-                    new SeatModel("6", "1", "Normaal"),
-                    new SeatModel( "7", "1", "Normaal"),
-                    new SeatModel("8", "1", "Normaal"),
-                    new SeatModel( "9", "1", "Normaal"),
-                    new SeatModel("10", " ", " "),
-                    new SeatModel("11", " ", " "),
-                    new SeatModel("12", " ", " "),
-                    new SeatModel("13", " ", " ")
-                };
-                List<RoomModel> roomList = new List<RoomModel> { new RoomModel("Room1", layout1.Count, 6) };
-                InputMenu selectRoom = new InputMenu("| Select room to edit |");
-                foreach (RoomModel room in roomList/*getRoomFromDatabase() - Aymane*/)
-                {
-                    selectRoom.Add($"{room.Name}", (x) => Layout.editLayout(room));
-                }
-                selectRoom.UseMenu();
-            });
             menu.Add("Tijdschema Ma 06 Mei tot Zo 13 Mei", (x) =>
             {
                 List<RoomModel> roomList = new List<RoomModel>
@@ -861,13 +774,17 @@ namespace Project_B
                 selectDay.Add($"Maandag", (x) =>
                 {
                     Console.Clear();
-                    InputMenu MovieModelSelecter = new InputMenu("| Selecteer een film |");
+                    InputMenu MovieModelSelecter = new InputMenu("useLambda");
                     foreach (MovieModel movie in maandagFilms)
                     {
-                        Console.WriteLine($"Film: {movie.Name}\nZaal: Room 1\nGenre: {movie.Genre}\nBeschrijving: {movie.Description}\nPEGI: {movie.PegiAge}\nTijdsduur: {movie.DurationInMin}\nBegintijd: -\nEindtijd: -");
-                        Console.WriteLine();
+                        MovieModelSelecter.Add(movie.Name ?? "", (x) =>
+                        {
+                            Console.WriteLine($"Film: {movie.Name}\nZaal: Room 1\nGenre: {movie.Genre}\nBeschrijving: {movie.Description}\nPEGI: {movie.PegiAge}\nTijdsduur: {movie.DurationInMin}\nBegintijd: -\nEindtijd: -");
+                            Console.WriteLine();
+                            Console.ReadLine();
+                        });
                     }
-                    Console.ReadLine();
+                    //Console.ReadLine();
                     // foreach (TimeTableModel timeTable in maandagtimeTableList)
                     // {
                     //     //IEnumerable<MovieModel> query = maandagFilms.Where(movie => movie.ID == timeTable.MovieID);
@@ -881,8 +798,7 @@ namespace Project_B
                     //         });
                     //     }
                     // }
-                    MovieModelSelecter.UseMenu();
-                    Console.ReadLine();
+                    MovieModelSelecter.UseMenu(() => Universal.printAsTitle("Selecteer een film"));
                 });
                 selectDay.Add($"Dinsdag", (x) =>
                 {
@@ -1017,6 +933,8 @@ namespace Project_B
                     Console.ReadLine();
                 });
                 selectDay.UseMenu();
-        });
-        menu.UseMenu(() => Universal.printAsTitle("Main Menu"));
+            });
+            menu.UseMenu(() => Universal.printAsTitle("Main Menu"));
+        }
     }
+}

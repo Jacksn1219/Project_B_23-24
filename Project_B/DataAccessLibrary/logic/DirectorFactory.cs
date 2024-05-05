@@ -52,7 +52,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
             new Dictionary<string, dynamic?>(){
                 {"$1", id}
             }).First();
-        } catch (Exception ex) { return null; }
+        } catch (Exception) { return null; }
     }
 
     public bool ItemToDb(DirectorModel item)

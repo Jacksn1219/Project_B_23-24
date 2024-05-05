@@ -54,7 +54,7 @@ namespace DataAccessLibrary.logic
                     {"$1", id}
                 }
             ).First();
-            }catch (Exception ex) { return null; }
+            }catch (Exception) { return null; }
         }
 
         public bool ItemToDb(ActorModel item)
