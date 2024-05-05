@@ -356,21 +356,25 @@ namespace Project_B
                 {
                     Console.Clear();
                     InputMenu MovieModelSelecter = new InputMenu("| Selecteer een film |");
-                    foreach (TimeTableModel timeTable in maandagtimeTableList)
+                    foreach (MovieModel movie in maandagFilms)
                     {
-                        Console.Clear();
-                        IEnumerable<MovieModel> query = maandagFilms.Where(movie => movie.ID == timeTable.MovieID);
-                        foreach (MovieModel movie in query)
-                        {
-                            MovieModelSelecter.Add($"Film: {movie.Name}", (x) =>
-                            {
-                                Console.Clear();
-                                IEnumerable<RoomModel> query2 = roomList.Where(room => room.ID == timeTable.RoomID);
-                                Console.WriteLine($"Film: {movie.Name}\nZaal: {roomList.FirstOrDefault(room => room.ID == timeTable.RoomID)?.ID}\nGenre: {movie.Genre}\nBeschrijving: {movie.Description}\nPEGI: {movie.PegiAge}\nTijdsduur: {movie.DurationInMin}\nBegintijd: {timeTable.StartDate}\nEindtijd: {timeTable.EndDate}");
-                                Console.ReadLine();
-                            });
-                        }
+                        Console.WriteLine($"Film: {movie.Name}\nZaal: Room 1\nGenre: {movie.Genre}\nBeschrijving: {movie.Description}\nPEGI: {movie.PegiAge}\nTijdsduur: {movie.DurationInMin}\nBegintijd: -\nEindtijd: -");
+                        Console.WriteLine();
                     }
+                    Console.ReadLine();
+                    // foreach (TimeTableModel timeTable in maandagtimeTableList)
+                    // {
+                    //     //IEnumerable<MovieModel> query = maandagFilms.Where(movie => movie.ID == timeTable.MovieID);
+                    //     foreach (MovieModel movie in maandagFilms)
+                    //     {
+                    //         MovieModelSelecter.Add($"Film: {movie.Name}", (x) =>
+                    //         {
+                    //             IEnumerable<RoomModel> query2 = roomList.Where(room => room.ID == timeTable.RoomID);
+                    //             Console.WriteLine($"Film: {movie.Name}\nZaal: {roomList.FirstOrDefault(room => room.ID == timeTable.RoomID)?.ID}\nGenre: {movie.Genre}\nBeschrijving: {movie.Description}\nPEGI: {movie.PegiAge}\nTijdsduur: {movie.DurationInMin}\nBegintijd: {timeTable.StartDate}\nEindtijd: {timeTable.EndDate}");
+                    //             Console.ReadLine();
+                    //         });
+                    //     }
+                    // }
                     MovieModelSelecter.UseMenu();
                     Console.ReadLine();
                 });
