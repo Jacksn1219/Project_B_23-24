@@ -1,7 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
+using DataAccessLibrary.models;
 using Models;
 using Project_B.services;
 
@@ -74,7 +76,7 @@ namespace Project_B
                 }
                 selectRoom.UseMenu();
             });
-            menu.Add("Tijdschema Ma 07 Mei tot Zo 13 Mei", (x) =>
+            menu.Add("Tijdschema Ma 06 Mei tot Zo 13 Mei", (x) =>
             {
                 List<RoomModel> roomList = new List<RoomModel>
                 {
@@ -218,135 +220,135 @@ namespace Project_B
 
                 List<TimeTableModel> maandagtimeTableList = new List<TimeTableModel>
                 {
-                    new TimeTableModel(1, 1, "2024-05-07 10:00:00", "2024-05-07 12:00:00"),
-                    new TimeTableModel(1, 2, "2024-05-07 12:30:00", "2024-05-07 15:00:00"),
-                    new TimeTableModel(1, 3, "2024-05-07 15:30:00", "2024-05-07 17:00:00"),
-                    new TimeTableModel(1, 4, "2024-05-07 17:30:00", "2024-05-07 19:00:00"),
-                    new TimeTableModel(1, 5, "2024-05-07 19:30:00", "2024-05-07 21:30:00"),
-                    new TimeTableModel(2, 6, "2024-05-07 10:00:00", "2024-05-07 12:00:00"),
-                    new TimeTableModel(2, 7, "2024-05-07 12:30:00", "2024-05-07 15:00:00"),
-                    new TimeTableModel(2, 8, "2024-05-07 15:30:00", "2024-05-07 17:00:00"),
-                    new TimeTableModel(2, 9, "2024-05-07 17:30:00", "2024-05-07 19:00:00"),
-                    new TimeTableModel(2, 10, "2024-05-07 19:30:00", "2024-05-07 21:30:00"),
-                    new TimeTableModel(3, 11, "2024-05-07 10:00:00", "2024-05-07 12:00:00"),
-                    new TimeTableModel(3, 12, "2024-05-07 12:30:00", "2024-05-07 15:00:00"),
-                    new TimeTableModel(3, 13, "2024-05-07 15:30:00", "2024-05-07 17:00:00"),
-                    new TimeTableModel(3, 14, "2024-05-07 17:30:00", "2024-05-07 19:00:00"),
-                    new TimeTableModel(3, 15, "2024-05-07 19:30:00", "2024-05-07 21:30:00")
+                    new TimeTableModel(1, 1, DateTime.ParseExact("2024-05-07 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 2, DateTime.ParseExact("2024-05-07 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 3, DateTime.ParseExact("2024-05-07 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 4, DateTime.ParseExact("2024-05-07 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 5, DateTime.ParseExact("2024-05-07 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 6, DateTime.ParseExact("2024-05-07 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 7, DateTime.ParseExact("2024-05-07 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 8, DateTime.ParseExact("2024-05-07 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 9, DateTime.ParseExact("2024-05-07 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 10, DateTime.ParseExact("2024-05-07 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 11, DateTime.ParseExact("2024-05-07 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 12, DateTime.ParseExact("2024-05-07 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 13, DateTime.ParseExact("2024-05-07 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 14, DateTime.ParseExact("2024-05-07 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 15, DateTime.ParseExact("2024-05-07 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
                 };
 
                 List<TimeTableModel> dinsdagTimeTableModelList = new List<TimeTableModel>
                 {
-                    new TimeTableModel(1, 1, "2024-05-08 10:00:00", "2024-05-08 11:30:00"),
-                    new TimeTableModel(1, 2, "2024-05-08 12:00:00", "2024-05-08 14:30:00"),
-                    new TimeTableModel(1, 3, "2024-05-08 15:00:00", "2024-05-08 17:00:00"),
-                    new TimeTableModel(1, 4, "2024-05-08 17:30:00", "2024-05-08 19:30:00"),
-                    new TimeTableModel(1, 5, "2024-05-08 20:00:00", "2024-05-08 21:30:00"),
-                    new TimeTableModel(2, 6, "2024-05-08 10:00:00", "2024-05-08 11:30:00"),
-                    new TimeTableModel(2, 7, "2024-05-08 12:00:00", "2024-05-08 14:30:00"),
-                    new TimeTableModel(2, 8, "2024-05-08 15:00:00", "2024-05-08 17:00:00"),
-                    new TimeTableModel(2, 9, "2024-05-08 17:30:00", "2024-05-08 19:30:00"),
-                    new TimeTableModel(2, 10, "2024-05-08 20:00:00", "2024-05-08 21:30:00"),
-                    new TimeTableModel(3, 11, "2024-05-08 10:00:00", "2024-05-08 11:30:00"),
-                    new TimeTableModel(3, 12, "2024-05-08 12:00:00", "2024-05-08 14:30:00"),
-                    new TimeTableModel(3, 13, "2024-05-08 15:00:00", "2024-05-08 17:00:00"),
-                    new TimeTableModel(3, 14, "2024-05-08 17:30:00", "2024-05-08 19:30:00"),
-                    new TimeTableModel(3, 15, "2024-05-08 20:00:00", "2024-05-08 21:30:00")
+                    new TimeTableModel(1, 1, DateTime.ParseExact("2024-05-08 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 2, DateTime.ParseExact("2024-05-08 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 3, DateTime.ParseExact("2024-05-08 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 4, DateTime.ParseExact("2024-05-08 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 5, DateTime.ParseExact("2024-05-08 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 6, DateTime.ParseExact("2024-05-08 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 7, DateTime.ParseExact("2024-05-08 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 8, DateTime.ParseExact("2024-05-08 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 9, DateTime.ParseExact("2024-05-08 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 10, DateTime.ParseExact("2024-05-08 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 11, DateTime.ParseExact("2024-05-08 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 12, DateTime.ParseExact("2024-05-08 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 13, DateTime.ParseExact("2024-05-08 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 14, DateTime.ParseExact("2024-05-08 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 15, DateTime.ParseExact("2024-05-08 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-08 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
                 };
 
                 List<TimeTableModel> woensdagTimeTableModelList = new List<TimeTableModel>
                 {
-                    new TimeTableModel(1, 1, 1, "2024-05-09 10:00:00", "2024-05-09 12:00:00"),
-                    new TimeTableModel(1, 2, 1, "2024-05-09 12:30:00", "2024-05-09 15:00:00"),
-                    new TimeTableModel(1, 3, 1, "2024-05-09 15:30:00", "2024-05-09 17:00:00"),
-                    new TimeTableModel(1, 4, 1, "2024-05-09 17:30:00", "2024-05-09 19:00:00"),
-                    new TimeTableModel(1, 5, 1, "2024-05-09 19:30:00", "2024-05-09 21:30:00"),
-                    new TimeTableModel(1, 6, 2, "2024-05-09 10:00:00", "2024-05-09 12:00:00"),
-                    new TimeTableModel(1, 7, 2, "2024-05-09 12:30:00", "2024-05-09 15:00:00"),
-                    new TimeTableModel(1, 8, 2, "2024-05-09 15:30:00", "2024-05-09 17:00:00"),
-                    new TimeTableModel(1, 9, 2, "2024-05-09 17:30:00", "2024-05-09 19:00:00"),
-                    new TimeTableModel(1, 10, 2, "2024-05-09 19:30:00", "2024-05-09 21:30:00"),
-                    new TimeTableModel(1, 11, 3, "2024-05-09 10:00:00", "2024-05-09 12:00:00"),
-                    new TimeTableModel(1, 12, 3, "2024-05-09 12:30:00", "2024-05-09 15:00:00"),
-                    new TimeTableModel(1, 13, 3, "2024-05-09 15:30:00", "2024-05-09 17:00:00"),
-                    new TimeTableModel(1, 14, 3, "2024-05-09 17:30:00", "2024-05-09 19:00:00"),
-                    new TimeTableModel(1, 15, 3, "2024-05-09 19:30:00", "2024-05-09 21:30:00")
+                    new TimeTableModel(1, 1, DateTime.ParseExact("2024-05-09 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 2, DateTime.ParseExact("2024-05-09 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 3, DateTime.ParseExact("2024-05-09 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 4, DateTime.ParseExact("2024-05-09 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 5, DateTime.ParseExact("2024-05-09 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 6, DateTime.ParseExact("2024-05-09 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 7, DateTime.ParseExact("2024-05-09 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 8, DateTime.ParseExact("2024-05-09 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 9, DateTime.ParseExact("2024-05-09 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 10, DateTime.ParseExact("2024-05-09 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 11, DateTime.ParseExact("2024-05-09 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 12, DateTime.ParseExact("2024-05-09 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 13, DateTime.ParseExact("2024-05-09 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 14, DateTime.ParseExact("2024-05-09 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 15, DateTime.ParseExact("2024-05-09 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-09 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
                 };
 
                 List<TimeTableModel> donderdagTimeTableModelList = new List<TimeTableModel>
                 {
-                    new TimeTableModel(1, 1, 1, "2024-05-10 10:00:00", "2024-05-10 11:30:00"),
-                    new TimeTableModel(1, 2, 1, "2024-05-10 12:00:00", "2024-05-10 14:30:00"),
-                    new TimeTableModel(1, 3, 1, "2024-05-10 15:00:00", "2024-05-10 17:00:00"),
-                    new TimeTableModel(1, 4, 1, "2024-05-10 17:30:00", "2024-05-10 19:30:00"),
-                    new TimeTableModel(1, 5, 1, "2024-05-10 20:00:00", "2024-05-10 21:30:00"),
-                    new TimeTableModel(1, 6, 2, "2024-05-10 10:00:00", "2024-05-10 11:30:00"),
-                    new TimeTableModel(1, 7, 2, "2024-05-10 12:00:00", "2024-05-10 14:30:00"),
-                    new TimeTableModel(1, 8, 2, "2024-05-10 15:00:00", "2024-05-10 17:00:00"),
-                    new TimeTableModel(1, 9, 2, "2024-05-10 17:30:00", "2024-05-10 19:30:00"),
-                    new TimeTableModel(1, 10, 2, "2024-05-10 20:00:00", "2024-05-10 21:30:00"),
-                    new TimeTableModel(1, 11, 3, "2024-05-10 10:00:00", "2024-05-10 11:30:00"),
-                    new TimeTableModel(1, 12, 3, "2024-05-10 12:00:00", "2024-05-10 14:30:00"),
-                    new TimeTableModel(1, 13, 3, "2024-05-10 15:00:00", "2024-05-10 17:00:00"),
-                    new TimeTableModel(1, 14, 3, "2024-05-10 17:30:00", "2024-05-10 19:30:00"),
-                    new TimeTableModel(1, 15, 3, "2024-05-10 20:00:00", "2024-05-10 21:30:00")
+                    new TimeTableModel(1, 1, DateTime.ParseExact("2024-05-10 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 2, DateTime.ParseExact("2024-05-10 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 3, DateTime.ParseExact("2024-05-10 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 4, DateTime.ParseExact("2024-05-10 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 5, DateTime.ParseExact("2024-05-10 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 6, DateTime.ParseExact("2024-05-10 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 7, DateTime.ParseExact("2024-05-10 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 8, DateTime.ParseExact("2024-05-10 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 9, DateTime.ParseExact("2024-05-10 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 10, DateTime.ParseExact("2024-05-10 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 11, DateTime.ParseExact("2024-05-10 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 12, DateTime.ParseExact("2024-05-10 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 13, DateTime.ParseExact("2024-05-10 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 14, DateTime.ParseExact("2024-05-10 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 15, DateTime.ParseExact("2024-05-10 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-10 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
                 };
 
                 List<TimeTableModel> vrijdagTimeTableModelList = new List<TimeTableModel>
                 {
-                    new TimeTableModel(1, 1, 1, "2024-05-11 10:00:00", "2024-05-11 12:00:00"),
-                    new TimeTableModel(1, 2, 1, "2024-05-11 12:30:00", "2024-05-11 15:00:00"),
-                    new TimeTableModel(1, 3, 1, "2024-05-11 15:30:00", "2024-05-11 17:00:00"),
-                    new TimeTableModel(1, 4, 1, "2024-05-11 17:30:00", "2024-05-11 19:00:00"),
-                    new TimeTableModel(1, 5, 1, "2024-05-11 19:30:00", "2024-05-11 21:30:00"),
-                    new TimeTableModel(1, 6, 2, "2024-05-11 10:00:00", "2024-05-11 12:00:00"),
-                    new TimeTableModel(1, 7, 2, "2024-05-11 12:30:00", "2024-05-11 15:00:00"),
-                    new TimeTableModel(1, 8, 2, "2024-05-11 15:30:00", "2024-05-11 17:00:00"),
-                    new TimeTableModel(1, 9, 2, "2024-05-11 17:30:00", "2024-05-11 19:00:00"),
-                    new TimeTableModel(1, 10, 2, "2024-05-11 19:30:00", "2024-05-11 21:30:00"),
-                    new TimeTableModel(1, 11, 3, "2024-05-11 10:00:00", "2024-05-11 12:00:00"),
-                    new TimeTableModel(1, 12, 3, "2024-05-11 12:30:00", "2024-05-11 15:00:00"),
-                    new TimeTableModel(1, 13, 3, "2024-05-11 15:30:00", "2024-05-11 17:00:00"),
-                    new TimeTableModel(1, 14, 3, "2024-05-11 17:30:00", "2024-05-11 19:00:00"),
-                    new TimeTableModel(1, 15, 3, "2024-05-11 19:30:00", "2024-05-11 21:30:00")
+                    new TimeTableModel(1, 1, DateTime.ParseExact("2024-05-11 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 2, DateTime.ParseExact("2024-05-11 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 3, DateTime.ParseExact("2024-05-11 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 4, DateTime.ParseExact("2024-05-11 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 5, DateTime.ParseExact("2024-05-11 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 6, DateTime.ParseExact("2024-05-11 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 7, DateTime.ParseExact("2024-05-11 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 8, DateTime.ParseExact("2024-05-11 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 9, DateTime.ParseExact("2024-05-11 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 10, DateTime.ParseExact("2024-05-11 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 11, DateTime.ParseExact("2024-05-11 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 12, DateTime.ParseExact("2024-05-11 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 13, DateTime.ParseExact("2024-05-11 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 14, DateTime.ParseExact("2024-05-11 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 15, DateTime.ParseExact("2024-05-11 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-11 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
                 };
 
                 List<TimeTableModel> zaterdagTimeTableModelList = new List<TimeTableModel>
                 {
-                    new TimeTableModel(1, 1, 1, "2024-05-12 10:00:00", "2024-05-12 11:30:00"),
-                    new TimeTableModel(1, 2, 1, "2024-05-12 12:00:00", "2024-05-12 14:30:00"),
-                    new TimeTableModel(1, 3, 1, "2024-05-12 15:00:00", "2024-05-12 17:00:00"),
-                    new TimeTableModel(1, 4, 1, "2024-05-12 17:30:00", "2024-05-12 19:30:00"),
-                    new TimeTableModel(1, 5, 1, "2024-05-12 20:00:00", "2024-05-12 21:30:00"),
-                    new TimeTableModel(1, 6, 2, "2024-05-12 10:00:00", "2024-05-12 11:30:00"),
-                    new TimeTableModel(1, 7, 2, "2024-05-12 12:00:00", "2024-05-12 14:30:00"),
-                    new TimeTableModel(1, 8, 2, "2024-05-12 15:00:00", "2024-05-12 17:00:00"),
-                    new TimeTableModel(1, 9, 2, "2024-05-12 17:30:00", "2024-05-12 19:30:00"),
-                    new TimeTableModel(1, 10, 2, "2024-05-12 20:00:00", "2024-05-12 21:30:00"),
-                    new TimeTableModel(1, 11, 3, "2024-05-12 10:00:00", "2024-05-12 11:30:00"),
-                    new TimeTableModel(1, 12, 3, "2024-05-12 12:00:00", "2024-05-12 14:30:00"),
-                    new TimeTableModel(1, 13, 3, "2024-05-12 15:00:00", "2024-05-12 17:00:00"),
-                    new TimeTableModel(1, 14, 3, "2024-05-12 17:30:00", "2024-05-12 19:30:00"),
-                    new TimeTableModel(1, 15, 3, "2024-05-12 20:00:00", "2024-05-12 21:30:00")
+                    new TimeTableModel(1, 1, DateTime.ParseExact("2024-05-12 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 2, DateTime.ParseExact("2024-05-12 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 3, DateTime.ParseExact("2024-05-12 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 4, DateTime.ParseExact("2024-05-12 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 5, DateTime.ParseExact("2024-05-12 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 6, DateTime.ParseExact("2024-05-12 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 7, DateTime.ParseExact("2024-05-12 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 8, DateTime.ParseExact("2024-05-12 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 9, DateTime.ParseExact("2024-05-12 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 10, DateTime.ParseExact("2024-05-12 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 11, DateTime.ParseExact("2024-05-12 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 11:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 12, DateTime.ParseExact("2024-05-12 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 14:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 13, DateTime.ParseExact("2024-05-12 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 14, DateTime.ParseExact("2024-05-12 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 15, DateTime.ParseExact("2024-05-12 20:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-12 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
                 };
 
                 List<TimeTableModel> zondagTimeTableModelList = new List<TimeTableModel>
                 {
-                    new TimeTableModel(1, 1, 1, "2024-05-13 10:00:00", "2024-05-13 12:00:00"),
-                    new TimeTableModel(1, 2, 1, "2024-05-13 12:30:00", "2024-05-13 15:00:00"),
-                    new TimeTableModel(1, 3, 1, "2024-05-13 15:30:00", "2024-05-13 17:00:00"),
-                    new TimeTableModel(1, 4, 1, "2024-05-13 17:30:00", "2024-05-13 19:00:00"),
-                    new TimeTableModel(1, 5, 1, "2024-05-13 19:30:00", "2024-05-13 21:30:00"),
-                    new TimeTableModel(1, 6, 2, "2024-05-13 10:00:00", "2024-05-13 12:00:00"),
-                    new TimeTableModel(1, 7, 2, "2024-05-13 12:30:00", "2024-05-13 15:00:00"),
-                    new TimeTableModel(1, 8, 2, "2024-05-13 15:30:00", "2024-05-13 17:00:00"),
-                    new TimeTableModel(1, 9, 2, "2024-05-13 17:30:00", "2024-05-13 19:00:00"),
-                    new TimeTableModel(1, 10, 2, "2024-05-13 19:30:00", "2024-05-13 21:30:00"),
-                    new TimeTableModel(1, 11, 3, "2024-05-13 10:00:00", "2024-05-13 12:00:00"),
-                    new TimeTableModel(1, 12, 3, "2024-05-13 12:30:00", "2024-05-13 15:00:00"),
-                    new TimeTableModel(1, 13, 3, "2024-05-13 15:30:00", "2024-05-13 17:00:00"),
-                    new TimeTableModel(1, 14, 3, "2024-05-13 17:30:00", "2024-05-13 19:00:00"),
-                    new TimeTableModel(1, 15, 3, "2024-05-13 19:30:00", "2024-05-13 21:30:00")
+                    new TimeTableModel(1, 1, DateTime.ParseExact("2024-05-13 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 2, DateTime.ParseExact("2024-05-13 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 3, DateTime.ParseExact("2024-05-13 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 4, DateTime.ParseExact("2024-05-13 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 5, DateTime.ParseExact("2024-05-13 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 6, DateTime.ParseExact("2024-05-13 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 7, DateTime.ParseExact("2024-05-13 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 8, DateTime.ParseExact("2024-05-13 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 9, DateTime.ParseExact("2024-05-13 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 10, DateTime.ParseExact("2024-05-13 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 11, DateTime.ParseExact("2024-05-13 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 12, DateTime.ParseExact("2024-05-13 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 13, DateTime.ParseExact("2024-05-13 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 14, DateTime.ParseExact("2024-05-13 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 15, DateTime.ParseExact("2024-05-13 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-13 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
                 };
 
                 InputMenu selectDay = new InputMenu("| Selecteer een dag |");
