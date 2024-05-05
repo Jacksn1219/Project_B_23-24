@@ -1,12 +1,9 @@
 ﻿using System.Globalization;
-using System.Text.Json;
 using Models;
 using DataAccessLibrary;
-using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Project_B.services;
 
@@ -62,14 +59,14 @@ namespace Project_B
 
             // ------ Klant menu met menu opties ------//
             InputMenu klantMenu = new InputMenu("useLambda");
-            klantMenu.Add("Movies", (x) =>
+            /*klantMenu.Add("Movies", (x) =>
             {
                 //Show all movies that are in the timetable and load timetable from only the selected movie
             });
             klantMenu.Add("Schedule", (x) =>
             {
                 //Show the timetable and the book ticket
-            });
+            });*/
             klantMenu.Add("Reserve Seat", (x) =>
             {
                 int selectedMovieID;
@@ -204,7 +201,7 @@ namespace Project_B
 
             // ------ Medewerker menu met menu opties ------//
             InputMenu medewerkerMenu = new InputMenu("useLambda");
-            medewerkerMenu.Add("Timetable", (x) =>
+            /*medewerkerMenu.Add("Timetable", (x) =>
             {
                 //Planning movies and edit what has been planned and See the notes made by costumers
             });
@@ -215,7 +212,7 @@ namespace Project_B
             medewerkerMenu.Add("History", (x) =>
             {
                 //See sales per movie, week and month and be able to filter on amount of sales
-            });
+            });*/
             medewerkerMenu.Add("Create/Edit", (x) =>
             {
                 //Aanmaken nieuwe room, movie, actor, director.
