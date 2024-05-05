@@ -108,6 +108,15 @@ public class MovieModel : DbItem
         Director = dir;
         Actors = actors;
     }
+
+    public void editName(string newName) => this.Name = newName;
+    public void editDescription(string newDescription) => this.Description = newDescription;
+    public void editpegiAge(int newpegiAge) => this.PegiAge = (PEGIAge)newpegiAge;
+    public void editDuration(int newDuration) => this.DurationInMin = newDuration;
+    public void editGenre(string newGenre) => this.Genre = newGenre;
+    public void editDirector(DirectorModel newDirector) => this.Director = newDirector;
+    public void addActor(ActorModel newActors) => this.Actors.Add(newActors);
+    public void removeActor(ActorModel newActors) => this.Actors.Remove(newActors);
     public string SeeActors()
     {
         StringBuilder sb = new();
@@ -137,13 +146,4 @@ public class MovieModel : DbItem
         sb.Append($"\nDescription of this movie: \n{Description}");
         return sb.ToString();
     }
-
-    public void editName(string newName) => this.Name = newName;
-    public void editDescription(string newDescription) => this.Description = newDescription;
-    public void editpegiAge(int newpegiAge) => this.PegiAge = (PEGIAge)newpegiAge;
-    public void editDuration(int newDuration) => this.DurationInMin = newDuration;
-    public void editGenre(string newGenre) => this.Genre = newGenre;
-    public void editDirector(DirectorModel newDirector) => this.Director = newDirector;
-    public void addActor(ActorModel newActors) => this.Actors.Add(newActors);
-    public void removeActor(ActorModel newActors) => this.Actors.Remove(newActors);
 }

@@ -18,9 +18,9 @@ static class Universal
         input = input.Trim();
         string toAdd = "";
         for (int i = 0; i < Console.WindowWidth / 2 / 4 - (input.Length + 6) / 2 - 1; i++) toAdd += "-";
-        WriteColor(toAdd + "== ", ConsoleColor.Cyan);
+        WriteColor(toAdd + "== ", ConsoleColor.Blue);
         Console.Write(input);
-        WriteColor(" ==" + toAdd, ConsoleColor.Cyan);
+        WriteColor(" ==" + toAdd, ConsoleColor.Blue);
         return ""; // (toAdd + input + toAdd).Substring(0, 119);
     }
     public static string centerToScreen(string input)

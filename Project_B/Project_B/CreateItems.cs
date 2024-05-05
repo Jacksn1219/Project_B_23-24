@@ -63,8 +63,9 @@ namespace Project_B
 
             List<DirectorModel> directorList = new List<DirectorModel>();
             // Test directors
-            directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-            directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
+            //directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+            //directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
+            
             // Get directors from database
             try
             {
@@ -92,8 +93,9 @@ namespace Project_B
 
             List<ActorModel> actorList = new List<ActorModel>();
             // Test actors
-            actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-            actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+            //actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+            //actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+            
             // Get directors from database
             try
             {

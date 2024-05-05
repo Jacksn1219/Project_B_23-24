@@ -1,12 +1,14 @@
 ﻿using System.Globalization;
+using System.Text.Json;
 using Models;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Project_B.services;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Project_B.services;
 
 namespace Project_B
 {
@@ -17,14 +19,14 @@ namespace Project_B
             //----- Welkom scherm -----//
             List<Action> welcomeList = new List<Action>
             {
-                () => {Universal.WriteColor("                    █████ █████", ConsoleColor.Cyan); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Cyan); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
-                () => {Universal.WriteColor("                   ░░███ ░░███ ", ConsoleColor.Cyan); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor("░░███░░░░░█", ConsoleColor.Cyan); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
-                () => {Universal.WriteColor("                    ░░███ ███  ", ConsoleColor.Cyan); Universal.WriteColor($"  ██████  █████ ████ ████████ ", ConsoleColor.Gray); Universal.WriteColor(" ░███  █ ░ ", ConsoleColor.Cyan); Universal.WriteColor($" █████ ████  ██████   █████ \n", ConsoleColor.Gray);},
-                () => {Universal.WriteColor("                     ░░█████   ", ConsoleColor.Cyan); Universal.WriteColor($" ███░░███░░███ ░███ ░░███░░███", ConsoleColor.Gray); Universal.WriteColor(" ░██████   ", ConsoleColor.Cyan); Universal.WriteColor($"░░███ ░███  ███░░███ ███░░  \n", ConsoleColor.Gray);},
-                () => {Universal.WriteColor("                      ░░███    ", ConsoleColor.Cyan); Universal.WriteColor($"░███ ░███ ░███ ░███  ░███ ░░░ ", ConsoleColor.Gray); Universal.WriteColor(" ░███░░█   ", ConsoleColor.Cyan); Universal.WriteColor($" ░███ ░███ ░███████ ░░█████ \n", ConsoleColor.Gray);},
-                () => {Universal.WriteColor("                       ░███    ", ConsoleColor.Cyan); Universal.WriteColor($"░███ ░███ ░███ ░███  ░███     ", ConsoleColor.Gray); Universal.WriteColor(" ░███ ░   █", ConsoleColor.Cyan); Universal.WriteColor($" ░███ ░███ ░███░░░   ░░░░███\n", ConsoleColor.Gray);},
-                () => {Universal.WriteColor("                       █████   ", ConsoleColor.Cyan); Universal.WriteColor($"░░██████  ░░████████ █████    ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Cyan); Universal.WriteColor($" ░░███████ ░░██████  ██████ \n", ConsoleColor.Gray);},
-                () => {Universal.WriteColor("                      ░░░░░    ", ConsoleColor.Cyan); Universal.WriteColor($" ░░░░░░    ░░░░░░░░ ░░░░░     ", ConsoleColor.Gray); Universal.WriteColor("░░░░░░░░░░ ", ConsoleColor.Cyan); Universal.WriteColor($"  ░░░░░███  ░░░░░░  ░░░░░░  \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                    █████ █████", ConsoleColor.Blue); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Blue); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                   ░░███ ░░███ ", ConsoleColor.Blue); Universal.WriteColor($"                              ", ConsoleColor.Gray); Universal.WriteColor("░░███░░░░░█", ConsoleColor.Blue); Universal.WriteColor($"                            \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                    ░░███ ███  ", ConsoleColor.Blue); Universal.WriteColor($"  ██████  █████ ████ ████████ ", ConsoleColor.Gray); Universal.WriteColor(" ░███  █ ░ ", ConsoleColor.Blue); Universal.WriteColor($" █████ ████  ██████   █████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                     ░░█████   ", ConsoleColor.Blue); Universal.WriteColor($" ███░░███░░███ ░███ ░░███░░███", ConsoleColor.Gray); Universal.WriteColor(" ░██████   ", ConsoleColor.Blue); Universal.WriteColor($"░░███ ░███  ███░░███ ███░░  \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                      ░░███    ", ConsoleColor.Blue); Universal.WriteColor($"░███ ░███ ░███ ░███  ░███ ░░░ ", ConsoleColor.Gray); Universal.WriteColor(" ░███░░█   ", ConsoleColor.Blue); Universal.WriteColor($" ░███ ░███ ░███████ ░░█████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                       ░███    ", ConsoleColor.Blue); Universal.WriteColor($"░███ ░███ ░███ ░███  ░███     ", ConsoleColor.Gray); Universal.WriteColor(" ░███ ░   █", ConsoleColor.Blue); Universal.WriteColor($" ░███ ░███ ░███░░░   ░░░░███\n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                       █████   ", ConsoleColor.Blue); Universal.WriteColor($"░░██████  ░░████████ █████    ", ConsoleColor.Gray); Universal.WriteColor(" ██████████", ConsoleColor.Blue); Universal.WriteColor($" ░░███████ ░░██████  ██████ \n", ConsoleColor.Gray);},
+                () => {Universal.WriteColor("                      ░░░░░    ", ConsoleColor.Blue); Universal.WriteColor($" ░░░░░░    ░░░░░░░░ ░░░░░     ", ConsoleColor.Gray); Universal.WriteColor("░░░░░░░░░░ ", ConsoleColor.Blue); Universal.WriteColor($"  ░░░░░███  ░░░░░░  ░░░░░░  \n", ConsoleColor.Gray);},
                 () => {Universal.WriteColor($"                                                                          ███ ░███                  \n", ConsoleColor.Gray);},
                 () => {Universal.WriteColor($"                                                                         ░░██████                   \n", ConsoleColor.Gray);},
                 () => {Universal.WriteColor($"                                                                          ░░░░░░                    ", ConsoleColor.Gray); }
@@ -94,7 +96,7 @@ namespace Project_B
                 while (true)
                 {
                     Console.Write("Enter your full name: ");
-                    fullName = Console.ReadLine();
+                    fullName = Console.ReadLine() ?? "";
                     if (IsValidFullName(fullName))
                     {
                         break;  // Exit the loop if a valid full name is entered
@@ -125,7 +127,7 @@ namespace Project_B
                 while (true)
                 {
                     Console.Write("Enter your email: ");
-                    email = Console.ReadLine();
+                    email = Console.ReadLine() ?? "";
                     if (IsValidEmail(email))
                     {
                         break;  // Exit the loop if a valid email is entered
@@ -141,7 +143,7 @@ namespace Project_B
                 while (true)
                 {
                     Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                    phoneNumber = Console.ReadLine();
+                    phoneNumber = Console.ReadLine() ?? "";
                     if (IsValidPhoneNumber(phoneNumber))
                     {
                         break;  // Exit the loop if a valid phone number is entered
@@ -180,7 +182,181 @@ namespace Project_B
 
                 // Ask user to choose seats
                 Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
-                var input = Console.ReadLine();
+                var input = Console.ReadLine() ?? "";
+                var seatNumbers = new List<int>();
+
+                foreach (var seatNumber in input.Split(','))
+                {
+                    if (int.TryParse(seatNumber.Trim(), out int num))
+                    {
+                        seatNumbers.Add(num);
+                    }
+                }
+
+                // Reserve seats
+                ReservationServices.ReserveSeats(selectedRoomID, seatNumbers, userAge, fullName, email, phoneNumber);
+
+
+
+                Console.ReadLine();
+            });
+
+
+            // ------ Medewerker menu met menu opties ------//
+            InputMenu medewerkerMenu = new InputMenu("useLambda");
+            medewerkerMenu.Add("Timetable", (x) =>
+            {
+                //Planning movies and edit what has been planned and See the notes made by costumers
+            });
+            medewerkerMenu.Add("Reservations", (x) =>
+            {
+                //See created reservations for timetable movies
+            });
+            medewerkerMenu.Add("History", (x) =>
+            {
+                //See sales per movie, week and month and be able to filter on amount of sales
+            });
+            medewerkerMenu.Add("Create/Edit", (x) =>
+            {
+                //Aanmaken nieuwe room, movie, actor, director.
+                InputMenu createMenu = new InputMenu("useLambda");
+
+                createMenu.Add("Create room", (x) =>
+                {
+                    Layout.MakeNewLayout();
+                });
+                createMenu.Add("Edit room", (x) =>
+                {
+                    Layout.editLayoutPerRoom();
+                });
+                createMenu.Add("\n" + Universal.centerToScreen("Create movie"), (x) =>
+                {
+                    CreateItems.CreateNewMovie();
+                });
+                createMenu.Add("Edit movie", (x) =>
+                {
+                    CreateItems.ChangeMovie();
+                });
+                createMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
+            });
+            /*medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
+            {
+                Console.WriteLine(Layout.selectSeatPerRoom());
+                Console.ReadLine();
+            });*/
+            medewerkerMenu.Add("Reserve Seat", (x) =>
+            {
+                int selectedMovieID;
+
+                while (true)
+                {
+                    // Display available movies
+                    ReservationServices.DisplayAvailableMovies();
+
+                    // Ask user to choose a movie
+                    Console.Write("Choose a movie (1 or 2): ");
+                    if (int.TryParse(Console.ReadLine(), out selectedMovieID) && (selectedMovieID == 1 || selectedMovieID == 2))
+                    {
+                        break;  // Exit the loop if a valid movie is selected
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid movie selection. Please choose either 1 or 2.");
+                    }
+                }
+
+                // Ask for user's information
+                string fullName;
+                while (true)
+                {
+                    Console.Write("Enter your full name: ");
+                    fullName = Console.ReadLine() ?? "";
+                    if (IsValidFullName(fullName))
+                    {
+                        break;  // Exit the loop if a valid full name is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid full name.");
+                    }
+                }
+
+                // Ask for user's age
+                int userAge;
+                while (true)
+                {
+                    Console.Write("Enter your age: ");
+                    if (int.TryParse(Console.ReadLine(), out userAge) && userAge > 0 && userAge <= 100)
+                    {
+                        break;  // Exit the loop if a valid age is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid age between 1 and 100.");
+                    }
+                }
+
+                // Ask for user's email
+                string email;
+                while (true)
+                {
+                    Console.Write("Enter your email: ");
+                    email = Console.ReadLine() ?? "";
+                    if (IsValidEmail(email))
+                    {
+                        break;  // Exit the loop if a valid email is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid email.");
+                    }
+                }
+
+                // Ask for user's phone number
+                string phoneNumber;
+                while (true)
+                {
+                    Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
+                    phoneNumber = Console.ReadLine() ?? "";
+                    if (IsValidPhoneNumber(phoneNumber))
+                    {
+                        break;  // Exit the loop if a valid phone number is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid phone number starting with 0 and max 10 digits.");
+                    }
+                }
+
+                // Ask user to choose a room
+                int selectedRoomID;
+                while (true)
+                {
+                    Console.Write("Choose a room (1, 2, or 3): ");
+                    if (int.TryParse(Console.ReadLine(), out selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
+                    {
+                        break;  // Exit the loop if a valid room is selected
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid room selection.");
+                    }
+                }
+
+                // Display the layout of the selected room
+                ReservationServices.DisplayRoomLayout(selectedRoomID);
+
+                // Display available seats
+                var availableSeats = ReservationServices.GetAvailableSeats(selectedRoomID);
+                Console.WriteLine("Available Seats:");
+                foreach (var seat in availableSeats)
+                {
+                    Console.WriteLine($"Seat ID: {seat.ID}, Room ID: {seat.ID}, Name: {seat.Name}, Rank: {seat.Rank}, Type: {seat.Type}");
+                }
+
+                // Ask user to choose seats
+                Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
+                var input = Console.ReadLine() ?? "";
                 var seatNumbers = new List<int>();
 
                 foreach (var seatNumber in input.Split(','))
@@ -213,7 +389,7 @@ namespace Project_B
                 // Phone number must start with '0' and have a maximum length of 10 characters
                 return phoneNumber.StartsWith("0") && phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
             }
-            klantMenu.Add("Test SeeActors", (x) => // Als klant wil ik de acteurs van een film bekijken
+            medewerkerMenu.Add("\n" + Universal.centerToScreen("Test SeeActors"), (x) => // Als klant wil ik de acteurs van een film bekijken
             {
                 List<ActorModel> authors = new List<ActorModel>();
                 authors.Add(new ActorModel("Jack Black", "Plays Po", 43));
@@ -226,7 +402,7 @@ namespace Project_B
                 Console.WriteLine(movietje.SeeActors());
                 Console.ReadLine();
             });
-            klantMenu.Add("Test SeeDirector", (x) => // Als klant wil ik de regisseur van een film zien
+            medewerkerMenu.Add("Test SeeDirector", (x) => // Als klant wil ik de regisseur van een film zien
             {
                 List<DirectorModel> directors = new List<DirectorModel>();
                 directors.Add(new DirectorModel("Christopher Nolan", "Famous movie director known for several blockbuster movies such as Oppenheimer, Interstellar, Inception and many more", 53));
@@ -234,13 +410,13 @@ namespace Project_B
                 Console.WriteLine(interStellar.SeeDirector(directors));
                 Console.ReadLine();
             });
-            klantMenu.Add("Test SeeDescription", (x) => // Als klant wil ik de omschrijving (leeftijd + genre) van een film zien
+            medewerkerMenu.Add("Test SeeDescription", (x) => // Als klant wil ik de omschrijving (leeftijd + genre) van een film zien
             {
                 MovieModel interStellar = new MovieModel("Interstellar", "While the earth no longer has the resources to supply the human race, a group of astronauts go to beyond the milky way to find a possible future planet for mankind", 12, 190, "Sci-Fi");
                 Console.WriteLine(interStellar.SeeDescription());
                 Console.ReadLine();
             });
-            klantMenu.Add("set prices", (x) =>
+            medewerkerMenu.Add("\n" + Universal.centerToScreen("Set prices"), (x) =>
             {
                 var prices = SeatPriceCalculator.GetCurrentPrices();
                 SeatPriceCalculator.WritePrices();
@@ -292,7 +468,7 @@ namespace Project_B
                 Console.ReadLine();
 
             });
-            klantMenu.Add("get seat PRICE info", (x) =>
+            medewerkerMenu.Add("Get seat PRICE info", (x) =>
             {
                 SeatModel seat = new SeatModel("naam", "II", "loveseat");
                 Console.WriteLine(SeatPriceCalculator.ShowCalculation(seat));
@@ -300,27 +476,6 @@ namespace Project_B
             });
 
 
-
-
-            /*klantMenu.Add("Timetable", (x) =>
-            {
-                Movie movie1 = new Movie(1, "KUNG FU PANDA 4", 1, 12, "", "", 120); //Film 1 wordt toegevoegd
-                Movie movie2 = new Movie(2, "DUNE: PART TWO", 1, 16, "", "", 150);  //Film 2 wordt toegevoegd
-
-                Room room1 = new Room(1, "Room_1", 150, 6); //Room 1 heeft 150 plekken
-                Room room2 = new Room(2, "Room_2", 300, 6); //Room 2 heeft 300 plekken
-                Room room3 = new Room(3, "Room_3", 500, 6); //Room 3 heeft 500 plekken
-
-                Timetable timetable = new Timetable();
-
-                // Toevoegen van films aan de timetable
-                timetable.AddMovie(new DateTime(2024, 3, 24, 12, 0, 0), movie1, room1); // Film 1 start om 12:00 uur in zaal 1
-                timetable.AddMovie(new DateTime(2024, 3, 24, 15, 0, 0), movie2, room2); // Film 2 start om 15:00 uur in zaal 2
-
-                // Tonen van de timetable
-                timetable.DisplayTimetable();
-                Console.ReadLine();
-            });*/
 
             // ------ Medewerker menu met menu opties ------//
             InputMenu medewerkerMenu = new InputMenu("useLambda");
@@ -865,15 +1020,3 @@ namespace Project_B
         });
         menu.UseMenu(() => Universal.printAsTitle("Main Menu"));
     }
-}}
-
-/*
- * Unit tests Inputmenu
- * Als klant wil ik zien welke stoelen al bezet zijn zodat ik niet per ongeluk een al gereserveerde stoel pak
- * Als administratie wil ik de gereserveerde stoelen terugzien, zodat ik de klanten naar hun stoel kan begeleiden
- * Als administratie wil ik graag zien hoe vol een zaal is, zodat ik kan zien of de desbetreffende film een grotere zaal nodig heeft of niet zo populair is
- X Als administratie wil ik een nieuwe film toevoegen, zodat we telkens de nieuwste films kunnen laten zien.
- * Als administratie wil ik slecht lopende films verwijderen, zodat we geen films laten zien die niet populair zijn.
- X Als administratie wil ik films kunnen aanpassen, zodat als ik een fout maak ik de film niet opnieuw aan moet maken.
- X Als medewerker wil ik in kunnen loggen, zodat niet iedereen administratorrechten heeft
-*/
