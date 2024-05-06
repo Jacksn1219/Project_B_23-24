@@ -249,11 +249,11 @@ namespace Project_B
                 });
                 createMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
             });
-            /*medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
+            medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
             {
                 Console.WriteLine(Layout.selectSeatPerRoom());
                 Console.ReadLine();
-            });*/
+            });
 
 
             medewerkerMenu.Add("\n" + Universal.centerToScreen("Test SeeActors"), (x) => // Als klant wil ik de acteurs van een film bekijken
