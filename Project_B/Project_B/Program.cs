@@ -25,7 +25,7 @@ namespace Project_B
             });
             menu.Add("Layout creator", (x) =>
             {
-                DataAccessLibrary.Layout.MakeNewLayout();
+                Layout.MakeNewLayout();
                 /*
                 Als klant wil ik de stoelen in een zaal zien omdat ik wil weten waar ik kan zitten. -Chris
                 Als klant wil ik zien wat voor type stoel een bepaalde stoel is, zodat ik mijn favoriete type kan kiezen.(Love-seat, regular, deluxe) -Chris
@@ -52,7 +52,7 @@ namespace Project_B
                 List<Room> roomList = new List<Room> { new Room(1, "Room1", layout1.Count, 6) };
                 InputMenu selectRoom = new InputMenu("| Select room to edit |");
                 foreach (Room room in roomList/*getRoomFromDatabase() - Aymane*/) {
-                    selectRoom.Add($"{room.Name}", (x) => DataAccessLibrary.Layout.editLayout(layout1/*getLayoutFromDatabase() - Aymane*/, room));
+                    selectRoom.Add($"{room.Name}", (x) => DataAccessLibrary.Layout.editLayout(layout1, room));
                 }
                 selectRoom.UseMenu();
             });
