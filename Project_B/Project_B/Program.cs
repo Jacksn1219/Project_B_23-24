@@ -647,7 +647,7 @@ namespace Project_B
                     {
                         MovieModelSelecter.Add(movie.Name ?? "", (x) =>
                         {
-                            Console.WriteLine($"Film: {movie.Name}\nZaal: Room 1\nGenre: {movie.Genre}\nBeschrijving: {movie.Description}\nPEGI: {movie.PegiAge}\nTijdsduur: {movie.DurationInMin}\nBegintijd: -\nEindtijd: -");
+                            Console.WriteLine($"Film: {movie.Name}\nZaal: Room 1\nGenre: {movie.Genre}\nBeschrijving: {movie.Description}\nDirector: -\nActors: -\nPEGI: {movie.PegiAge}\nTijdsduur: {movie.DurationInMin}\nBegintijd: -\nEindtijd: -");
                             Console.WriteLine();
                             Console.ReadLine();
                         });
