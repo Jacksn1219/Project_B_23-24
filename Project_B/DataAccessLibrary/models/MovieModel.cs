@@ -95,4 +95,13 @@ public class MovieModel : IDbItem
         sb.Append($"\nDescription of this movie: \n{Description}");
         return sb.ToString();
     }
+    public void AskForDetails()
+    {
+        Console.WriteLine("In case of allergies or special needs that the cinema needs to know about");
+        Console.WriteLine("Please write them here:");
+        string userInput = Console.ReadLine();
+        Console.Clear();
+        Console.WriteLine("Thank you, YourEyes will do their utmost best to accompany your needs. Here is what you entered: ");
+        Console.WriteLine(userInput);
+    }
 }
