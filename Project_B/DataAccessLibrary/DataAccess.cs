@@ -8,10 +8,16 @@ namespace DataAccessLibrary
 {
     public abstract class DataAccess : ICRUD, IDisposable
     {
+        /// <summary>
+        /// true if the database connection is open.
+        /// </summary>
+        protected bool _hasOpenConnection = false;
+        public void OpenConnection() { _dbAccess.Open(); _hasOpenConnection = true; }
+        public void CloseConnection() { _dbAccess.Close(); _hasOpenConnection = false; }
         protected abstract IDbConnection _dbAccess { get; set; }
         public abstract void Dispose();
-        public abstract List<T> ReadData<T>(string sqlStatement);
-        public abstract List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters);
+        public abstract T[] ReadData<T>(string sqlStatement);
+        public abstract T[] ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters);
         public abstract bool SaveData(string sqlStatement);
         public abstract bool SaveData(string sqlStatement, Dictionary<string, dynamic?> parameters);
         /// <summary>
@@ -21,7 +27,7 @@ namespace DataAccessLibrary
         /// <param name="rd">the DbReader object</param>
         /// <returns>a list of DbItems</returns>
         /// <exception cref="NotImplementedException">currently not implemented</exception>
-        public static List<T>? ConvertToObject<T>(DbDataReader rd)
+        public static T[]? ConvertToObject<T>(DbDataReader rd)
         {
             // all the type T objects as dictionaries
             List<Dictionary<string, dynamic?>> typeOfT = new();
@@ -64,7 +70,7 @@ namespace DataAccessLibrary
             }
             // make a class from the list of dicts
             string Tstring = JsonConvert.SerializeObject(typeOfT);
-            List<T>? items = JsonConvert.DeserializeObject<List<T>>(Tstring);
+            T[]? items = JsonConvert.DeserializeObject<T[]>(Tstring);
             return items;
         }
 

@@ -70,7 +70,6 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// <returns>true if succesfull, else false</returns>
     public bool ItemToDb(MovieModel item)
     {
-
         bool directorchanged = item.Director != null && item.Director.IsChanged;
         bool actorsChanged = false;
         foreach (var act in item.Actors)
@@ -186,5 +185,42 @@ public class MovieFactory : IDbItemFactory<MovieModel>
 
         }
         return true;
+    }
+
+    public MovieModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+    {
+        if (deepcopyLv < 0) return new MovieModel[0];
+        var movies = _db.ReadData<MovieModel>(
+                $"SELECT * FROM Movie LIMIT {count} OFFSET {count * page - count}"
+            );
+        //return only movies when deepcopyLv is less than 1.
+        if (deepcopyLv < 1) return movies;
+        foreach (MovieModel mov in movies)
+        {
+            getRelatedItemsFromDb(mov, deepcopyLv - 1);
+        }
+        return movies;
+    }
+    public void getRelatedItemsFromDb(MovieModel item, int deepcopyLv = 0)
+    {
+        if (deepcopyLv < 0) return;
+        if (item.DirectorID != null)
+        {
+            item.Director = _df.GetItemFromId(item.DirectorID ?? 0);
+        }
+        item.Actors = GetActorsFromMovie(item).ToList();
+        return;
+    }
+    private ActorModel[] GetActorsFromMovie(MovieModel movie)
+    {
+        return _db.ReadData<ActorModel>(
+            @"SELECT Actor.ID, Actor.Name, Actor.Description, Actor.Age FROM Actor
+            INNER JOIN ActorInMovie ON Actor.ID = ActorInMovie.ActorID
+            INNER JOIN Movie ON ActorInMovie.MovieID = Movie.ID
+            WHERE Movie.ID = $1",
+            new Dictionary<string, dynamic?>{
+                { "$1", movie.ID }
+            }
+        );
     }
 }

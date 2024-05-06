@@ -7,11 +7,13 @@ namespace DataAccessLibrary.logic
         private readonly DataAccess _db;
         private readonly CustomerFactory _cf;
         private readonly SeatFactory _sf;
-        public ReservationFactory(DataAccess db, CustomerFactory cf, SeatFactory sf)
+        private readonly TimeTableFactory _tf;
+        public ReservationFactory(DataAccess db, CustomerFactory cf, SeatFactory sf, TimeTableFactory tf)
         {
             _db = db;
             _cf = cf;
             _sf = sf;
+            _tf = tf;
             CreateTable();
         }
 
@@ -151,6 +153,40 @@ namespace DataAccessLibrary.logic
                 );
             }
             return true;
+        }
+
+        public ReservationModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return new ReservationModel[0];
+            ReservationModel[] result = _db.ReadData<ReservationModel>(
+                $"SELECT * FROM Reservation LIMIT {count} OFFSET {count * page - count}"
+            );
+            if (deepcopyLv < 1) return result;
+            foreach (ReservationModel item in result)
+            {
+                getRelatedItemsFromDb(item, deepcopyLv - 1);
+            }
+            return result;
+
+        }
+        public void getRelatedItemsFromDb(ReservationModel item, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return;
+            if (item.TimeTableID != null)
+            {
+                item.TimeTable = _tf.GetItemFromId(item.TimeTableID ?? 0, deepcopyLv);
+            }
+            item.ReservedSeats.AddRange(GetReservedSeatsFromDb(item));
+            return;
+        }
+
+        private SeatModel[] GetReservedSeatsFromDb(ReservationModel item)
+        {
+            return _db.ReadData<SeatModel>(
+                @"SELECT Seat.ID, Seat.Name, Seat.Rank, Seat.Type FROM Seat
+                INNER JOIN ReservedSeat ON ReservedSeat.SeatID = Seat.ID
+                INNER JOIN Reservation ON Reservation.ID = ReservedSeat.ReservationID"
+            );
         }
     }
 

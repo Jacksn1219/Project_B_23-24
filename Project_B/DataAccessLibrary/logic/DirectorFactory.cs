@@ -52,6 +52,14 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
             }).First();
     }
 
+    public DirectorModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+    {
+        if (deepcopyLv < 0) return new DirectorModel[0];
+        return _db.ReadData<DirectorModel>(
+                $"SELECT * FROM Director LIMIT {count} OFFSET {count * page - count}"
+            );
+    }
+
     public bool ItemToDb(DirectorModel item)
     {
         if (!item.IsChanged) return true;

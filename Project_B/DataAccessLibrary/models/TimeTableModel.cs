@@ -9,7 +9,7 @@ namespace DataAccessLibrary.models
     public class TimeTableModel : DbItem
     {
         internal int? MovieID { get; set; }
-        public readonly MovieModel? Movie;
+        public MovieModel? Movie;
         internal int? RoomID { get; set; }
         public readonly RoomModel? Room;
         private string _startDate;

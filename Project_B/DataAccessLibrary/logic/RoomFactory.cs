@@ -59,6 +59,20 @@ namespace DataAccessLibrary.logic
             ).First();
         }
 
+        public RoomModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return new RoomModel[0];
+            RoomModel[] rooms = _db.ReadData<RoomModel>(
+                $"SELECT * FROM Room LIMIT {count} OFFSET {count * page - count}"
+            );
+            if (deepcopyLv == 0) return rooms;
+            foreach (RoomModel room in rooms)
+            {
+
+            }
+            return rooms;
+        }
+
         public bool ItemToDb(RoomModel item)
         {
             bool seatsChanged = false;
@@ -107,6 +121,15 @@ namespace DataAccessLibrary.logic
                 _sf.ItemToDb(seat);
             }
             return true;
+        }
+        public void getRelatedItemsFromDb(RoomModel item, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return;
+            item.Seats.AddRange(
+                _db.ReadData<SeatModel>(
+                    $"SELECT * FROM Seat WHERE Seat.RoomID = {item.ID}"
+                )
+            );
         }
     }
 }

@@ -67,10 +67,24 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         ).First();
     }
 
+    public TimeTableModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+    {
+        if (deepcopyLv < 0) return new TimeTableModel[0];
+        TimeTableModel[] tts = _db.ReadData<TimeTableModel>(
+                $"SELECT * FROM TimeTable LIMIT {count} OFFSET {count * page - count}"
+            );
+        if (deepcopyLv < 1) return tts;
+        foreach (TimeTableModel tt in tts)
+        {
+
+        }
+        return null;
+    }
+
     public bool ItemToDb(TimeTableModel item)
     {
         if (!item.IsChanged) return true;
-        if (item.ID == null) return CreateItem(item);
+        if (!item.Exists) return CreateItem(item);
         return UpdateItem(item);
     }
     public bool UpdateItem(TimeTableModel item)
@@ -110,5 +124,10 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             item.RoomID = item.Room.ID;
         }
         return true;
+    }
+    public void getRelatedItemsFromDb(TimeTableModel item, int deepcopyLv = 0)
+    {
+        if (deepcopyLv < 0) return;
+        item.Movie = _mf.GetItemFromId(item.MovieID ?? 0);
     }
 }

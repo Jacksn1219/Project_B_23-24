@@ -58,6 +58,14 @@ namespace DataAccessLibrary.logic
             ).First();
         }
 
+        public SeatModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return new SeatModel[0];
+            return _db.ReadData<SeatModel>(
+                $"SELECT * FROM Seat LIMIT {count} OFFSET {count * page - count}"
+            );
+        }
+
         public bool ItemToDb(SeatModel item)
         {
             if (!item.IsChanged) return true;
