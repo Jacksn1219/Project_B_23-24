@@ -12,8 +12,9 @@ public class SeatModel : DbItem
     private string _name;
     private string _rank;
     private string _type;
+    private bool _isReserved;
 
-    internal int? RoomID { get; set; }
+    public int? RoomID { get; set; }
     public RoomModel? Room;
     public string Name
     {
@@ -35,6 +36,15 @@ public class SeatModel : DbItem
         set
         {
             _type = value;
+            IsChanged = true;
+        }
+    }
+    public bool IsReserved
+    {
+        get => _isReserved;
+        set
+        {
+            _isReserved = value;
             IsChanged = true;
         }
     }

@@ -18,15 +18,15 @@ public class ReservationModel : DbItem
             IsChanged = true;
         }
     }
-    public readonly List<SeatModel> ReservedSeats = new List<SeatModel>();
+    public readonly List<SeatModel> ReservedSeatModels = new List<SeatModel>();
     private string? _note;
     public ReservationModel() { }
-    public ReservationModel(CustomerModel customer, TimeTableModel timeTable, List<SeatModel> seats, string? note = null)
+    public ReservationModel(CustomerModel customer, TimeTableModel timeTable, List<SeatModel> SeatModels, string? note = null)
     : this(null, customer.ID, timeTable.ID, note)
     {
         Customer = customer;
         TimeTable = timeTable;
-        ReservedSeats.AddRange(seats);
+        ReservedSeatModels.AddRange(SeatModels);
     }
     internal ReservationModel(int? id, int? customerId, int? timetableId, string? note)
     {

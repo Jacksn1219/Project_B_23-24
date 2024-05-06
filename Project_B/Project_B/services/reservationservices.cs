@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using DataAccessLibrary;
-using Models;
-using Project_B.Services;
 
 namespace Project_B.services
 {
@@ -25,9 +21,9 @@ namespace Project_B.services
             // This is a placeholder; you'd replace this with actual database fetching logic
 
             // For now, let's use the example layout creation logic from Layout class
-            var seats = new List<SeatModel>(); // Placeholder for fetched seats from the database
+            var SeatModels = new List<SeatModel>(); // Placeholder for fetched SeatModels from the database
             var room = new RoomModel($"Room{roomID}", 10, 10); // Example room with RowWidth 10
-            Layout.drawLayout(seats, room);
+            Layout.drawLayout(SeatModels, room);
         }
 
         public static void ReserveSeats(int roomID, List<int> seatNumbers, int userAge, string fullName, string email, string phoneNumber)
@@ -59,7 +55,7 @@ namespace Project_B.services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error reserving seats: {ex.Message}");
+                Console.WriteLine($"Error reserving SeatModels: {ex.Message}");
             }
         }
 
@@ -91,17 +87,17 @@ namespace Project_B.services
 
         public static List<SeatModel> GetAvailableSeats(int roomID)
         {
-            // Fetch available seats for the selected room from the database
+            // Fetch available SeatModels for the selected room from the database
             // This is a placeholder; you'd replace this with actual database fetching logic
-            var availableSeats = new List<SeatModel>
+            var availableSeatModels = new List<SeatModel>
             {
-                // Sample seats; replace with actual fetched data
+                // Sample SeatModels; replace with actual fetched data
                 new SeatModel("A1", "1", "Normaal"),
                 new SeatModel("A2", "1", "Normaal"),
-                // ... add more seats
+                // ... add more SeatModels
             };
 
-            return availableSeats;
+            return availableSeatModels;
         }
 
         private static void ReserveSeat(int seatNumber, string fullName, string email, string phoneNumber)
@@ -114,7 +110,7 @@ namespace Project_B.services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error updating seat {seatNumber}: {ex.Message}");
+                throw new Exception($"Error updating SeatModel {seatNumber}: {ex.Message}");
             }
         }
 
