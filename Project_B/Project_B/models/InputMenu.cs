@@ -131,6 +131,8 @@ namespace Models
                 }
                 else if (userInput == ConsoleKey.Escape)
                 {
+                    Console.Clear();
+                    Console.WriteLine("\x1b[3J");
                     if (this.exit == true) Environment.Exit(0);
                     return;
                 }
