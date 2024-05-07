@@ -172,7 +172,7 @@ class Layout : LayoutModel
             SeatModel? seat = new SeatModel();
             while (seat != null)
             {
-                seat = seatModelFactory.GetItemFromId(i);
+                seat = seatModelFactory.GetItemFromId(i, 1);
                 if (seat != null) seatList.Add(seat);
                 i++;
             }
@@ -352,7 +352,7 @@ class Layout : LayoutModel
             SeatModel? seat = new SeatModel();
             while (seat != null)
             {
-                seat = seatModelFactory.GetItemFromId(i);
+                seat = seatModelFactory.GetItemFromId(i, 1);
                 if (seat != null) seatList.Add(seat);
                 i++;
             }
