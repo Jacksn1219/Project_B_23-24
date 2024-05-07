@@ -118,5 +118,12 @@ namespace DataAccessLibraryTest
             var dir = _df.GetItemFromId(newMovie.DirectorID ?? 1);
             Assert.AreEqual(dir.Name, movie.Director.Name);
         }
+        [TestMethod]
+        public void TestGetFirstHundridMov()
+        {
+            MovieModel[] movs = _mf.GetItems(100);
+            MovieModel[] movsPageTwoLvTwo = _mf.GetItems(100, 2, 2);
+            _mf.getRelatedItemsFromDb(movs.First());
+        }
     }
 }

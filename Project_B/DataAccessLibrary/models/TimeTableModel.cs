@@ -11,7 +11,7 @@ namespace DataAccessLibrary.models
         internal int? MovieID { get; set; }
         public MovieModel? Movie;
         internal int? RoomID { get; set; }
-        public readonly RoomModel? Room;
+        public RoomModel? Room;
         private string _startDate;
         private string _endDate;
         public DateTime DateTimeStartDate

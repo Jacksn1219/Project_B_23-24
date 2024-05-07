@@ -34,7 +34,7 @@ namespace DataAccessLibrary
         public override bool SaveData(string sqlStatement)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            if (!_hasOpenConnection) dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -44,7 +44,7 @@ namespace DataAccessLibrary
             }
             finally
             {
-                if (!_hasOpenConnection) dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
         /// <summary>
@@ -74,7 +74,7 @@ namespace DataAccessLibrary
         public bool SaveData(string sqlStatement, SQLiteParameter[] parameters)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            if (!_hasOpenConnection) dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -85,13 +85,13 @@ namespace DataAccessLibrary
             }
             finally
             {
-                if (!_hasOpenConnection) dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
-        public override T[]? ReadData<T>(string sqlStatement)
+        public override T[] ReadData<T>(string sqlStatement)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            if (!_hasOpenConnection) dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -100,7 +100,7 @@ namespace DataAccessLibrary
             }
             finally
             {
-                if (!_hasOpenConnection) dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
         public override T[] ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters)
@@ -117,7 +117,7 @@ namespace DataAccessLibrary
         public T[] ReadData<T>(string sqlStatement, SQLiteParameter[] parameters)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            if (!_hasOpenConnection) dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -127,14 +127,14 @@ namespace DataAccessLibrary
             }
             finally
             {
-                if (!_hasOpenConnection) dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
 
         public override int CreateData(string sqlStatement)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            if (!_hasOpenConnection) dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -145,7 +145,7 @@ namespace DataAccessLibrary
             }
             finally
             {
-                if (!_hasOpenConnection) dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
 
@@ -163,7 +163,7 @@ namespace DataAccessLibrary
         public int CreateData(string sqlStatement, SQLiteParameter[] parameters)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            if (!_hasOpenConnection) dbAccess.Open();
+            if (!IsOpen) _dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -178,7 +178,7 @@ namespace DataAccessLibrary
             }
             finally
             {
-                if (!_hasOpenConnection) dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
     }

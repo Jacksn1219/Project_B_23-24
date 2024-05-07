@@ -11,9 +11,18 @@ namespace DataAccessLibrary
         /// <summary>
         /// true if the database connection is open.
         /// </summary>
-        protected bool _hasOpenConnection = false;
-        public void OpenConnection() { _dbAccess.Open(); _hasOpenConnection = true; }
-        public void CloseConnection() { _dbAccess.Close(); _hasOpenConnection = false; }
+
+        public void OpenConnection()
+        {
+            if (IsOpen) return;
+            _dbAccess.Open();
+        }
+        public void CloseConnection()
+        {
+            if (!IsOpen) return;
+            _dbAccess.Close();
+        }
+        public bool IsOpen { get { return _dbAccess.State == ConnectionState.Open; } }
         protected abstract IDbConnection _dbAccess { get; set; }
         public abstract void Dispose();
         public abstract T[] ReadData<T>(string sqlStatement);

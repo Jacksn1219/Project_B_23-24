@@ -23,7 +23,7 @@ namespace Project_B
             RoomFactory roomf = new(db, sf);
             TimeTableFactory tf = new(db, mf, roomf);
             CustomerFactory cf = new(db);
-            ReservationFactory resf = new(db, cf, sf);
+            ReservationFactory resf = new(db, cf, sf, tf);
 
 
             InputMenu menu = new InputMenu("| Main menu |", true);

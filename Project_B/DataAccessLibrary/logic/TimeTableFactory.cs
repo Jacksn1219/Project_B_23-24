@@ -19,26 +19,35 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     {
         if (item.ID != null) throw new InvalidDataException("the timetable is already in the db.");
         if (!item.IsChanged) return true;
-        bool result = RelatedItemsToDb(item);
-        if (!result) return false;
-        item.ID = _db.CreateData(
-            @"INSERT INTO TimeTable(
-                MovieID,
-                RoomID,
-                StartDate,
-                EndDate
-            )
-            VALUES($1,$2,$3,$4)",
-            new Dictionary<string, dynamic?>()
-            {
-                {"$1", item.MovieID},
-                {"$2", item.RoomID},
-                {"$3", item.StartDate},
-                {"$4", item.EndDate}
-            }
-        );
-        if (item.ID > 0) item.IsChanged = false;
-        return item.ID > 0;
+        bool dontClose = _db.IsOpen;
+        try
+        {
+            _db.OpenConnection();
+            bool result = RelatedItemsToDb(item);
+            if (!result) return false;
+            item.ID = _db.CreateData(
+                @"INSERT INTO TimeTable(
+                    MovieID,
+                    RoomID,
+                    StartDate,
+                    EndDate
+                )
+                VALUES($1,$2,$3,$4)",
+                new Dictionary<string, dynamic?>()
+                {
+                    {"$1", item.MovieID},
+                    {"$2", item.RoomID},
+                    {"$3", item.StartDate},
+                    {"$4", item.EndDate}
+                }
+            );
+            if (item.ID > 0) item.IsChanged = false;
+            return item.ID > 0;
+        }
+        finally
+        {
+            if (!dontClose) _db.CloseConnection();
+        }
     }
 
     public void CreateTable()
@@ -70,15 +79,24 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     public TimeTableModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
     {
         if (deepcopyLv < 0) return new TimeTableModel[0];
-        TimeTableModel[] tts = _db.ReadData<TimeTableModel>(
+        bool dontClose = _db.IsOpen;
+        try
+        {
+            _db.OpenConnection();
+            TimeTableModel[] tts = _db.ReadData<TimeTableModel>(
                 $"SELECT * FROM TimeTable LIMIT {count} OFFSET {count * page - count}"
             );
-        if (deepcopyLv < 1) return tts;
-        foreach (TimeTableModel tt in tts)
-        {
-
+            if (deepcopyLv < 1) return tts;
+            foreach (TimeTableModel tt in tts)
+            {
+                tt.Movie = _mf.GetItemFromId(tt.MovieID ?? 0, deepcopyLv - 1);
+            }
+            return tts;
         }
-        return null;
+        finally
+        {
+            if (!dontClose) _db.CloseConnection();
+        }
     }
 
     public bool ItemToDb(TimeTableModel item)
@@ -91,43 +109,71 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     {
         if (item.ID == null) throw new InvalidDataException("timetable is not in the db.");
         if (!item.IsChanged) return true;
-        bool result = RelatedItemsToDb(item);
-        if (!result) return result;
-        result = _db.SaveData(
-            @"UPDATE TimeTable
-            SET RoomID = $1,
-                MovieID = $2,
-                StartDate = $3,
-                EndDate = $4
-            WHERE ID = $5",
-            new Dictionary<string, dynamic?>(){
-                {"$1", item.RoomID},
-                {"$2", item.MovieID},
-                {"$3", item.StartDate},
-                {"$4", item.EndDate},
-                {"$5", item.ID}
-            }
-        );
-        item.IsChanged = !result;
-        return result;
+        bool dontClose = _db.IsOpen;
+        try
+        {
+            bool result = RelatedItemsToDb(item);
+            if (!result) return result;
+            result = _db.SaveData(
+                @"UPDATE TimeTable
+                SET RoomID = $1,
+                    MovieID = $2,
+                    StartDate = $3,
+                    EndDate = $4
+                WHERE ID = $5",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", item.RoomID},
+                    {"$2", item.MovieID},
+                    {"$3", item.StartDate},
+                    {"$4", item.EndDate},
+                    {"$5", item.ID}
+                }
+            );
+            item.IsChanged = !result;
+            return result;
+        }
+        finally
+        {
+            if (!dontClose) _db.CloseConnection();
+        }
     }
     private bool RelatedItemsToDb(TimeTableModel item)
     {
-        if (item.Movie != null)
+        bool dontClose = _db.IsOpen;
+        try
         {
-            _mf.ItemToDb(item.Movie);
-            item.MovieID = item.Movie.ID;
+            _db.OpenConnection();
+            if (item.Movie != null)
+            {
+                _mf.ItemToDb(item.Movie);
+                item.MovieID = item.Movie.ID;
+            }
+            if (item.Room != null)
+            {
+                _rf.ItemToDb(item.Room);
+                item.RoomID = item.Room.ID;
+            }
+            return true;
         }
-        if (item.Room != null)
+        finally
         {
-            _rf.ItemToDb(item.Room);
-            item.RoomID = item.Room.ID;
+            if (!dontClose) _db.CloseConnection();
         }
-        return true;
     }
     public void getRelatedItemsFromDb(TimeTableModel item, int deepcopyLv = 0)
     {
         if (deepcopyLv < 0) return;
-        item.Movie = _mf.GetItemFromId(item.MovieID ?? 0);
+        bool dontClose = _db.IsOpen;
+        try
+        {
+            _db.OpenConnection();
+            item.Movie = _mf.GetItemFromId(item.MovieID ?? 0);
+            item.Room = _rf.GetItemFromId(item.RoomID ?? 0);
+        }
+        finally
+        {
+            if (!dontClose) _db.CloseConnection();
+        }
+
     }
 }
