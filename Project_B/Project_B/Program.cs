@@ -251,7 +251,7 @@ namespace Project_B
             });
             medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
             {
-                Console.WriteLine(Layout.selectSeatPerRoom().ToString());
+                Console.WriteLine(Layout.selectSeatPerRoom().ToString() ?? "");
                 Console.ReadLine();
             });
 
