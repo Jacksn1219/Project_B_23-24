@@ -141,7 +141,7 @@ namespace Project_B
             MovieModel newMovie = new MovieModel(Name, Discription, pegiAge, Duration, Genre, Director, Actors);
             movieFactory.CreateItem(newMovie);
         }
-        public static void ChangeMovie()
+        public static void EditMovie()
         {
             ActorFactory actorFactory = new ActorFactory(Universal.Db);
             DirectorFactory directorFactory = new DirectorFactory(Universal.Db);
@@ -154,7 +154,7 @@ namespace Project_B
                 MovieModel? movie = new MovieModel();
                 while (movie != null)
                 {
-                    movie = movieFactory.GetItemFromId(i);
+                    movie = movieFactory.GetItemFromId(i, 1);
                     if (movie != null) movieList.Add(movie);
                     i++;
                 }

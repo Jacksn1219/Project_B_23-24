@@ -137,7 +137,7 @@ namespace Project_B
                 });
                 createMenu.Add("Edit movie", (x) =>
                 {
-                    CreateItems.ChangeMovie();
+                    CreateItems.EditMovie();
                 });
                 createMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
             });

@@ -105,6 +105,7 @@ namespace Models
 
                 //Getting User choice
                 userInput = Console.ReadKey().Key;
+                Console.ForegroundColor = ConsoleColor.White;
 
                 if ((userInput == ConsoleKey.UpArrow || userInput == ConsoleKey.W) && cursor > 0)
                 {
