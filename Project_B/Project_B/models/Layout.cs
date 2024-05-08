@@ -533,4 +533,71 @@ class Layout : LayoutModel
 
         selectSeatModel(SeatModels, currentRoom);
     }
+
+    
+    public static SeatModel? selectSeatModelForUser(List<SeatModel> layout, RoomModel room)
+    {
+        SeatModel? selectedOption = null;
+
+        InputMenu seatSelectionMenu = new InputMenu($"Select a seat:", null, room.RowWidth ?? 0);
+        foreach (SeatModel seatModel in layout)
+        {
+            string seatInfo = $"Type: {seatModel.Type}, Rank: {seatModel.Rank}";
+            seatSelectionMenu.Add(seatModel.Name, (x) =>
+            {
+                selectedOption = seatModel;
+                Console.Clear();
+                Console.WriteLine($"You've selected seat {seatModel.Name}. Please provide your information.");
+                // Here you can prompt the user for their information and handle it accordingly
+                string fullName;
+                while (true)
+                {
+                    Console.Write("Enter your full name: ");
+                    fullName = Console.ReadLine() ?? "";
+                    if (IsValidFullName(fullName))
+                    {
+                        break;  // Exit the loop if a valid full name is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid full name.");
+                    }
+                }
+                Console.Write("Enter your email: ");
+                string email = Console.ReadLine();
+
+                string phoneNumber;
+                while (true)
+                {
+                    Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
+                    phoneNumber = Console.ReadLine() ?? "";
+                    if (IsValidPhoneNumber(phoneNumber))
+                    {
+                        break;  // Exit the loop if a valid phone number is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid phone number starting with 0 and max 10 digits.");
+                    }
+                }
+                // Now you can use this information to reserve the seat or perform other actions
+
+                
+            static bool IsValidFullName(string fullName)
+            {
+                return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
+            }
+
+
+
+            static bool IsValidPhoneNumber(string phoneNumber)
+            {
+                // Phone number must start with '0' and have a maximum length of 10 characters
+                return phoneNumber.StartsWith("0") && phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
+            }
+            }, seatModel.IsReserved);
+        }
+        seatSelectionMenu.UseMenu();
+        return selectedOption;
+    }
 }

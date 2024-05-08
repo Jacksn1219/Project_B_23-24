@@ -59,157 +59,49 @@ namespace Project_B
 
             // ------ Klant menu met menu opties ------//
             InputMenu klantMenu = new InputMenu("useLambda");
-            /*klantMenu.Add("Movies", (x) =>
+
+            // klantMenu.Add("Reserve Seat", (x) =>
+            // {
+            //     ReserveSeat();
+            // });
+
+
+            //  static void ReserveSeat()
+            // {
+            //     // Call the ReserveSeatForUser method from ReserveSeatService
+            //     SeatModel? selectedSeat = ReserveSeatService.ReserveSeatForUser();
+
+            //     // Handle the selected seat as needed
+            //     if (selectedSeat != null)
+            //     {
+            //         Console.WriteLine($"Seat {selectedSeat.Name} reserved successfully!");
+            //     }
+            //     else
+            //     {
+            //         Console.WriteLine("Seat reservation failed. Please try again.");
+            //     }
+
+            //     // Add any additional logic after seat reservation
+            // }
+        klantMenu.Add("\n" + Universal.centerToScreen("Reserve Seat"), (x) =>
+        {
+            SeatModel? selectedSeat = Layout.selectSeatPerRoom();
+            if (selectedSeat != null)
             {
-                //Show all movies that are in the timetable and load timetable from only the selected movie
-            });
-            klantMenu.Add("Schedule", (x) =>
-            {
-                //Show the timetable and the book ticket
-            });*/
-            klantMenu.Add("Reserve Seat", (x) =>
-            {
-                int selectedMovieID;
+                Console.WriteLine(selectedSeat.ToString());
+                Console.WriteLine("Please provide your information.");
 
-                while (true)
-                {
-                    // Display available movies
-                    ReservationServices.DisplayAvailableMovies();
+                // Get user information using the method from the UserInfoInput class
+                (string fullName, string email, string phoneNumber) = UserInfoInput.GetUserInfo();
 
-                    // Ask user to choose a movie
-                    Console.Write("Choose a movie (1 or 2): ");
-                    if (int.TryParse(Console.ReadLine(), out selectedMovieID) && (selectedMovieID == 1 || selectedMovieID == 2))
-                    {
-                        break;  // Exit the loop if a valid movie is selected
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid movie selection. Please choose either 1 or 2.");
-                    }
-                }
-
-                // Ask for user's information
-                string fullName;
-                while (true)
-                {
-                    Console.Write("Enter your full name: ");
-                    fullName = Console.ReadLine() ?? "";
-                    if (IsValidFullName(fullName))
-                    {
-                        break;  // Exit the loop if a valid full name is entered
-                    }
-                    else
-                    {
-                        Console.WriteLine("Please enter a valid full name.");
-                    }
-                }
-
-                // Ask for user's age
-                int userAge;
-                while (true)
-                {
-                    Console.Write("Enter your age: ");
-                    if (int.TryParse(Console.ReadLine(), out userAge) && userAge > 0 && userAge <= 100)
-                    {
-                        break;  // Exit the loop if a valid age is entered
-                    }
-                    else
-                    {
-                        Console.WriteLine("Please enter a valid age between 1 and 100.");
-                    }
-                }
-
-                // Ask for user's email
-                string email;
-                while (true)
-                {
-                    Console.Write("Enter your email: ");
-                    email = Console.ReadLine() ?? "";
-                    if (IsValidEmail(email))
-                    {
-                        break;  // Exit the loop if a valid email is entered
-                    }
-                    else
-                    {
-                        Console.WriteLine("Please enter a valid email.");
-                    }
-                }
-
-                // Ask for user's phone number
-                string phoneNumber;
-                while (true)
-                {
-                    Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                    phoneNumber = Console.ReadLine() ?? "";
-                    if (IsValidPhoneNumber(phoneNumber))
-                    {
-                        break;  // Exit the loop if a valid phone number is entered
-                    }
-                    else
-                    {
-                        Console.WriteLine("Please enter a valid phone number starting with 0 and max 10 digits.");
-                    }
-                }
-
-                // Ask user to choose a room
-                int selectedRoomID;
-                while (true)
-                {
-                    Console.Write("Choose a room (1, 2, or 3): ");
-                    if (int.TryParse(Console.ReadLine(), out selectedRoomID) && selectedRoomID >= 1 && selectedRoomID <= 3)
-                    {
-                        break;  // Exit the loop if a valid room is selected
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid room selection.");
-                    }
-                }
-
-                // Display the layout of the selected room
-                ReservationServices.DisplayRoomLayout(selectedRoomID);
-
-                // Display available seats
-                var availableSeats = ReservationServices.GetAvailableSeats(selectedRoomID);
-                Console.WriteLine("Available Seats:");
-                foreach (var seat in availableSeats)
-                {
-                    Console.WriteLine($"Seat ID: {seat.ID}, Room ID: {seat.ID}, Name: {seat.Name}, Rank: {seat.Rank}, Type: {seat.Type}");
-                }
-
-                // Ask user to choose seats
-                Console.WriteLine("Enter seat numbers to reserve (comma-separated):");
-                var input = Console.ReadLine() ?? "";
-                var seatNumbers = new List<int>();
-
-                foreach (var seatNumber in input.Split(','))
-                {
-                    if (int.TryParse(seatNumber.Trim(), out int num))
-                    {
-                        seatNumbers.Add(num);
-                    }
-                }
-
-                // Reserve seats
-                ReservationServices.ReserveSeats(selectedRoomID, seatNumbers, userAge, fullName, email, phoneNumber);
-
-                Console.ReadLine();
-            });
-
-            static bool IsValidFullName(string fullName)
-            {
-                return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
+                // Now you can use this information to reserve the seat or perform other actions
             }
-            static bool IsValidEmail(string email)
+            else
             {
-                return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|hotmail\.nl)$");
+                Console.WriteLine("No seat selected.");
             }
-
-            static bool IsValidPhoneNumber(string phoneNumber)
-            {
-                // Phone number must start with '0' and have a maximum length of 10 characters
-                return phoneNumber.StartsWith("0") && phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
-            }
+            Console.ReadLine();
+        });
 
 
             // ------ Medewerker menu met menu opties ------//
@@ -251,7 +143,7 @@ namespace Project_B
             });
             medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
             {
-                Console.WriteLine(Layout.selectSeatPerRoom().ToString());
+                Console.WriteLine(Layout.selectSeatPerRoom().ToString() ?? "");
                 Console.ReadLine();
             });
 
@@ -367,10 +259,9 @@ namespace Project_B
             {
                 List<RoomModel> roomList = new List<RoomModel>
                 {
-                    new RoomModel("Room 1", 150, 1),
-                    new RoomModel("Room 2", 300, 1),
-                    new RoomModel("Room 3", 500, 1)
-
+                    new RoomModel("Room 1", 168, 12),
+                    new RoomModel("Room 2", 342, 18),
+                    new RoomModel("Room 3", 600, 30)
                 };
                 List<MovieModel> maandagFilms = new List<MovieModel>
                 {
