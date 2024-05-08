@@ -101,6 +101,7 @@ namespace Models
             while (userInput != ConsoleKey.Q)
             {
                 Draw(cursor, printMenu);
+                Console.ForegroundColor = ConsoleColor.Black;
 
                 //Getting User choice
                 userInput = Console.ReadKey().Key;
