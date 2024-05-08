@@ -367,10 +367,9 @@ namespace Project_B
             {
                 List<RoomModel> roomList = new List<RoomModel>
                 {
-                    new RoomModel("Room 1", 150, 1),
-                    new RoomModel("Room 2", 300, 1),
-                    new RoomModel("Room 3", 500, 1)
-
+                    new RoomModel("Room 1", 168, 12),
+                    new RoomModel("Room 2", 342, 18),
+                    new RoomModel("Room 3", 600, 30)
                 };
                 List<MovieModel> maandagFilms = new List<MovieModel>
                 {
