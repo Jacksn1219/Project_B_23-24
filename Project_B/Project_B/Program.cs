@@ -4,6 +4,7 @@ using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using Models;
 using Project_B.services;
+using Serilog;
 
 namespace Project_B
 {
@@ -13,8 +14,12 @@ namespace Project_B
         public static void Main()
         {
             //start of app
+            //create logger
+            using var logger = new LoggerConfiguration()
+                .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .CreateLogger();
             //create database connection
-            DataAccess db = new SQliteDataAccess($"Data Source={DbPath}; Version = 3; New = True; Compress = True;");
+            DataAccess db = new SQliteDataAccess($"Data Source={DbPath}; Version = 3; New = True; Compress = True;", logger);
             //create factories to add DbItems to the db
             DirectorFactory df = new(db);
             ActorFactory af = new(db);

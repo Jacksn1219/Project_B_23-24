@@ -66,6 +66,15 @@ namespace DataAccessLibrary.logic
             );
         }
 
+        public bool ItemsToDb(List<SeatModel> items)
+        {
+            foreach (var item in items)
+            {
+                ItemToDb(item);
+            }
+            return true;
+        }
+
         public bool ItemToDb(SeatModel item)
         {
             if (!item.IsChanged) return true;

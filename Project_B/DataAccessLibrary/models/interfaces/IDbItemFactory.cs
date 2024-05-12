@@ -14,11 +14,13 @@ public interface IDbItemFactory<T>
     /// </summary>
     /// <returns>true if succesfull, else false</returns>
     public bool ItemToDb(T item);
+    public bool ItemsToDb(List<T> items);
     /// <summary>
     /// creates a new item in the db
     /// </summary>
     /// <param name="item"> the item to add te the db</param>
     /// <returns>true if succes, else false</returns>
+
     public bool CreateItem(T item);
     /// <summary>
     /// updates an existing item to the db

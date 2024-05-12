@@ -60,6 +60,15 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
             );
     }
 
+    public bool ItemsToDb(List<DirectorModel> items)
+    {
+        foreach (var item in items)
+        {
+            ItemToDb(item);
+        }
+        return true;
+    }
+
     public bool ItemToDb(DirectorModel item)
     {
         if (!item.IsChanged) return true;

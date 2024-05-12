@@ -3,14 +3,17 @@ using System.Data.Common;
 using System.Reflection;
 using DataAccessLibrary.models.interfaces;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccessLibrary
 {
     public abstract class DataAccess : ICRUD, IDisposable
     {
-        /// <summary>
-        /// true if the database connection is open.
-        /// </summary>
+        protected readonly Serilog.Core.Logger _logger;
+        public DataAccess(Serilog.Core.Logger logger)
+        {
+            _logger = logger;
+        }
 
         public void OpenConnection()
         {

@@ -1,5 +1,6 @@
 using DataAccessLibrary;
 
+
 namespace DataAccessLibrary.logic
 {
     public class RoomFactory : IDbItemFactory<RoomModel>
@@ -166,6 +167,15 @@ namespace DataAccessLibrary.logic
                     $"SELECT * FROM Seat WHERE Seat.RoomID = {item.ID}"
                 )
             );
+        }
+
+        public bool ItemsToDb(List<RoomModel> items)
+        {
+            foreach (var item in items)
+            {
+                ItemToDb(item);
+            }
+            return true;
         }
     }
 }

@@ -1,5 +1,7 @@
 using System.Data;
 using System.Data.SQLite;
+using Microsoft.Extensions.Logging;
+using Serilog.Core;
 
 namespace DataAccessLibrary
 {
@@ -14,9 +16,18 @@ namespace DataAccessLibrary
         /// the constructor. takes a connectionstring to create a SQLiteConnection
         /// </summary>
         /// <param name="connectionString">the connectionstring of the sqlite db</param>
-        public SQliteDataAccess(string connectionString)
+        public SQliteDataAccess(string connectionString, Logger logger) : base(logger)
         {
-            _dbAccess = new SQLiteConnection(connectionString);
+            try
+            {
+                _dbAccess = new SQLiteConnection(connectionString);
+            }
+            catch (Exception ex)
+            {
+                _logger.Fatal("failed to create a sqlite connection. is the connectionstring corupted?", ex);
+                throw;
+            }
+
         }
         /// <summary>
         /// dispose the SQLiteDataAccess.

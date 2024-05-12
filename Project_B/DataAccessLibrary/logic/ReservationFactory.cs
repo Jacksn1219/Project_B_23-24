@@ -236,6 +236,15 @@ namespace DataAccessLibrary.logic
                 }
             );
         }
+
+        public bool ItemsToDb(List<ReservationModel> items)
+        {
+            foreach (var item in items)
+            {
+                ItemToDb(item);
+            }
+            return true;
+        }
     }
 
 }

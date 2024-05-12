@@ -62,6 +62,15 @@ namespace DataAccessLibrary.logic
             );
         }
 
+        public bool ItemsToDb(List<ActorModel> items)
+        {
+            foreach (var item in items)
+            {
+                ItemToDb(item);
+            }
+            return true;
+        }
+
         public bool ItemToDb(ActorModel item)
         {
             if (!item.IsChanged) return true;

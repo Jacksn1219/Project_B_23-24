@@ -176,4 +176,13 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         }
 
     }
+
+    public bool ItemsToDb(List<TimeTableModel> items)
+    {
+        foreach (var item in items)
+        {
+            ItemToDb(item);
+        }
+        return true;
+    }
 }

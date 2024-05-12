@@ -278,4 +278,13 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             }
         );
     }
+
+    public bool ItemsToDb(List<MovieModel> items)
+    {
+        foreach (var item in items)
+        {
+            ItemToDb(item);
+        }
+        return true;
+    }
 }
