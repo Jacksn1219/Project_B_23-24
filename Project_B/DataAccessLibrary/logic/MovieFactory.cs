@@ -75,7 +75,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 {"$1", id}
             }
             ).First();
-        } catch { return null; }
+        }
+        catch { return null; }
     }
     /// <summary>
     /// Get the ActorModels related to a MovieModel from the ID
@@ -86,7 +87,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     {
         try
         {
-            List<int> list = _db.ReadData<int>(
+            // this wont work, because int does not have parameter ActorID. (use ActorModel)
+            int[] list = _db.ReadData<int>(
             @"SELECT ActorID FROM ActorInMovie
             WHERE MovieID=$1",
             new Dictionary<string, dynamic?>()

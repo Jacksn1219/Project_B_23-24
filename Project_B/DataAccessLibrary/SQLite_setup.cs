@@ -20,10 +20,11 @@ public class SQLite_setup
         CustomerFactory customerFactory = new CustomerFactory(Db);
         DirectorFactory directorFactory = new DirectorFactory(Db);
         MovieFactory movieFactory = new MovieFactory(Db, directorFactory, actorFactory);
-        SeatModelFactory seatModelFactory = new SeatModelFactory(Db);
+        SeatFactory seatModelFactory = new SeatFactory(Db);
         RoomFactory roomFactory = new RoomFactory(Db, seatModelFactory);
-        ReservationFactory reservationFactory = new ReservationFactory(Db, customerFactory, seatModelFactory);
         TimeTableFactory timeTableFactory = new TimeTableFactory(Db, movieFactory, roomFactory);
+        ReservationFactory reservationFactory = new ReservationFactory(Db, customerFactory, seatModelFactory, timeTableFactory);
+
 
         if (roomFactory.GetItemFromId(1) == null)
         {

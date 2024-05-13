@@ -9,8 +9,6 @@ namespace DataAccessLibrary.logic
         private readonly SeatFactory _sf;
         private readonly TimeTableFactory _tf;
         public ReservationFactory(DataAccess db, CustomerFactory cf, SeatFactory sf, TimeTableFactory tf)
-        private readonly SeatModelFactory _sf;
-        public ReservationFactory(DataAccess db, CustomerFactory cf, SeatModelFactory sf)
         {
             _db = db;
             _cf = cf;
@@ -99,7 +97,7 @@ namespace DataAccessLibrary.logic
         {
             bool customerChanged = item.Customer != null && item.Customer.IsChanged;
             bool SeatModelsChanged = false;
-            foreach (var SeatModel in item.ReservedSeatModels)
+            foreach (var SeatModel in item.ReservedSeats)
             {
                 if (SeatModel.IsChanged)
                 {
@@ -166,7 +164,7 @@ namespace DataAccessLibrary.logic
         }
         private bool RelatedItemsDependingOnItemToDb(ReservationModel item)
         {
-            foreach (SeatModel SeatModel in item.ReservedSeatModels)
+            foreach (SeatModel SeatModel in item.ReservedSeats)
             {
                 if (!SeatModel.Exists) _sf.ItemToDb(SeatModel);
                 _db.SaveData(

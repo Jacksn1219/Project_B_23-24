@@ -2,10 +2,10 @@ using DataAccessLibrary;
 
 namespace DataAccessLibrary.logic
 {
-    public class SeatModelFactory : IDbItemFactory<SeatModel>
+    public class SeatFactory : IDbItemFactory<SeatModel>
     {
         private readonly DataAccess _db;
-        public SeatModelFactory(DataAccess db)
+        public SeatFactory(DataAccess db)
         {
             _db = db;
             CreateTable();
@@ -36,7 +36,7 @@ namespace DataAccessLibrary.logic
         {
             foreach (SeatModel seat in item)
             {
-                if ( !CreateItem(seat) ) return false;
+                if (!CreateItem(seat)) return false;
             }
             return true;
         }

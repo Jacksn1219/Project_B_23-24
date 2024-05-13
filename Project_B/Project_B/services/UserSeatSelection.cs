@@ -6,20 +6,25 @@ using Project_B.services;
 
 namespace Project_B.services
 {
-    public static class UserSeatSelection
+    public class UserSeatSelection
     {
-        public static SeatModel? SelectSeatForUser()
+        private readonly SeatFactory _sf;
+        private readonly RoomFactory _rf;
+        public UserSeatSelection(SeatFactory sf, RoomFactory rf)
+        {
+            _sf = sf;
+            _rf = rf;
+        }
+        public SeatModel? SelectSeatForUser()
         {
             List<RoomModel> roomList = new List<RoomModel>();
-            SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
-            RoomFactory roomFactory = new RoomFactory(Universal.Db, seatModelFactory);
             try
             {
                 int i = 1;
                 RoomModel? room = null;
                 do
                 {
-                    room = roomFactory.GetItemFromId(i);
+                    room = _rf.GetItemFromId(i);
                     if (room != null) roomList.Add(room);
                     i++;
                 } while (room != null);
@@ -33,7 +38,7 @@ namespace Project_B.services
                 SeatModel? seat = new SeatModel();
                 while (seat != null)
                 {
-                    seat = seatModelFactory.GetItemFromId(i);
+                    seat = _sf.GetItemFromId(i);
                     if (seat != null) seatList.Add(seat);
                     i++;
                 }
@@ -53,9 +58,10 @@ namespace Project_B.services
             Models.InputMenu selectRoom = new Models.InputMenu("useLambda", null);
             foreach (RoomModel room in roomList)
             {
-                selectRoom.Add($"{room.Name}", (x) => {
+                selectRoom.Add($"{room.Name}", (x) =>
+                {
                     room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
-                    selectedOption = Layout.selectSeatModelForUser(room.SeatModels, room);
+                    selectedOption = RoomLayoutService.selectSeatModelForUser(room.Seats, room);
                 });
             }
             selectRoom.UseMenu(() => Universal.printAsTitle("Select your seat"));

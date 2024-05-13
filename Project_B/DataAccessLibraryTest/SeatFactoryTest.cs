@@ -8,7 +8,7 @@ namespace DataAccessLibraryTest
     [TestClass]
     public class SeatModelFactoryTest
     {
-        private readonly SeatModelFactory _sf;
+        private readonly SeatFactory _sf;
         public const string TestDbPath = "SeatModelTest.db";
         private SQliteDataAccess? _db;
         private RoomModel _room;

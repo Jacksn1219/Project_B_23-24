@@ -6,7 +6,7 @@ static class Universal
     /// <summary>
     /// Database connection
     /// </summary>
-    public static SQliteDataAccess Db { get { return new SQliteDataAccess($"Data Source={Universal.databasePath()}\\database.db; Version = 3; New = True; Compress = True;"); } }
+    public static SQliteDataAccess? Db { get; set; }
 
     public static void setupDatabase()
     {
