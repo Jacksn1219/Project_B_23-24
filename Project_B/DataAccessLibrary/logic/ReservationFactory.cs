@@ -9,6 +9,8 @@ namespace DataAccessLibrary.logic
         private readonly SeatFactory _sf;
         private readonly TimeTableFactory _tf;
         public ReservationFactory(DataAccess db, CustomerFactory cf, SeatFactory sf, TimeTableFactory tf)
+        private readonly SeatModelFactory _sf;
+        public ReservationFactory(DataAccess db, CustomerFactory cf, SeatModelFactory sf)
         {
             _db = db;
             _cf = cf;
@@ -96,16 +98,16 @@ namespace DataAccessLibrary.logic
         public bool ItemToDb(ReservationModel item)
         {
             bool customerChanged = item.Customer != null && item.Customer.IsChanged;
-            bool seatsChanged = false;
-            foreach (var seat in item.ReservedSeats)
+            bool SeatModelsChanged = false;
+            foreach (var SeatModel in item.ReservedSeatModels)
             {
-                if (seat.IsChanged)
+                if (SeatModel.IsChanged)
                 {
-                    seatsChanged = true;
+                    SeatModelsChanged = true;
                     break;
                 }
             }
-            if (!item.IsChanged && item.Exists && (customerChanged || seatsChanged))
+            if (!item.IsChanged && item.Exists && (customerChanged || SeatModelsChanged))
             {
                 bool result = RelatedItemsItemDependsOnToDb(item);
                 if (!result) return result;
@@ -164,17 +166,17 @@ namespace DataAccessLibrary.logic
         }
         private bool RelatedItemsDependingOnItemToDb(ReservationModel item)
         {
-            foreach (SeatModel seat in item.ReservedSeats)
+            foreach (SeatModel SeatModel in item.ReservedSeatModels)
             {
-                if (!seat.Exists) _sf.ItemToDb(seat);
+                if (!SeatModel.Exists) _sf.ItemToDb(SeatModel);
                 _db.SaveData(
-                    @"INSERT INTO ReservedSeat(
-                        SeatID,
+                    @"INSERT INTO ReservedSeatModel(
+                        SeatModelID,
                         ReservationID
                     )
                     VALUES($1,$2)",
                     new Dictionary<string, dynamic?>(){
-                        {"$1", seat.ID},
+                        {"$1", SeatModel.ID},
                         {"$2", item.ID}
                     }
                 );

@@ -6,13 +6,13 @@ using Serilog;
 namespace DataAccessLibraryTest
 {
     [TestClass]
-    public class SeatFactoryTest
+    public class SeatModelFactoryTest
     {
-        private readonly SeatFactory _sf;
-        public const string TestDbPath = "seatTest.db";
-        private DataAccess? _db;
+        private readonly SeatModelFactory _sf;
+        public const string TestDbPath = "SeatModelTest.db";
+        private SQliteDataAccess? _db;
         private RoomModel _room;
-        public SeatFactoryTest()
+        public SeatModelFactoryTest()
         {
             try
             {
@@ -36,7 +36,7 @@ namespace DataAccessLibraryTest
             );
         }
         [TestMethod]
-        public void AddSeatToDBTest()
+        public void AddSeatModelToDBTest()
         {
             SeatModel zetel = new SeatModel
             (
@@ -46,7 +46,7 @@ namespace DataAccessLibraryTest
             Assert.IsTrue(zetel.Exists);
         }
         [TestMethod]
-        public void GetSeatFromDbTest()
+        public void GetSeatModelFromDbTest()
         {
             SeatModel zetel = new(
                 "zetel 2", "ok", "zetel", _room
@@ -56,7 +56,7 @@ namespace DataAccessLibraryTest
             Assert.AreEqual(zetel.Name, newZetel.Name);
         }
         [TestMethod]
-        public void UpdateSeatToDBTest()
+        public void UpdateSeatModelToDBTest()
         {
             SeatModel zetel = new(
                 "zetel 3", "spelling error", "zetel", _room

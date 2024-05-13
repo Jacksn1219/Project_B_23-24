@@ -12,6 +12,10 @@ namespace DataAccessLibrary.models
         public MovieModel? Movie;
         internal int? RoomID { get; set; }
         public RoomModel? Room;
+        public int? MovieID { get; set; }
+        public readonly MovieModel? Movie;
+        public int? RoomID { get; set; }
+        public readonly RoomModel? Room;
         private string _startDate;
         private string _endDate;
         public DateTime DateTimeStartDate
@@ -49,7 +53,7 @@ namespace DataAccessLibrary.models
         /// <summary>
         /// parameterless ctor to please the jsonserialiser gods
         /// </summary>
-        public TimeTableModel()
+        public TimeTableModel(int v)
         {
 
         }
@@ -63,7 +67,7 @@ namespace DataAccessLibrary.models
             StartDate = startDate.ToString(CultureInfo.InvariantCulture);
             EndDate = endDate.ToString(CultureInfo.InvariantCulture);
         }
-        internal TimeTableModel(int roomId, int movieId, DateTime startDate, DateTime endDate)
+        public TimeTableModel(int roomId, int movieId, DateTime startDate, DateTime endDate)
         {
             RoomID = roomId;
             MovieID = movieId;

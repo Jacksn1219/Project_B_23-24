@@ -44,12 +44,15 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
 
     public DirectorModel GetItemFromId(int id, int deepcopyLv = 0)
     {
-        return _db.ReadData<DirectorModel>(
+        try
+        {
+            return _db.ReadData<DirectorModel>(
             @"SELECT * FROM Director
             WHERE ID = $1",
             new Dictionary<string, dynamic?>(){
                 {"$1", id}
             }).First();
+        } catch (Exception) { return null; }
     }
 
     public DirectorModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)

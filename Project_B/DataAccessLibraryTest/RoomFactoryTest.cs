@@ -42,9 +42,9 @@ namespace DataAccessLibraryTest
             RoomModel room = new(
                 "roomier room", 11, 4
             );
-            room.AddSeats(new SeatModel[]{
-                new SeatModel("myseat1", "1", "cool", room),
-                new SeatModel("myseat2", "2", "not cool", room)
+            room.AddSeatModels(new SeatModel[]{
+                new SeatModel("mySeatModel1", "1", "cool", room),
+                new SeatModel("mySeatModel2", "2", "not cool", room)
             });
             Assert.IsTrue(_rf.ItemToDb(room));
             Assert.IsTrue(room.Exists);
@@ -55,12 +55,12 @@ namespace DataAccessLibraryTest
         {
             RoomModel room = new("fakeroom", 1, 1);
             Assert.IsFalse(
-                room.AddSeats
+                room.AddSeatModels
                 (
                     new SeatModel[]
                     {
-                            new SeatModel("myseat1", "1", "cool", room),
-                            new SeatModel("myseat2", "2", "not cool", room)
+                            new SeatModel("mySeatModel1", "1", "cool", room),
+                            new SeatModel("mySeatModel2", "2", "not cool", room)
                     }
                 )
             );
@@ -74,7 +74,7 @@ namespace DataAccessLibraryTest
             Assert.AreEqual(room.Name, newRoom.Name);
         }
         [TestMethod]
-        public void TestUpdateRoomNoSeats()
+        public void TestUpdateRoomNoSeatModels()
         {
             RoomModel room = new("what's rooming on", 3, 1);
             Assert.IsTrue(_rf.ItemToDb(room));
@@ -84,10 +84,10 @@ namespace DataAccessLibraryTest
             Assert.AreEqual(room.Capacity, newRoom.Capacity);
         }
         [TestMethod]
-        public void TestUpdateRoomWithSeats()
+        public void TestUpdateRoomWithSeatModels()
         {
             RoomModel room = new RoomModel("lastroomtest", 3, 1);
-            room.AddSeats(
+            room.AddSeatModels(
                 new SeatModel[]{
                     new SeatModel("1", "1", "1"),
                     new SeatModel("2", "2", "2"),

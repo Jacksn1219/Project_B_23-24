@@ -2,20 +2,20 @@ using DataAccessLibrary;
 
 namespace DataAccessLibrary.logic
 {
-    public class SeatFactory : IDbItemFactory<SeatModel>
+    public class SeatModelFactory : IDbItemFactory<SeatModel>
     {
         private readonly DataAccess _db;
-        public SeatFactory(DataAccess db)
+        public SeatModelFactory(DataAccess db)
         {
             _db = db;
             CreateTable();
         }
         public bool CreateItem(SeatModel item)
         {
-            if (item.ID != null) throw new InvalidDataException("the seat is already in the db.");
+            if (item.ID != null) throw new InvalidDataException("the SeatModel is already in the db.");
             if (!item.IsChanged) return true;
             item.ID = _db.CreateData(
-                @"INSERT INTO Seat(
+                @"INSERT INTO SeatModel(
                     Name,
                     Rank,
                     Type,
@@ -32,11 +32,19 @@ namespace DataAccessLibrary.logic
             if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
+        public bool CreateItem(SeatModel[] item)
+        {
+            foreach (SeatModel seat in item)
+            {
+                if ( !CreateItem(seat) ) return false;
+            }
+            return true;
+        }
 
         public void CreateTable()
         {
             _db.SaveData(
-                @"CREATE TABLE IF NOT EXISTS Seat(
+                @"CREATE TABLE IF NOT EXISTS SeatModel(
                     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
                     RoomID INTEGER NOT NULL,
                     Name TEXT NOT NULL,
@@ -50,7 +58,7 @@ namespace DataAccessLibrary.logic
         public SeatModel GetItemFromId(int id, int deepcopyLv = 0)
         {
             return _db.ReadData<SeatModel>(
-                @"SELECT * FROM Seat
+                @"SELECT * FROM SeatModel
                 WHERE ID = $1",
                 new Dictionary<string, dynamic?>(){
                     {"$1", id},
@@ -84,10 +92,10 @@ namespace DataAccessLibrary.logic
 
         public bool UpdateItem(SeatModel item)
         {
-            if (item.ID == null) throw new InvalidDataException("the seat has no ID therefore it cannot be updated.");
+            if (item.ID == null) throw new InvalidDataException("the SeatModel has no ID therefore it cannot be updated.");
             if (!item.IsChanged) return true;
             bool toReturn = _db.SaveData(
-                @"UPDATE Seat
+                @"UPDATE SeatModel
                 SET RoomID = $1,
                     Name = $2,
                     Type = $3,

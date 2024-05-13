@@ -45,13 +45,16 @@ namespace DataAccessLibrary.logic
 
         public ActorModel GetItemFromId(int id, int deepcopyLv = 0)
         {
-            return _db.ReadData<ActorModel>(
+            try
+            {
+                return _db.ReadData<ActorModel>(
                 @"SELECT * FROM Actor
                 WHERE ID = $1",
                 new Dictionary<string, dynamic?>(){
                     {"$1", id}
                 }
             ).First();
+            }catch (Exception) { return null; }
         }
 
         public ActorModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
