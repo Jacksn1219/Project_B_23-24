@@ -255,7 +255,9 @@ namespace Project_B
                 }
             });
 
-            menu.Add("Tijdschema Ma 06 Mei tot Zo 13 Mei", (x) =>
+            DateTime beginDate = new DateTime(2024, 5, 20, 10, 00, 00);
+
+            menu.Add("Tijdschema Ma 20 Mei tot Zo 26 Mei", (x) =>
             {
                 List<RoomModel> roomList = new List<RoomModel>
                 {
