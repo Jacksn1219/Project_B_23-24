@@ -69,7 +69,7 @@ class RoomLayoutService : LayoutModel
         SeatModelSelectionMenu.UseMenu();
         return selectedOption;
     }
-    public static void editLayout()
+    public void editLayout()
     {
         InputMenu SeatModelSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth ?? 0);
         //string SeatModelName;
@@ -197,6 +197,57 @@ class RoomLayoutService : LayoutModel
     {
         editLayout();
     }
+
+    public static void editLayoutPerRoom(RoomFactory rf, SeatFactory sf)
+    {
+        List<RoomModel> roomList = new List<RoomModel>();
+        try
+        {
+            int i = 1;
+            RoomModel? room = null;
+            do
+            {
+                room = rf.GetItemFromId(i);
+                if (room != null) roomList.Add(room);
+                i++;
+            } while (room != null);
+        }
+        catch { }
+
+        List<SeatModel> seatList = new List<SeatModel>();
+        try
+        {
+            int i = 1;
+            SeatModel? seat = new SeatModel();
+            while (seat != null)
+            {
+                seat = sf.GetItemFromId(i, 1);
+                if (seat != null) seatList.Add(seat);
+                i++;
+            }
+        }
+        catch { }
+        List<List<SeatModel>> layouts = new List<List<SeatModel>>();
+        foreach (SeatModel seat in seatList)
+        {
+            if (seat == null) continue;
+            else if (seat.RoomID > layouts.Count) layouts.Add(new List<SeatModel> { seat });
+            else layouts[(seat.RoomID ?? 0) - 1].Add(seat);
+        }
+
+        InputMenu selectRoom = new InputMenu("useLambda");
+        foreach (RoomModel room in roomList)
+        {
+            selectRoom.Add($"{room.Name}", (x) => {
+                room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
+                RoomLayoutService rls = new RoomLayoutService(room, room.Seats);
+                rls.editLayout();
+                rf.ItemToDb(room);
+            });
+        }
+        selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
+    }
+
     public static void MakeNewLayout()
     {
         //Getting the correct room ID

@@ -53,7 +53,7 @@ namespace Project_B
                     {"add movie", (x) => {createItems.CreateNewMovie(); Console.ReadLine();}},
                     {"edit movie", (x) => {createItems.ChangeMovie(); Console.ReadLine();}},
                     {"add movie to timetable", (x) => {/*not yet*/}},
-                    {"change room layout", (x) => {RoomLayoutService.editLayout();/*is er al in layout*/}}
+                    {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);;/*is er al in layout*/}}
                 }
             );
 
