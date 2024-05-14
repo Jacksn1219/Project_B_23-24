@@ -287,7 +287,7 @@ namespace Project_B
                     catch { }
 
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
-                    _mf.AddRelatedActors(movieToEdit, Universal.Db);
+                    _mf.AddRelatedActors(movieToEdit, db);
                     movieToEdit.Actors.Add(_af.GetItemFromId(1));
 
                     // Menu to chose director

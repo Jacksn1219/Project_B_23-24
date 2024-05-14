@@ -16,7 +16,7 @@ namespace Project_B
             using var logger = new LoggerConfiguration()
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
-            using var db = new SQliteDataAccess($"Data Source={Universal.databasePath()}\\database.db; Version = 3; New = True; Compress = True;", logger);
+            using var db = new SQliteDataAccess($"Data Source={Universal.datafolderPath}\\database.db; Version = 3; New = True; Compress = True;", logger);
             //set up factories
             ActorFactory af = new(db);
             DirectorFactory df = new(db);
@@ -36,6 +36,7 @@ namespace Project_B
             StartupMenu.UseMenu(() =>
             {
                 //loaddata
+                SQLite_setup.SetupProjectB(rf, Universal.datafolderPath);
             });
             //----- main screen -----//
             MainMenu.UseMenu(
@@ -52,13 +53,19 @@ namespace Project_B
                     {"add movie", (x) => {createItems.CreateNewMovie(); Console.ReadLine();}},
                     {"edit movie", (x) => {createItems.ChangeMovie(); Console.ReadLine();}},
                     {"add movie to timetable", (x) => {/*not yet*/}},
-                    {"change room layout", (x) => {/*is er al in layout*/}}
+                    {"change room layout", (x) => {RoomLayoutService.editLayout();/*is er al in layout*/}}
                 }
             );
 
         }
     }
 }
+
+/*
+ * SeatPrices.json naar Datasource
+ * 
+*/
+
 // ------ Klant menu met menu opties ------//
 //             InputMenu klantMenu = new InputMenu("useLambda");
 

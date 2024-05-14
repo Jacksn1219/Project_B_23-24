@@ -5,7 +5,7 @@ namespace Project_B.services
 {
     public static class SeatPriceCalculator
     {
-        private const string _filePath = "SeatPrices.json";
+        private static string _filePath { get { return Universal.datafolderPath + "\\SeatPrices.json"; } }
         private static SeatPricesModel _prices;
         static SeatPriceCalculator()
         {

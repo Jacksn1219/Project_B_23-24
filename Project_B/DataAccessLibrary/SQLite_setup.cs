@@ -8,25 +8,14 @@ public class SQLite_setup
     /// Standard setup data and database tables needed for projectB to run (Tables, 3 x Room + Seats)
     /// </summary>
     /// <param name="databasePath"></param>
-    public static void SetupProjectB(SQliteDataAccess Db, string JSONPath)
+    public static void SetupProjectB(RoomFactory rf, string JSONPath)
     {
         //----- Setting up JSON file for password -----//
         string fileName = "Medewerker.json";
         string jsonString = JsonSerializer.Serialize(new KeyValuePair<string, string>("PassWord", "w817"));
         File.WriteAllText(JSONPath + "\\" + fileName, jsonString);
 
-        //----- Creating factories && Creating Tables -----//
-        ActorFactory actorFactory = new ActorFactory(Db);
-        CustomerFactory customerFactory = new CustomerFactory(Db);
-        DirectorFactory directorFactory = new DirectorFactory(Db);
-        MovieFactory movieFactory = new MovieFactory(Db, directorFactory, actorFactory);
-        SeatFactory seatModelFactory = new SeatFactory(Db);
-        RoomFactory roomFactory = new RoomFactory(Db, seatModelFactory);
-        TimeTableFactory timeTableFactory = new TimeTableFactory(Db, movieFactory, roomFactory);
-        ReservationFactory reservationFactory = new ReservationFactory(Db, customerFactory, seatModelFactory, timeTableFactory);
-
-
-        if (roomFactory.GetItemFromId(1) == null)
+        if (rf.GetItemFromId(1) == null)
         {
             //Row widths Layouts
             List<int> RowWidthsLayouts = new List<int> { 12, 18, 30 };
@@ -1165,9 +1154,9 @@ public class SQLite_setup
                 Room3.AddSeatModels(layout3);
 
                 //----- Saving to Database -----//
-                roomFactory.CreateItem(Room1);
-                roomFactory.CreateItem(Room2);
-                roomFactory.CreateItem(Room3);
+                rf.CreateItem(Room1);
+                rf.CreateItem(Room2);
+                rf.CreateItem(Room3);
 
                 //Console.WriteLine("\n--- 100% ---\nLayout database setup!");
             }

@@ -10,7 +10,13 @@ namespace Models
         bool? exit;
         List<InputMenuOption> menuoptions;
         int row;
-
+        
+        /// <summary>
+        /// Title (useLambda for use of displayAsTitle()) | exit (null = back after choice, false = Back, true = Exit)
+        /// </summary>
+        /// <param name="introduction"></param>
+        /// <param name="exit"></param>
+        /// <param name="row"></param>
         public InputMenu(string introduction = "", bool? exit = false, int row = 1)
         {
             this.introduction = introduction;

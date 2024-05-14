@@ -141,7 +141,7 @@ namespace Project_B.menu_s
         {
             if (IsLogedIn) return IsLogedIn;
             string fileName = "Medewerker.json";
-            JObject? jsonData = (JObject?)JsonConvert.DeserializeObject(File.ReadAllText(Universal.databasePath() + "\\" + fileName));
+            JObject? jsonData = (JObject?)JsonConvert.DeserializeObject(File.ReadAllText(Universal.datafolderPath + "\\" + fileName));
             string passWord;
             if (jsonData != null)
             {

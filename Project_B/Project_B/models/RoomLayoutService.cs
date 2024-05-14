@@ -69,7 +69,7 @@ class RoomLayoutService : LayoutModel
         SeatModelSelectionMenu.UseMenu();
         return selectedOption;
     }
-    public void editLayout()
+    public static void editLayout()
     {
         InputMenu SeatModelSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth ?? 0);
         //string SeatModelName;

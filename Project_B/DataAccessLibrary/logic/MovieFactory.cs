@@ -83,7 +83,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// </summary>
     /// <param name="id">the ID of the Movie</param>
     /// <returns>the first movie returned from the query</returns>
-    public bool AddRelatedActors(MovieModel movieItem, SQliteDataAccess Db)
+    public bool AddRelatedActors(MovieModel movieItem)
     {
         try
         {
@@ -96,7 +96,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 {"$1", movieItem.ID}
             });
 
-            ActorFactory actorFactory = new ActorFactory(Db);
+            ActorFactory actorFactory = new ActorFactory(_db);
             List<ActorModel> actorList = new List<ActorModel>();
             foreach (int actorid in list)
             {
