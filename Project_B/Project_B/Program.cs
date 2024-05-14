@@ -398,23 +398,25 @@ namespace Project_B
                     new MovieModel("Cars 2", "Racecar Lightning McQueen en Mater besluiten mee te doen aan de World Grand Prix. Mater raakt onderweg echter betrokken bij spionage.", 7, 120, "action, comedy, and spy thriller")
                 };
 
+                string myDate = "2024-05-20";
+                
                 List<TimeTableModel> maandagtimeTableList = new List<TimeTableModel>
                 {
-                    new TimeTableModel(1, 1, DateTime.ParseExact("2024-05-07 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(1, 2, DateTime.ParseExact("2024-05-07 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(1, 3, DateTime.ParseExact("2024-05-07 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(1, 4, DateTime.ParseExact("2024-05-07 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(1, 5, DateTime.ParseExact("2024-05-07 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(2, 6, DateTime.ParseExact("2024-05-07 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(2, 7, DateTime.ParseExact("2024-05-07 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(2, 8, DateTime.ParseExact("2024-05-07 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(2, 9, DateTime.ParseExact("2024-05-07 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(2, 10, DateTime.ParseExact("2024-05-07 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(3, 11, DateTime.ParseExact("2024-05-07 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(3, 12, DateTime.ParseExact("2024-05-07 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(3, 13, DateTime.ParseExact("2024-05-07 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(3, 14, DateTime.ParseExact("2024-05-07 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
-                    new TimeTableModel(3, 15, DateTime.ParseExact("2024-05-07 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact("2024-05-07 21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
+                    new TimeTableModel(1, 1, DateTime.ParseExact(myDate +" 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 2, DateTime.ParseExact(myDate +" 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 3, DateTime.ParseExact(myDate +" 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 4, DateTime.ParseExact(myDate +" 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(1, 5, DateTime.ParseExact(myDate +" 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 6, DateTime.ParseExact(myDate +" 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 7, DateTime.ParseExact(myDate +" 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 8, DateTime.ParseExact(myDate +" 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 9, DateTime.ParseExact(myDate +" 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(2, 10, DateTime.ParseExact(myDate +" 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 11, DateTime.ParseExact(myDate +" 10:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "12:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 12, DateTime.ParseExact(myDate +" 12:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "15:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 13, DateTime.ParseExact(myDate +" 15:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "17:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 14, DateTime.ParseExact(myDate +" 17:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "19:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                    new TimeTableModel(3, 15, DateTime.ParseExact(myDate +" 19:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), DateTime.ParseExact(myDate + "21:30:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture))
                 };
 
                 List<TimeTableModel> dinsdagTimeTableModelList = new List<TimeTableModel>
@@ -532,6 +534,7 @@ namespace Project_B
                 };
 
                 InputMenu selectDay = new InputMenu("| Selecteer een dag |");
+                //hier maken code om de dagen weg te halen die al zijn geweest in een week. bijvoorbeeld het is dinsdag en dan is maandag niet meer beschikbaar.
                 selectDay.Add($"Maandag", (x) =>
                 {
                     Console.Clear();
