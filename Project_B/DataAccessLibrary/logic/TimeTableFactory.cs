@@ -185,4 +185,17 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         }
         return true;
     }
+    public SeatModel[] GetReservedSeats(TimeTableModel tt, RoomModel room)
+    {
+        return _db.ReadData<SeatModel>(@"SELECT Seat.ID, Seat.Name, Seat.Type, Seat.Rank FROM Seat
+            INNER JOIN ReservedSeat ON ReservedSeat.SeatID = Seat.ID
+            INNER JOIN Reservation ON Reservation.ID = ReservedSeat.ReservationID
+            INNER JOIN TimeTable ON Reservation.TimeTableID = TimeTable.ID
+            INNER JOIN Room ON Room.ID = Seat.RoomID
+            WHERE Room.ID = $1, Reservation.TimeTableID = $2",
+            new Dictionary<string, dynamic?>(){
+                {"$1", room.ID},
+                {"$2", tt.ID}
+            });
+    }
 }

@@ -39,7 +39,7 @@ namespace Project_B.services
                     Console.WriteLine("Please enter a valid phone number starting with 0 and max 10 digits.");
                 }
             }
-
+            // todo add age check and ask for mail subscription
             return new CustomerModel(fullName, 0, email, phoneNumber, false);
         }
 

@@ -68,6 +68,6 @@ public class RoomService
         // }
         // seatSelectionMenu.Add("return", (x) => selectedOption = null);
         // seatSelectionMenu.UseMenu(() => Universal.printAsTitle(title));
-        return selectedOption;
+        //return selectedOption;
     }
 }

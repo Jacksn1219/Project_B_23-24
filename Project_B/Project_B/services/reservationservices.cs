@@ -31,7 +31,7 @@ namespace Project_B.services
             try
             {
                 // Fetch pegiAge of the movie associated with the selected room
-                int pegiAge = GetMoviePegiAgeForRoom(0);
+                int pegiAge = 0;//GetMoviePegiAgeForRoom();
 
                 // Check age requirement
                 if (userAge < pegiAge)
@@ -49,7 +49,7 @@ namespace Project_B.services
 
                 foreach (var seatNumber in seatNumbers)
                 {
-                    ReserveSeat(seatNumber, fullName, email, phoneNumber); // Corrected the placement of this method call
+                    //ReserveSeat(seatNumber, fullName, email, phoneNumber); // Corrected the placement of this method call
                     Console.WriteLine("Seat reserved successfully!");
                 }
             }

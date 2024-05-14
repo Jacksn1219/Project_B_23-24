@@ -74,7 +74,8 @@ namespace Models
                             "L" => ConsoleColor.Magenta,
                             _ => ConsoleColor.Gray
                         };
-                    } catch { }
+                    }
+                    catch { }
                     try { if (this.menuoptions[i].isTaken == true) Console.ForegroundColor = ConsoleColor.DarkGray; } catch { }
                     Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
@@ -133,10 +134,11 @@ namespace Models
                         if (this.exit == true) Environment.Exit(0);
                         return;
                     }
-                    else {
+                    else
+                    {
                         this.menuoptions[cursor].Act("");
                         Console.Clear();
-                        if (this.exit == null) return;
+                        if (this.exit == true) return;
                     }
                 }
             }

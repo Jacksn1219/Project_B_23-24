@@ -21,32 +21,38 @@ public class ReservationService
     //add methodes to get and add reservations
     public void CreateReservation()
     {
+        //select timetable day
         string? day = GetWeekDay();
         if (day == null) return;
-        //select timetable
 
+        //select timetable
         TimeTableModel? tt = null;
         while (tt == null)
         {
             tt = SelectTimeTableInDay(day);
         }
-        //select seats
+        //get reserved seats,
 
+        //get seats
+
+        //select seats to reserve
+        //ook in layout -> select Seatperroom of selectseatmodel
 
         //fill in user data
-        var user = UserInfoInput.GetUserInfo()
+        var user = UserInfoInput.GetUserInfo();
         //print number
 
     }
-    public void GetReservationByNumber(int id)
+    public void GetReservationByNumber()
     {
+        int id = 0;
         ReservationModel res = _rf.GetItemFromId(id);
         System.Console.WriteLine(res.ToString());
     }
     public string? GetWeekDay()
     {
         string? toReturn = null;
-        InputMenu selectDay = new InputMenu("| Selecteer een dag |");
+        InputMenu selectDay = new InputMenu("| Selecteer een dag |", true);
         selectDay.Add($"Maandag", (x) =>
         {
             toReturn = "Maandag";
@@ -65,18 +71,22 @@ public class ReservationService
         selectDay.Add($"Donderdag", (x) =>
         {
             toReturn = "Donderdag";
+            Console.ReadLine();
         });
         selectDay.Add($"Vrijdag", (x) =>
         {
             toReturn = "Vrijdag";
+            Console.ReadLine();
         });
         selectDay.Add($"Zaterdag", (x) =>
         {
             toReturn = "Zaterdag";
+            Console.ReadLine();
         });
         selectDay.Add($"Zondag", (x) =>
         {
             toReturn = "Zondag";
+            Console.ReadLine();
         });
         selectDay.UseMenu();
         return toReturn;
@@ -86,10 +96,11 @@ public class ReservationService
     {
         TimeTableModel? mov = null;
         InputMenu movieSelecter = new InputMenu("| Selecteer een film |");
-        TimeTableModel[] timetables = new TimeTableModel[0]; //_tf.GetItems(Filter days)
+        TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
         foreach (TimeTableModel timeTable in timetables)
         {
             Console.Clear();
+            //get movies if missing
             if (timeTable.Movie == null)
             {
                 _tf.getRelatedItemsFromDb(timeTable);
