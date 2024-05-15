@@ -58,13 +58,17 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 
     public TimeTableModel GetItemFromId(int id, int deepcopyLv = 0)
     {
-        return _db.ReadData<TimeTableModel>(
-            @"SELECT * FROM TimeTable
-            WHERE ID = $1",
-            new Dictionary<string, dynamic?>(){
-                {"$1", id},
-            }
+        try
+        {
+            return _db.ReadData<TimeTableModel>(
+        @"SELECT * FROM Room
+        WHERE ID = $1",
+        new Dictionary<string, dynamic?>(){
+            {"$1", id},
+        }
         ).First();
+        }
+        catch { return null; }
     }
 
     public bool ItemToDb(TimeTableModel item)
