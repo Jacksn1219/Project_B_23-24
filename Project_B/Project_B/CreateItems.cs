@@ -63,8 +63,8 @@ namespace Project_B
 
             List<DirectorModel> directorList = new List<DirectorModel>();
             // Test directors
-            //directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-            //directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
+            directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+            directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
             
             // Get directors from database
             try
@@ -93,9 +93,11 @@ namespace Project_B
 
             List<ActorModel> actorList = new List<ActorModel>();
             // Test actors
-            //actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-            //actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
-            
+            actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+            actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+            actorFactory.CreateItem(new ActorModel("Levi", "Something", 33));
+            actorFactory.CreateItem(new ActorModel("Someone", "Something else", 46));
+
             // Get directors from database
             try
             {
@@ -229,8 +231,8 @@ namespace Project_B
 
                 List<DirectorModel> directorList = new List<DirectorModel>();
                 // Test directors
-                directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-                directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
+                //directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+                //directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
                 // Get directors from database
                 try
                 {
@@ -269,8 +271,8 @@ namespace Project_B
 
                     List<ActorModel> actorList = new List<ActorModel>();
                     // Test actors
-                    actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-                    actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+                    //actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+                    //actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
                     // Get directors from database
                     try
                     {
@@ -286,8 +288,8 @@ namespace Project_B
                     catch { }
 
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
-                    movieFactory.AddRelatedActors(movieToEdit, Universal.Db);
-                    movieToEdit.Actors.Add(actorFactory.GetItemFromId(1));
+                    //movieFactory.AddRelatedActors(movieToEdit, Universal.Db);
+                    //movieToEdit.Actors.Add(actorFactory.GetItemFromId(1));
 
                     // Menu to chose director
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
@@ -323,8 +325,8 @@ namespace Project_B
 
                     List<ActorModel> actorList = new List<ActorModel>();
                     // Test actors
-                    actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-                    actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+                    //actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+                    //actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
                     // Get directors from database
                     try
                     {

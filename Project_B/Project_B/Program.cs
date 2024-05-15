@@ -146,6 +146,9 @@ namespace Project_B
                 Console.WriteLine(Layout.selectSeatPerRoom().ToString() ?? "");
                 Console.ReadLine();
             });
+            medewerkerMenu.Add(Universal.centerToScreen("Show reserved seats"), (x) => {
+                Universal.showReservedSeats();
+            });
 
 
             medewerkerMenu.Add("\n" + Universal.centerToScreen("Test SeeActors"), (x) => // Als klant wil ik de acteurs van een film bekijken
