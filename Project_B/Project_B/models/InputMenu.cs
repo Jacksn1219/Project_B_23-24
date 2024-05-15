@@ -44,7 +44,8 @@ namespace Models
         public void Remove() => this.menuoptions.Remove(this.menuoptions[this.menuoptions.Count - 1]);
         public void Remove(string optionName)
         {
-            this.menuoptions.Remove(this.menuoptions[this.menuoptions.FindIndex(menuoption => menuoption.Name == optionName)]);
+            try { this.menuoptions.Remove(this.menuoptions[this.menuoptions.FindIndex(menuoption => menuoption.Name == optionName)]); }
+            catch { }
         }
 
         public void Edit(int ID, string newName) => this.menuoptions[this.menuoptions.FindIndex((x) => x.ID == ID)].Name = newName;

@@ -147,8 +147,6 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (item.ID != null) throw new InvalidOperationException("this movie already exists in the db");
             if (!item.IsChanged) return true;
             _db.OpenConnection();
-            bool result = RelatedItemsToDb(item);
-            if (!result) return result;
             item.ID = _db.CreateData(
                 @"INSERT INTO Movie(
                     Name,
@@ -168,6 +166,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {"$6", item.DurationInMin}
                 }
             );
+            bool result = RelatedItemsToDb(item);
+            if (!result) return result;
             if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
@@ -190,8 +190,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (item.ID == null) throw new InvalidOperationException("cannot update a movie without an ID.");
             if (!item.IsChanged) return true;
             _db.OpenConnection();
-            bool toReturn = RelatedItemsToDb(item)
-                && _db.SaveData(
+            bool toReturn = _db.SaveData(
                 @"UPDATE Movie
                 SET Name = $1,
                     DirectorID = $2,
@@ -209,7 +208,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {"$6", item.DurationInMin},
                     {"$7", item.ID}
                 }
-            );
+            ) && RelatedItemsToDb(item);
             if (toReturn) item.IsChanged = false;
             return toReturn;
         }
