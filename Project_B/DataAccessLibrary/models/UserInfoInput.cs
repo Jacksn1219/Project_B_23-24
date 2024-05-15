@@ -4,7 +4,7 @@ namespace Project_B.services
 {
     public static class UserInfoInput
     {
-        public static (string fullName, string email, string phoneNumber) GetUserInfo()
+        public static (string fullName, string email, string phoneNumber, string userinput) GetUserInfo()
         {
             string fullName;
             while (true)
@@ -39,7 +39,14 @@ namespace Project_B.services
                 }
             }
 
-            return (fullName, email, phoneNumber);
+            Console.WriteLine("In case of allergies or special needs that the cinema needs to know about");
+            Console.WriteLine("Please write them here:");
+            string userinput = Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("Thank you, YourEyes will do their utmost best to accompany your needs. Here is what you entered: ");
+            Console.WriteLine(userinput);
+
+            return (fullName, email, phoneNumber, userinput);
         }
 
         private static bool IsValidFullName(string fullName)

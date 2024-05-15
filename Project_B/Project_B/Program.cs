@@ -92,7 +92,7 @@ namespace Project_B
                 Console.WriteLine("Please provide your information.");
 
                 // Get user information using the method from the UserInfoInput class
-                (string fullName, string email, string phoneNumber) = UserInfoInput.GetUserInfo();
+                (string fullName, string email, string phoneNumber, string userinfo) = UserInfoInput.GetUserInfo();
 
                 // Now you can use this information to reserve the seat or perform other actions
             }
@@ -140,11 +140,6 @@ namespace Project_B
                     CreateItems.ChangeMovie();
                 });
                 createMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
-            });
-            medewerkerMenu.Add("\n" + Universal.centerToScreen("Select a seat"), (x) =>
-            {
-                Console.WriteLine(Layout.selectSeatPerRoom().ToString() ?? "");
-                Console.ReadLine();
             });
 
 
