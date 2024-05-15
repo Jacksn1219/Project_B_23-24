@@ -70,7 +70,7 @@ namespace DataAccessLibrary.logic
         {
             if (deepcopyLv < 0) return new SeatModel[0];
             return _db.ReadData<SeatModel>(
-                $"SELECT * FROM Seat LIMIT {count} OFFSET {count * page - count}"
+                $"SELECT * FROM SeatModel LIMIT {count} OFFSET {count * page - count}"
             );
         }
 

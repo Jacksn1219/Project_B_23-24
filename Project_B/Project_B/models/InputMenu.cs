@@ -131,6 +131,13 @@ namespace Models
                     cursor++;
                     while (cursor < this.menuoptions.Count && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].isTaken == true)) cursor++;
                 }
+                else if (userInput == ConsoleKey.Escape)
+                {
+                    Console.Clear();
+                    Console.WriteLine("\x1b[3J");
+                    if (this.exit == true) Environment.Exit(0);
+                    return;
+                }
                 else if (userInput == ConsoleKey.Enter)
                 {
                     Console.Clear();
@@ -144,7 +151,7 @@ namespace Models
                     {
                         this.menuoptions[cursor].Act("");
                         Console.Clear();
-                        if (this.exit == true) return;
+                        if (this.exit == null) return;
                     }
                 }
             }

@@ -68,8 +68,8 @@ namespace Project_B
 
             List<DirectorModel> directorList = new List<DirectorModel>();
             // Test directors
-            //directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-            //directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
+            //_df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+            //_df.CreateItem(new DirectorModel("David Fincher", "", 61));
 
             // Get directors from database
             try
@@ -98,8 +98,8 @@ namespace Project_B
 
             List<ActorModel> actorList = new List<ActorModel>();
             // Test actors
-            //actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-            //actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+            //_af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+            //_af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
 
             // Get directors from database
             try
@@ -184,7 +184,7 @@ namespace Project_B
             {
                 Console.WriteLine($"Current Description = {movieToEdit.Description}" + "\n" + "What is the new discription of the movie?");
                 string Description = Console.ReadLine() ?? movieToEdit.Description ?? "";
-                movieToEdit.editName(Description);
+                movieToEdit.editDescription(Description);
             });
             whatToEditMenu.Add("pegiAge", (x) =>
             {
@@ -230,8 +230,8 @@ namespace Project_B
 
                 List<DirectorModel> directorList = new List<DirectorModel>();
                 // Test directors
-                _df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-                _df.CreateItem(new DirectorModel("David Fincher", "", 61));
+                //_df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+                //_df.CreateItem(new DirectorModel("David Fincher", "", 61));
                 // Get directors from database
                 try
                 {
@@ -270,8 +270,8 @@ namespace Project_B
 
                     List<ActorModel> actorList = new List<ActorModel>();
                     // Test actors
-                    _af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-                    _af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+                    //_af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+                    //_af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
                     // Get directors from database
                     try
                     {
@@ -324,8 +324,8 @@ namespace Project_B
 
                     List<ActorModel> actorList = new List<ActorModel>();
                     // Test actors
-                    _af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-                    _af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+                    //_af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+                    //_af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
                     // Get directors from database
                     try
                     {

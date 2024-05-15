@@ -166,9 +166,9 @@ namespace DataAccessLibrary.logic
         public void getRelatedItemsFromDb(RoomModel item, int deepcopyLv = 0)
         {
             if (deepcopyLv < 0) return;
-            item.Seats.AddRange(
+            item.AddSeatModels(
                 _db.ReadData<SeatModel>(
-                    $"SELECT * FROM Seat WHERE Seat.RoomID = {item.ID}"
+                    $"SELECT * FROM SeatModel WHERE SeatModel.RoomID = {item.ID}"
                 )
             );
         }

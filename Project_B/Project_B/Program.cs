@@ -4,6 +4,7 @@ using Project_B.services;
 using Serilog;
 using DataAccessLibrary.logic;
 using Project_B.menu_s;
+using System.Diagnostics;
 
 namespace Project_B
 {
@@ -50,21 +51,16 @@ namespace Project_B
                 //admin options
                 new Dictionary<string, Action<string>>(){
                     {"edit seat prices", (x) => {SeatPriceCalculator.UpdatePrices();}},
-                    {"add movie", (x) => {createItems.CreateNewMovie(); Console.ReadLine();}},
-                    {"edit movie", (x) => {createItems.ChangeMovie(); Console.ReadLine();}},
+                    {"add movie", (x) => {createItems.CreateNewMovie();}},
+                    {"edit movie", (x) => {createItems.ChangeMovie();}},
                     {"add movie to timetable", (x) => {/*not yet*/}},
-                    {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);;/*is er al in layout*/}}
+                    {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                 }
             );
 
         }
     }
 }
-
-/*
- * SeatPrices.json naar Datasource
- * 
-*/
 
 // ------ Klant menu met menu opties ------//
 //             InputMenu klantMenu = new InputMenu("useLambda");
