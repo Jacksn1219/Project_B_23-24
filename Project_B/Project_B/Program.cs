@@ -12,7 +12,7 @@ namespace Project_B
     {
         public static void Main()
         {
-
+            Console.Title = "YourEyes";
             // setup logger and db
             using var logger = new LoggerConfiguration()
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)

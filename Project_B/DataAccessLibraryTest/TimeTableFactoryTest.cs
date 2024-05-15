@@ -2,6 +2,7 @@ using System.Globalization;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
+using Serilog;
 
 namespace DataAccessLibraryTest
 {
@@ -23,11 +24,13 @@ namespace DataAccessLibraryTest
             {
                 System.Console.WriteLine($"cannot delete testdb {TestDbPath}: {ex.Message}");
             }
-
-            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
+            using var logger = new LoggerConfiguration()
+                .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .CreateLogger();
+            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
             var af = new ActorFactory(_db);
             var df = new DirectorFactory(_db);
-            var sf = new SeatModelFactory(_db);
+            var sf = new SeatFactory(_db);
             _mf = new MovieFactory(_db, df, af);
             _rf = new RoomFactory(_db, sf);
             _tf = new TimeTableFactory(_db, _mf, _rf);
@@ -48,7 +51,7 @@ namespace DataAccessLibraryTest
             Assert.IsTrue(_tf.ItemToDb(timet));
             Assert.IsTrue(timet.Exists);
             Assert.IsTrue(timet.Exists);
-            Assert.IsTrue(timet.Room.SeatModels[0].Exists);
+            Assert.IsTrue(timet.Room.Seats[0].Exists);
         }
         [TestMethod]
         public void TestGetTimeTable()
@@ -84,7 +87,7 @@ namespace DataAccessLibraryTest
             Assert.IsTrue(_tf.ItemToDb(tt));
             var newTt = _tf.GetItemFromId(tt.ID ?? 0);
             Assert.AreEqual(newTt.StartDate, tt.StartDate);
-            Assert.IsTrue(tt.Room.SeatModels[0].Exists);
+            Assert.IsTrue(tt.Room.Seats[0].Exists);
         }
     }
 }
