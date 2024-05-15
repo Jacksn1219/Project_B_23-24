@@ -355,5 +355,8 @@ namespace Project_B
             whatToEditMenu.UseMenu();
             _mf.ItemToDb(movieToEdit);
         }
+
+        public void CreateTimeTable()
+        {}
     }
 }

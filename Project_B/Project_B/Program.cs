@@ -37,7 +37,7 @@ namespace Project_B
             StartupMenu.UseMenu(() =>
             {
                 //loaddata
-                SQLite_setup.SetupProjectB(rf, Universal.datafolderPath);
+                SQLite_setup.SetupProjectB(rf, mf, Universal.datafolderPath);
             });
             //----- main screen -----//
             MainMenu.UseMenu(
@@ -53,7 +53,8 @@ namespace Project_B
                     {"edit seat prices", (x) => {SeatPriceCalculator.UpdatePrices();}},
                     {"add movie", (x) => {createItems.CreateNewMovie();}},
                     {"edit movie", (x) => {createItems.ChangeMovie();}},
-                    {"add movie to timetable", (x) => {/*not yet*/}},
+                    {"add timetable", (x) => {/*not yet*/}},
+                    {"edit timetable", (x) => {/*not yet*/}},
                     {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                 }
             );

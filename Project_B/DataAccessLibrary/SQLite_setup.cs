@@ -8,7 +8,7 @@ public class SQLite_setup
     /// Standard setup data and database tables needed for projectB to run (Tables, 3 x Room + Seats)
     /// </summary>
     /// <param name="databasePath"></param>
-    public static void SetupProjectB(RoomFactory rf, string JSONPath)
+    public static void SetupProjectB(RoomFactory rf, MovieFactory mf, string JSONPath)
     {
         //----- Setting up JSON file for password -----//
         string fileName = "Medewerker.json";
@@ -1166,5 +1166,34 @@ public class SQLite_setup
                 Console.ReadLine();
             }
         }
+
+        if (mf.GetItemFromId(1) == null)
+        {
+            List<MovieModel> allMovies = new List<MovieModel>
+            {
+                new MovieModel("Rocky","A small-time Philadelphia boxer gets a supremely rare chance to fight the world heavyweight champion in a bout in which he strives to go the distance for his self-respect.", 12, 120, "Action, Sport, Drama"),
+                new MovieModel("Indiana Jones and The Lost Ark", "In 1936, archaeologist and adventurer Indiana Jones is hired by the U.S. government to find the Ark of the Covenant before the Nazis can obtain its awesome powers.", 16, 150, "Adventure, Action"),
+                new MovieModel("Gone In 60 Seconds", "A retired master car thief must come back to the industry and steal fifty cars with his crew in one night to save his brother's life. A retired master car thief must come back to the industry and steal fifty cars with his crew in one night to save his brother's life.", 18, 90, "Action, Adventure, Thriller, Drama, Horror, Detective"),
+                new MovieModel("Interstellar", "Set in a dystopian future where humanity is embroiled in a catastrophic blight and famine, the film follows a group of astronauts who travel through a wormhole near Saturn in search of a new home for humankind.", 12, 90, "drama, adventure, and speculative fiction"),
+                new MovieModel("Cars 2", "Racecar Lightning McQueen and Mater decide to participate in the World Grand Prix. However, Mater becomes involved in espionage along the way.", 7, 120, "action, comedy, and spy thriller"),
+                new MovieModel("Forest Gump", "Forrest Gump is a simple boy with a low IQ. However, this does not prevent him from playing a major role in important events in American history. He fought in Vietnam and met greats such as Elvis and JFK.", 16, 90, "Action, Thriller and Adventure."),
+                new MovieModel("Bad Boys", "Two hip detectives protect a witness to a murder while investigating a case of stolen heroin from the evidence storage room from their police precinct.", 16, 150, "Action, Comedy, Detective, Crime"),
+                new MovieModel("Top Gun", "The Top Gun Naval Fighter Weapons School is where the best of the best train to refine their elite flying skills. When hotshot fighter pilot Maverick (Tom Cruise) is sent to the school, his reckless attitude and cocky demeanor put him at odds with the other pilots, especially the cool and collected Iceman.", 12, 120, "Action, Adventure, Thriller, Drama, Romance"),
+                new MovieModel("Scarface", "In 1980 Miami, a determined Cuban immigrant takes over a drug cartel and succumbs to greed. After getting a green card in exchange for assassinating a Cuban government official, Tony Montana (Pacino) stakes a claim on the drug trade in Miami.", 16, 120, "Gangster, Thriller, Mafia, Crime, Drama, Detective"),
+                new MovieModel("The Matrix", "The Matrix is a computer-generated dream world designed to keep these humans under control. Humans are kept sedated, effectively living a virtual life. Neo awakens in a bed back on Morpheus's ship, and Morpheus further explains that one man was born into the Matrix with the power to change anything in it.", 7, 90, "Action, Romance, Fantasy, Superhero, Animation"),
+            };
+
+            try
+            {
+                //----- Saving to Database -----//
+                mf.ItemsToDb(allMovies);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("X Layout database setup : Something went wrong!\n" + ex);
+                Console.ReadLine();
+            }
+        }
+
     }
 }
