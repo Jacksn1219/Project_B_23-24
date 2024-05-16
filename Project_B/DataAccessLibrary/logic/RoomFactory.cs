@@ -7,11 +7,13 @@ namespace DataAccessLibrary.logic
     {
         private readonly DataAccess _db;
         private readonly SeatFactory _sf;
+        private readonly Serilog.Core.Logger _logger;
 
-        public RoomFactory(DataAccess db, SeatFactory sf)
+        public RoomFactory(DataAccess db, SeatFactory sf, Serilog.Core.Logger logger)
         {
             _db = db;
             _sf = sf;
+            _logger = logger;
             CreateTable();
         }
 
@@ -41,6 +43,11 @@ namespace DataAccessLibrary.logic
                 if (item.ID > 0) item.IsChanged = false;
                 return item.ID > 0 && result;
             }
+            catch(Exception ex)
+            {
+                _logger.Warning(ex, "failed to create a Room");
+                return false;
+            }
             finally
             {
                 if (!dontClose) _db.CloseConnection();
@@ -49,14 +56,21 @@ namespace DataAccessLibrary.logic
 
         public void CreateTable()
         {
-            _db.SaveData(
-                @"CREATE TABLE IF NOT EXISTS Room(
-                    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
-                    Name TEXT NOT NULL,
-                    Capacity INTEGER NOT NULL,
-                    RowWidth INTEGER NOT NULL
-                )"
-            );
+            try
+            {
+                _db.SaveData(
+                    @"CREATE TABLE IF NOT EXISTS Room(
+                        ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+                        Name TEXT NOT NULL,
+                        Capacity INTEGER NOT NULL,
+                        RowWidth INTEGER NOT NULL
+                    )"
+                );
+            }
+            catch (Exception ex){
+                _logger.Fatal(ex, "failed to add room to database");
+                throw;
+            }
         }
 
         public RoomModel? GetItemFromId(int id, int deepcopyLv = 0)
@@ -64,22 +78,26 @@ namespace DataAccessLibrary.logic
             if(deepcopyLv < 0) return null;
             try
             {
-            RoomModel toReturn = _db.ReadData<RoomModel>(
-                @"SELECT * FROM Room
-                WHERE ID = $1",
-                new Dictionary<string, dynamic?>(){
-                    {"$1", id},
-                }
-            ).First();
-            RelatedItemsToDb(toReturn, deepcopyLv - 1);
-            return toReturn;
+                RoomModel toReturn = _db.ReadData<RoomModel>(
+                    @"SELECT * FROM Room
+                    WHERE ID = $1",
+                    new Dictionary<string, dynamic?>(){
+                        {"$1", id},
+                    }
+                ).First();
+                RelatedItemsToDb(toReturn, deepcopyLv - 1);
+                return toReturn;
             }
-            catch { return null; }
+            catch (Exception ex) 
+            { 
+                _logger.Warning(ex, $"failed to get Room with ID {id}");
+                return null; 
+            }
         }
 
         public RoomModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
         {
-            if (deepcopyLv < 0) return new RoomModel[0];
+            if (deepcopyLv < 0) return Array.Empty<RoomModel>();
             bool dontClose = _db.IsOpen;
             try
             {
@@ -93,6 +111,10 @@ namespace DataAccessLibrary.logic
                     getRelatedItemsFromDb(room, deepcopyLv - 1);
                 }
                 return rooms;
+            }
+            catch (Exception ex){
+                _logger.Warning(ex, "failed to get rooms");
+                return Array.Empty<RoomModel>();
             }
             finally
             {
@@ -144,13 +166,17 @@ namespace DataAccessLibrary.logic
                 if (result) item.IsChanged = false;
                 return result;
             }
+            catch(Exception ex){
+                _logger.Warning(ex, $"failed to updat Room with ID {item.ID}");
+                return false;
+            }
             finally
             {
                 if (!dontClose) _db.CloseConnection();
             }
         }
 
-        private bool RelatedItemsToDb(RoomModel item, int deepcopyLv)
+        public bool RelatedItemsToDb(RoomModel item, int deepcopyLv)
         {
             if(deepcopyLv < 0) return true;
             bool dontClose = _db.IsOpen;
@@ -165,6 +191,10 @@ namespace DataAccessLibrary.logic
                 }
                 return true;
             }
+            catch(Exception ex){
+                _logger.Warning(ex, $"failed to add seats of room with ID {item.ID}");
+                return false;
+            }
             finally
             {
                 if (!dontClose) _db.CloseConnection();
@@ -172,12 +202,19 @@ namespace DataAccessLibrary.logic
         }
         public void getRelatedItemsFromDb(RoomModel item, int deepcopyLv = 0)
         {
-            if (deepcopyLv < 0) return;
-            item.AddSeatModels(
-                _db.ReadData<SeatModel>(
-                    $"SELECT * FROM SeatModel WHERE SeatModel.RoomID = {item.ID}"
-                )
-            );
+            try{
+                if (deepcopyLv < 0) return;
+                item.AddSeatModels(
+                    _db.ReadData<SeatModel>(
+                        $"SELECT * FROM SeatModel WHERE SeatModel.RoomID = {item.ID}"
+                    )
+                );
+                item.IsChanged = false;
+            }
+            catch(Exception ex)
+            {
+                _logger.Warning(ex, $"failed to get seats of Room with ID {item.ID}");
+            }
         }
 
         public bool ItemsToDb(List<RoomModel> items, int deepcopyLv = 99)

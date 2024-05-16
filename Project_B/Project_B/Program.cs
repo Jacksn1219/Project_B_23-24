@@ -5,6 +5,7 @@ using Serilog;
 using DataAccessLibrary.logic;
 using Project_B.menu_s;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Project_B
 {
@@ -14,19 +15,19 @@ namespace Project_B
         {
             Console.Title = "YourEyes";
             // setup logger and db
-            using var logger = new LoggerConfiguration()
+            using Serilog.Core.Logger logger = new LoggerConfiguration()
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
             using var db = new SQliteDataAccess($"Data Source={Universal.datafolderPath}\\database.db; Version = 3; New = True; Compress = True;", logger);
             //set up factories
-            ActorFactory af = new(db);
-            DirectorFactory df = new(db);
-            MovieFactory mf = new(db, df, af);
-            SeatFactory sf = new SeatFactory(db);
-            RoomFactory rf = new(db, sf);
-            CustomerFactory cf = new CustomerFactory(db);
-            TimeTableFactory ttf = new TimeTableFactory(db, mf, rf);
-            ReservationFactory reservationFactory = new ReservationFactory(db, cf, sf, ttf);
+            ActorFactory af = new(db, logger);
+            DirectorFactory df = new(db, logger);
+            MovieFactory mf = new(db, df, af, logger);
+            SeatFactory sf = new SeatFactory(db, logger);
+            RoomFactory rf = new(db, sf, logger);
+            CustomerFactory cf = new CustomerFactory(db, logger);
+            TimeTableFactory ttf = new TimeTableFactory(db, mf, rf, logger);
+            ReservationFactory reservationFactory = new ReservationFactory(db, cf, sf, ttf, logger);
 
             //set up services
             CreateItems createItems = new CreateItems(af, df, mf);

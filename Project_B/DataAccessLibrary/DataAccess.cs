@@ -38,7 +38,6 @@ namespace DataAccessLibrary
         /// <typeparam name="T">the DbItem</typeparam>
         /// <param name="rd">the DbReader object</param>
         /// <returns>a list of DbItems</returns>
-        /// <exception cref="NotImplementedException">currently not implemented</exception>
         public static T[]? ConvertToObject<T>(DbDataReader rd)
         {
             // all the type T objects as dictionaries

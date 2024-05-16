@@ -10,15 +10,17 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     private readonly DataAccess _db;
     private readonly DirectorFactory _df;
     private readonly ActorFactory _af;
+    private readonly Serilog.Core.Logger _logger;
     /// <summary>
     /// the constructor for the movie factory
     /// </summary>
     /// <param name="db">the database connection</param>
-    public MovieFactory(DataAccess db, DirectorFactory df, ActorFactory af)
+    public MovieFactory(DataAccess db, DirectorFactory df, ActorFactory af, Serilog.Core.Logger logger)
     {
         _db = db;
         _df = df;
         _af = af;
+        _logger = logger;
         CreateTable();
     }
     /// <summary>
@@ -53,6 +55,10 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 )"
             );
         }
+        catch(Exception ex){
+            _logger.Fatal(ex, "failed to create table Movie and/or ActorInMovie");
+            throw;
+        }
         finally
         {
             if (!dontClose) _db.CloseConnection();
@@ -79,7 +85,11 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
             return toReturn;
         }
-        catch { return null; }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, $"failed to get Movie with ID {id}");
+            return null;
+        }
     }
 
     /// <summary>
@@ -146,6 +156,10 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
+        catch (Exception ex){
+            _logger.Warning(ex, "failed to create a movie");
+            return false;
+        }
         finally
         {
             if (!dontClose) _db.CloseConnection();
@@ -188,6 +202,11 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             ) && RelatedItemsToDb(item, deepcopyLv - 1);
             if (toReturn) item.IsChanged = false;
             return toReturn;
+        }
+        catch(Exception ex)
+        {
+            _logger.Warning(ex, $"failed to update movie with ID {item.ID}");
+            return false;
         }
         finally
         {
@@ -246,6 +265,11 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             }
             return true;
         }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, $"failed to add Actors and/or ActorsInMovies form movie with ID {item.ID}");
+            return false;
+        }
         finally
         {
             if (!dontClose) _db.CloseConnection();
@@ -257,7 +281,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         bool dontClose = _db.IsOpen;
         try
         {
-            if (deepcopyLv < 0) return new MovieModel[0];
+            if (deepcopyLv < 0) return Array.Empty<MovieModel>();
             _db.OpenConnection();
             var movies = _db.ReadData<MovieModel>(
                     $"SELECT * FROM Movie LIMIT {count} OFFSET {count * page - count}"
@@ -269,6 +293,11 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 getRelatedItemsFromDb(mov, deepcopyLv - 1);
             }
             return movies;
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, "failed to get movies");
+            return Array.Empty<MovieModel>();
         }
         finally
         {
@@ -289,6 +318,10 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             item.Actors = GetActorsFromMovie(item).ToList();
             return;
         }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, $"failed to get related items of movie with ID {item.ID}");
+        }
         finally
         {
             if (!dontClose) _db.CloseConnection();
@@ -296,15 +329,23 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     }
     private ActorModel[] GetActorsFromMovie(MovieModel movie)
     {
-        return _db.ReadData<ActorModel>(
-            @"SELECT Actor.ID, Actor.Name, Actor.Description, Actor.Age FROM Actor
-            INNER JOIN ActorInMovie ON Actor.ID = ActorInMovie.ActorID
-            INNER JOIN Movie ON ActorInMovie.MovieID = Movie.ID
-            WHERE Movie.ID = $1",
-            new Dictionary<string, dynamic?>{
-                { "$1", movie.ID }
-            }
-        );
+        try
+        {
+            return _db.ReadData<ActorModel>(
+                @"SELECT Actor.ID, Actor.Name, Actor.Description, Actor.Age FROM Actor
+                INNER JOIN ActorInMovie ON Actor.ID = ActorInMovie.ActorID
+                INNER JOIN Movie ON ActorInMovie.MovieID = Movie.ID
+                WHERE Movie.ID = $1",
+                new Dictionary<string, dynamic?>{
+                    { "$1", movie.ID }
+                }
+            );
+        }
+        catch(Exception ex)
+        {
+            _logger.Warning(ex, $"Failed to get actors of Movie with ID {movie.ID}");
+            return Array.Empty<ActorModel>();
+        }
     }
 
     public bool ItemsToDb(List<MovieModel> items, int deepcopyLv = 99)

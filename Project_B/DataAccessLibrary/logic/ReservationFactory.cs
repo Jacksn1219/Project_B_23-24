@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.Http.Headers;
 using DataAccessLibrary;
 
@@ -9,12 +10,14 @@ namespace DataAccessLibrary.logic
         private readonly CustomerFactory _cf;
         private readonly SeatFactory _sf;
         private readonly TimeTableFactory _tf;
-        public ReservationFactory(DataAccess db, CustomerFactory cf, SeatFactory sf, TimeTableFactory tf)
+        private readonly Serilog.Core.Logger _logger;
+        public ReservationFactory(DataAccess db, CustomerFactory cf, SeatFactory sf, TimeTableFactory tf, Serilog.Core.Logger logger)
         {
             _db = db;
             _cf = cf;
             _sf = sf;
             _tf = tf;
+            _logger = logger;
             CreateTable();
         }
 
@@ -45,6 +48,11 @@ namespace DataAccessLibrary.logic
                 );
                 result = RelatedItemsDependingOnItemToDb(item, deepcopyLv - 1);
                 return item.ID > 0 && result;
+            }
+            catch(Exception ex)
+            {
+                _logger.Warning(ex, "failed to add reservation");
+                return false;
             }
             finally
             {
@@ -78,23 +86,34 @@ namespace DataAccessLibrary.logic
                     )"
                 );
             }
+            catch(Exception ex){
+                _logger.Fatal(ex, "failed to create database tables Reservation and ReservedSeat");
+                throw;
+            }
             finally
             {
                 if (!dontClose) _db.CloseConnection();
             }
         }
 
-        public ReservationModel GetItemFromId(int id, int deepcopyLv = 0)
+        public ReservationModel? GetItemFromId(int id, int deepcopyLv = 0)
         {
-            var toReturn = _db.ReadData<ReservationModel>(
-                @"SELECT * FROM Reservation
-                WHERE ID = $1",
-                new Dictionary<string, dynamic?>(){
-                    {"$1", id},
-                }
-            ).First();
-            getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
-            return toReturn;
+            if(deepcopyLv < 0) return null;
+            try{
+                var toReturn = _db.ReadData<ReservationModel>(
+                    @"SELECT * FROM Reservation
+                    WHERE ID = $1",
+                    new Dictionary<string, dynamic?>(){
+                        {"$1", id},
+                    }
+                ).First();
+                getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
+                return toReturn;
+            }
+            catch (Exception ex){
+                _logger.Warning(ex, $"failed to get Reservation with ID {id} ");
+                return null;
+            }
         }
 
         public bool ItemToDb(ReservationModel item, int deepcopyLv = 99)
@@ -153,6 +172,10 @@ namespace DataAccessLibrary.logic
                 }
                 return result;
             }
+            catch (Exception ex){
+                _logger.Warning(ex, $"failed to update reservation with ID {item.ID}");
+                return false;
+            }
             finally
             {
                 if (!dontClose) _db.CloseConnection();
@@ -176,33 +199,40 @@ namespace DataAccessLibrary.logic
                 //try add seat
                 if (!SeatModel.Exists) _sf.ItemToDb(SeatModel, deepcopyLv);
                 //check if seat is already reserved in this reservation.
-                if(_db.ReadData<SeatModel>
-                (
-                    @"SELECT ID FROM ReservedSeat
-                    WHERE SeatID = $1, ReservationID = $2",
-                    new Dictionary<string, dynamic?>(){
-                        {"$1", SeatModel.ID},
-                        {"$2", item.ID}
-                    }
-                ).Length > 0) continue;
-                _db.SaveData(
-                    @"INSERT INTO ReservedSeat(
-                        SeatID,
-                        ReservationID
-                    )
-                    VALUES($1,$2)",
-                    new Dictionary<string, dynamic?>(){
-                        {"$1", SeatModel.ID},
-                        {"$2", item.ID}
-                    }
-                );
+                try
+                {
+                    if(_db.ReadData<SeatModel>
+                    (
+                        @"SELECT ID FROM ReservedSeat
+                        WHERE SeatID = $1, ReservationID = $2",
+                        new Dictionary<string, dynamic?>(){
+                            {"$1", SeatModel.ID},
+                            {"$2", item.ID}
+                        }
+                    ).Length > 0) continue;
+                    _db.SaveData(
+                        @"INSERT INTO ReservedSeat(
+                            SeatID,
+                            ReservationID
+                        )
+                        VALUES($1,$2)",
+                        new Dictionary<string, dynamic?>(){
+                            {"$1", SeatModel.ID},
+                            {"$2", item.ID}
+                        }
+                    );
+                }
+                catch(Exception ex){
+                    _logger.Warning(ex, $"failed to add (some) reserved seats of reservation with ID {item.ID}");
+                    return false;
+                }
             }
             return true;
         }
 
         public ReservationModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
         {
-            if (deepcopyLv < 0) return new ReservationModel[0];
+            if (deepcopyLv < 0) return Array.Empty<ReservationModel>();
             bool dontClose = _db.IsOpen;
             try
             {
@@ -216,6 +246,38 @@ namespace DataAccessLibrary.logic
                     getRelatedItemsFromDb(item, deepcopyLv - 1);
                 }
                 return result;
+            }
+            catch(Exception ex){
+                _logger.Warning(ex, "failed to get Reservations");
+                return Array.Empty<ReservationModel>();
+            }
+            finally
+            {
+                if (!dontClose) _db.CloseConnection();
+            }
+        }
+
+        public ReservationModel[] GetReservationsAfterDate(int count, DateOnly date, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return Array.Empty<ReservationModel>();
+            bool dontClose = _db.IsOpen;
+            try
+            {
+                _db.OpenConnection();
+                ReservationModel[] result = _db.ReadData<ReservationModel>(
+                    $"SELECT * FROM Reservation LIMIT {count} OFFSET {count * page - count} WHERE Reservation.StartDate >= {date.ToString(CultureInfo.InvariantCulture)}"
+                );
+                if (deepcopyLv < 1) return result;
+                foreach (ReservationModel item in result)
+                {
+                    getRelatedItemsFromDb(item, deepcopyLv - 1);
+                }
+                return result;
+            }
+            catch(Exception ex)
+            {
+                _logger.Warning(ex, $"failed to get Reservations from date {date.ToString(CultureInfo.InvariantCulture)}");
+                return Array.Empty<ReservationModel>();
             }
             finally
             {
@@ -236,6 +298,9 @@ namespace DataAccessLibrary.logic
                 item.ReservedSeats.AddRange(GetReservedSeatsFromDb(item));
                 return;
             }
+            catch (Exception ex){
+                _logger.Warning(ex, $"failed to get related items of reservation with ID {item.ID}");
+            }
             finally
             {
                 if (!dontClose) _db.CloseConnection();
@@ -244,7 +309,9 @@ namespace DataAccessLibrary.logic
 
         private SeatModel[] GetReservedSeatsFromDb(ReservationModel item)
         {
-            return _db.ReadData<SeatModel>(
+            try
+            {
+                return _db.ReadData<SeatModel>(
                 @"SELECT Seat.ID, Seat.Name, Seat.Rank, Seat.Type FROM Seat
                 INNER JOIN ReservedSeat ON ReservedSeat.SeatID = Seat.ID
                 INNER JOIN Reservation ON Reservation.ID = ReservedSeat.ReservationID
@@ -253,6 +320,12 @@ namespace DataAccessLibrary.logic
                     {"$1", item.ID}
                 }
             );
+            }
+            catch(Exception ex)
+            {
+                _logger.Warning(ex, $"failed to get reserved seats from reservation with ID {item.ID}");
+                return Array.Empty<SeatModel>();
+            }
         }
 
         public bool ItemsToDb(List<ReservationModel> items, int deepcopyLv = 99)
