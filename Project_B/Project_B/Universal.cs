@@ -8,12 +8,7 @@ static class Universal
     /// <summary>
     /// Database connection
     /// </summary>
-    public static SQliteDataAccess Db { get { return new SQliteDataAccess($"Data Source={Universal.databasePath()}\\database.db; Version = 3; New = True; Compress = True;"); } }
-
-    public static void setupDatabase()
-    {
-        DataAccessLibrary.SQLite_setup.SetupProjectB(Db, Universal.databasePath());
-    }
+    //public static SQliteDataAccess? Db { get; set; }
 
     public static string printAsTitle(string input)
     {
@@ -44,10 +39,13 @@ static class Universal
         return "";
     }
     private static void setupFolder(string folderName) => System.IO.Directory.CreateDirectory(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\" + folderName)));
-    public static string databasePath()
+    public static string datafolderPath
     {
-        setupFolder("DataSource");
-        return System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\DataSource"));
+        get
+        {
+            setupFolder("DataSource");
+            return System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\DataSource"));
+        }
     }
     public static void showReservedSeats()
     {

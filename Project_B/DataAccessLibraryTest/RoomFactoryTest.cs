@@ -1,5 +1,6 @@
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
+using Serilog;
 
 namespace DataAccessLibraryTest
 {
@@ -9,7 +10,7 @@ namespace DataAccessLibraryTest
         public const string TestDbPath = "roomTest.db";
         private readonly DataAccess _db;
         private readonly RoomFactory _rf;
-        private readonly SeatModelFactory _sf;
+        private readonly SeatFactory _sf;
         public RoomFactoryTest()
         {
 
@@ -21,8 +22,11 @@ namespace DataAccessLibraryTest
             {
                 System.Console.WriteLine($"cannot delete testdb {TestDbPath}: {ex.Message}");
             }
-            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
-            _sf = new SeatModelFactory(_db);
+            using var logger = new LoggerConfiguration()
+                .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .CreateLogger();
+            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
+            _sf = new SeatFactory(_db);
             _rf = new RoomFactory(_db, _sf);
         }
         [TestMethod]
@@ -44,7 +48,7 @@ namespace DataAccessLibraryTest
             });
             Assert.IsTrue(_rf.ItemToDb(room));
             Assert.IsTrue(room.Exists);
-            Assert.IsTrue(room.SeatModels[0].Exists);
+            Assert.IsTrue(room.Seats[0].Exists);
         }
         [TestMethod]
         public void TestToManyChairsError()
@@ -90,10 +94,10 @@ namespace DataAccessLibraryTest
                     new SeatModel("3", "3", "3")
                 });
             Assert.IsTrue(_rf.ItemToDb(room));
-            room.SeatModels[0].Name = "hello there";
+            room.Seats[0].Name = "hello there";
             Assert.IsTrue(_rf.ItemToDb(room));
-            var newSeatModel = _sf.GetItemFromId(room.SeatModels[0].ID ?? 0);
-            Assert.AreEqual(room.SeatModels[0].Name, newSeatModel.Name);
+            var newSeat = _sf.GetItemFromId(room.Seats[0].ID ?? 0);
+            Assert.AreEqual(room.Seats[0].Name, newSeat.Name);
 
         }
     }

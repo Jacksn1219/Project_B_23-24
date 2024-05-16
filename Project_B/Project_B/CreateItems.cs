@@ -11,14 +11,19 @@ using System.Xml.Linq;
 
 namespace Project_B
 {
-    class CreateItems
+    public class CreateItems
     {
-        public static void CreateNewMovie()
+        private readonly ActorFactory _af;
+        private readonly DirectorFactory _df;
+        private readonly MovieFactory _mf;
+        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf)
         {
-            ActorFactory actorFactory = new ActorFactory(Universal.Db);
-            DirectorFactory directorFactory = new DirectorFactory(Universal.Db);
-            MovieFactory movieFactory = new MovieFactory(Universal.Db, directorFactory, actorFactory);
-
+            _af = af;
+            _df = df;
+            _mf = mf;
+        }
+        public void CreateNewMovie()
+        {
             // Name //
             Console.WriteLine("What is the name of the movie?");
             string Name = Console.ReadLine() ?? "";
@@ -63,8 +68,8 @@ namespace Project_B
 
             List<DirectorModel> directorList = new List<DirectorModel>();
             // Test directors
-            directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-            directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
+            _df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+            _df.CreateItem(new DirectorModel("David Fincher", "", 61));
             
             // Get directors from database
             try
@@ -73,7 +78,7 @@ namespace Project_B
                 DirectorModel? director = new DirectorModel("", "", 0);
                 while (director != null)
                 {
-                    director = directorFactory.GetItemFromId(i);
+                    director = _df.GetItemFromId(i);
                     if (director != null) directorList.Add(director);
                     i++;
                 }
@@ -93,10 +98,10 @@ namespace Project_B
 
             List<ActorModel> actorList = new List<ActorModel>();
             // Test actors
-            actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-            actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
-            actorFactory.CreateItem(new ActorModel("Levi", "Something", 33));
-            actorFactory.CreateItem(new ActorModel("Someone", "Something else", 46));
+            _af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+            _af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+            _af.CreateItem(new ActorModel("Levi", "Something", 33));
+            _af.CreateItem(new ActorModel("Someone", "Something else", 46));
 
             // Get directors from database
             try
@@ -105,7 +110,7 @@ namespace Project_B
                 ActorModel? actor = new ActorModel("", "", 0);
                 while (actor != null)
                 {
-                    actor = actorFactory.GetItemFromId(i);
+                    actor = _af.GetItemFromId(i);
                     if (actor != null) actorList.Add(actor);
                     i++;
                 }
@@ -141,24 +146,20 @@ namespace Project_B
             anotherActorMenu.UseMenu();
 
             MovieModel newMovie = new MovieModel(Name, Discription, pegiAge, Duration, Genre, Director, Actors);
-            movieFactory.CreateItem(newMovie);
+            _mf.CreateItem(newMovie);
         }
-        public static void EditMovie()
+        public void ChangeMovie()
         {
-            ActorFactory actorFactory = new ActorFactory(Universal.Db);
-            DirectorFactory directorFactory = new DirectorFactory(Universal.Db);
-            MovieFactory movieFactory = new MovieFactory(Universal.Db, directorFactory, actorFactory);
-
             List<MovieModel> movieList = new List<MovieModel>();
             try
             {
-                int i = 1;
-                MovieModel? movie = new MovieModel();
-                while (movie != null)
+                int page = 1;
+                while (true)
                 {
-                    movie = movieFactory.GetItemFromId(i, 1);
-                    if (movie != null) movieList.Add(movie);
-                    i++;
+                    var movs = _mf.GetItems(100, page, 6);
+                    movieList.AddRange(movs);
+                    page++;
+                    if (movs.Length < 100) break;
                 }
             }
             catch { }
@@ -185,7 +186,7 @@ namespace Project_B
             {
                 Console.WriteLine($"Current Description = {movieToEdit.Description}" + "\n" + "What is the new discription of the movie?");
                 string Description = Console.ReadLine() ?? movieToEdit.Description ?? "";
-                movieToEdit.editName(Description);
+                movieToEdit.editDescription(Description);
             });
             whatToEditMenu.Add("pegiAge", (x) =>
             {
@@ -231,8 +232,8 @@ namespace Project_B
 
                 List<DirectorModel> directorList = new List<DirectorModel>();
                 // Test directors
-                //directorFactory.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-                //directorFactory.CreateItem(new DirectorModel("David Fincher", "", 61));
+                //_df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+                //_df.CreateItem(new DirectorModel("David Fincher", "", 61));
                 // Get directors from database
                 try
                 {
@@ -240,7 +241,7 @@ namespace Project_B
                     DirectorModel? director = new DirectorModel("", "", 0);
                     while (director != null)
                     {
-                        director = directorFactory.GetItemFromId(i);
+                        director = _df.GetItemFromId(i);
                         if (director != null) directorList.Add(director);
                         i++;
                     }
@@ -248,7 +249,7 @@ namespace Project_B
                 catch { }
 
                 //Get directors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
-                movieToEdit.Director = directorFactory.GetItemFromId(movieToEdit.DirectorID ?? 1);
+                movieToEdit.Director = _df.GetItemFromId(movieToEdit.DirectorID ?? 1);
 
                 // Menu to chose director
                 InputMenu directorMenu = new InputMenu(Universal.centerToScreen($"Current director = {movieToEdit.Director.Name}") + "\n" + Universal.centerToScreen("Choose a new director:"), null);
@@ -267,8 +268,6 @@ namespace Project_B
                 InputMenu addOrRemove = new InputMenu(addOrRemoveTitle + "\n" + Universal.centerToScreen("What would you like to do?"));
                 addOrRemove.Add("Add an actor", (x) =>
                 {
-                    List<ActorModel> Actors = new List<ActorModel>();
-
                     List<ActorModel> actorList = new List<ActorModel>();
                     // Test actors
                     //actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
@@ -280,7 +279,7 @@ namespace Project_B
                         ActorModel? actor = new ActorModel("", "", 0);
                         while (actor != null)
                         {
-                            actor = actorFactory.GetItemFromId(i);
+                            actor = _af.GetItemFromId(i);
                             if (actor != null) actorList.Add(actor);
                             i++;
                         }
@@ -288,19 +287,19 @@ namespace Project_B
                     catch { }
 
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
-                    //movieFactory.AddRelatedActors(movieToEdit, Universal.Db);
-                    //movieToEdit.Actors.Add(actorFactory.GetItemFromId(1));
+                    _mf.AddRelatedActors(movieToEdit);
 
                     // Menu to chose director
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
                     foreach (ActorModel actor in actorList)
                     {
-                        actorMenu.Add(actor.Name, (x) => { Actors.Add(actor); });
+                        actorMenu.Add(actor.Name, (x) => { movieToEdit.Actors.Add(actor); });
                     }
-                    actorMenu.UseMenu();
 
                     // Deleting chosen actor
-                    foreach (ActorModel actor in Actors) actorMenu.Remove(actor.Name);
+                    foreach (ActorModel actor in movieToEdit.Actors) actorMenu.Remove(actor.Name);
+
+                    actorMenu.UseMenu();
 
                     // Menu to select more actors
                     InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to add another actor?\nIf not, click Back..."), null);
@@ -309,7 +308,7 @@ namespace Project_B
                         if (actorMenu.GetMenuOptionsCount() > 0)
                         {
                             actorMenu.UseMenu();
-                            foreach (ActorModel actor in Actors) try { actorMenu.Remove(actor.Name); } catch { }
+                            foreach (ActorModel actor in actorList) try { actorMenu.Remove(actor.Name); } catch { }
                         }
                         if (actorMenu.GetMenuOptionsCount() == 0)
                         {
@@ -321,36 +320,22 @@ namespace Project_B
                 });
                 addOrRemove.Add("Remove an actor", (x) =>
                 {
-                    List<ActorModel> Actors = new List<ActorModel>();
-
-                    List<ActorModel> actorList = new List<ActorModel>();
-                    // Test actors
-                    //actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-                    //actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
-                    // Get directors from database
-                    try
-                    {
-                        int i = 1;
-                        ActorModel? actor = new ActorModel("", "", 0);
-                        while (actor != null)
-                        {
-                            actor = actorFactory.GetItemFromId(i);
-                            if (actor != null) actorList.Add(actor);
-                            i++;
-                        }
-                    }
-                    catch { }
+                    //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
+                    _mf.AddRelatedActors(movieToEdit);
 
                     // Menu to chose director
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
-                    foreach (ActorModel actor in actorList)
+                    foreach (ActorModel actor in movieToEdit.Actors)
                     {
-                        actorMenu.Add(actor.Name, (x) => { Actors.Remove(actor); });
+                        actorMenu.Add(actor.Name, (x) => {
+                            movieToEdit.Actors.Remove(actor); // Remove Actor function -> yet to be...     Line 372 / CreateItems.cs
+                            actorMenu.Remove(actor.Name);
+                        });
                     }
                     actorMenu.UseMenu();
 
                     // Deleting chosen actor
-                    foreach (ActorModel actor in Actors) actorMenu.Remove(actor.Name);
+                    foreach (ActorModel actor in movieToEdit.Actors) actorMenu.Remove(actor.Name);
 
                     // Menu to select more actors
                     InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to remove another actor?\nIf not, click Back..."), null);
@@ -359,7 +344,7 @@ namespace Project_B
                         if (actorMenu.GetMenuOptionsCount() > 0)
                         {
                             actorMenu.UseMenu();
-                            foreach (ActorModel actor in Actors) try { actorMenu.Remove(actor.Name); } catch { }
+                            //foreach (ActorModel actor in movieToEdit.Actors) try { actorMenu.Remove(actor.Name); } catch { }
                         }
                         if (actorMenu.GetMenuOptionsCount() == 0)
                         {
@@ -372,7 +357,7 @@ namespace Project_B
                 addOrRemove.UseMenu();
             });
             whatToEditMenu.UseMenu();
-            movieFactory.ItemToDb(movieToEdit);
+            _mf.ItemToDb(movieToEdit);
         }
     }
 }

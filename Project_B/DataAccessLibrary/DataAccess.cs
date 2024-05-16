@@ -3,15 +3,33 @@ using System.Data.Common;
 using System.Reflection;
 using DataAccessLibrary.models.interfaces;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccessLibrary
 {
     public abstract class DataAccess : ICRUD, IDisposable
     {
+        protected readonly Serilog.Core.Logger _logger;
+        public DataAccess(Serilog.Core.Logger logger)
+        {
+            _logger = logger;
+        }
+
+        public void OpenConnection()
+        {
+            if (IsOpen) return;
+            _dbAccess.Open();
+        }
+        public void CloseConnection()
+        {
+            if (!IsOpen) return;
+            _dbAccess.Close();
+        }
+        public bool IsOpen { get { return _dbAccess.State == ConnectionState.Open; } }
         protected abstract IDbConnection _dbAccess { get; set; }
         public abstract void Dispose();
-        public abstract List<T> ReadData<T>(string sqlStatement);
-        public abstract List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters);
+        public abstract T[] ReadData<T>(string sqlStatement);
+        public abstract T[] ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters);
         public abstract bool SaveData(string sqlStatement);
         public abstract bool SaveData(string sqlStatement, Dictionary<string, dynamic?> parameters);
         /// <summary>
@@ -21,7 +39,7 @@ namespace DataAccessLibrary
         /// <param name="rd">the DbReader object</param>
         /// <returns>a list of DbItems</returns>
         /// <exception cref="NotImplementedException">currently not implemented</exception>
-        public static List<T>? ConvertToObject<T>(DbDataReader rd)
+        public static T[]? ConvertToObject<T>(DbDataReader rd)
         {
             // all the type T objects as dictionaries
             List<Dictionary<string, dynamic?>> typeOfT = new();
@@ -64,7 +82,7 @@ namespace DataAccessLibrary
             }
             // make a class from the list of dicts
             string Tstring = JsonConvert.SerializeObject(typeOfT);
-            List<T>? items = JsonConvert.DeserializeObject<List<T>>(Tstring);
+            T[]? items = JsonConvert.DeserializeObject<T[]>(Tstring);
             return items;
         }
 

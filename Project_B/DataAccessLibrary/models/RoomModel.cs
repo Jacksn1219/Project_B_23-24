@@ -25,8 +25,8 @@ public class RoomModel : DbItem
             IsChanged = true;
         }
     }
-    private List<SeatModel> _SeatModels;
-    public List<SeatModel> SeatModels { get { return _SeatModels; } private set { _SeatModels = value; } }
+    private List<SeatModel> _seats;
+    public List<SeatModel> Seats { get { return _seats; } private set { _seats = value; } }
     private int? _rowWidth;
     public int? RowWidth
     {
@@ -50,11 +50,11 @@ public class RoomModel : DbItem
     {
 
     }
-    public RoomModel(string name, int capacity, int rowWidth, List<SeatModel> seatModels)
+    public RoomModel(string name, int capacity, int rowWidth, List<SeatModel> seats)
     {
         Name = name;
         Capacity = capacity;
-        SeatModels = seatModels;
+        Seats = seats;
         RowWidth = rowWidth;
     }
     public bool AddSeatModel(SeatModel SeatModel)
@@ -63,9 +63,9 @@ public class RoomModel : DbItem
     }
     public bool AddSeatModels(SeatModel[] SeatModels)
     {
-        if (this.SeatModels == null) this.SeatModels = new List<SeatModel>();
-        if (this.SeatModels.Count + SeatModels.Length > Capacity) return false;
-        this.SeatModels.AddRange(SeatModels);
+        if (this.Seats == null) this.Seats = new List<SeatModel>();
+        if (this.Seats.Count + SeatModels.Length > Capacity) return false;
+        this.Seats.AddRange(SeatModels);
         return true;
     }
 }

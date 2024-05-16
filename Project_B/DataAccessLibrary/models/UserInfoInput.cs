@@ -1,10 +1,11 @@
 using System;
+using DataAccessLibrary;
 
 namespace Project_B.services
 {
     public static class UserInfoInput
     {
-        public static (string fullName, string email, string phoneNumber) GetUserInfo()
+        public static CustomerModel GetUserInfo()
         {
             string fullName;
             while (true)
@@ -38,8 +39,8 @@ namespace Project_B.services
                     Console.WriteLine("Please enter a valid phone number starting with 0 and max 10 digits.");
                 }
             }
-
-            return (fullName, email, phoneNumber);
+            // todo add age check and ask for mail subscription
+            return new CustomerModel(fullName, 0, email, phoneNumber, false);
         }
 
         private static bool IsValidFullName(string fullName)

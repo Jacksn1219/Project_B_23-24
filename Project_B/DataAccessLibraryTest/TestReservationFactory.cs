@@ -1,6 +1,7 @@
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
+using Serilog;
 
 namespace DataAccessLibraryTest
 {
@@ -10,7 +11,7 @@ namespace DataAccessLibraryTest
         public const string TestDbPath = "ReservationTest.db";
         private DataAccess? _db;
         private readonly ReservationFactory _rf;
-        private readonly SeatModelFactory _sf;
+        private readonly SeatFactory _sf;
         private readonly CustomerFactory _cf;
         private readonly TimeTableModel testTimeTable;
         public TestReservationFactory()
@@ -23,16 +24,18 @@ namespace DataAccessLibraryTest
             {
                 System.Console.WriteLine($"cannot delete testdb {TestDbPath}: {ex.Message}");
             }
-
-            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
-            _sf = new SeatModelFactory(_db);
+            using var logger = new LoggerConfiguration()
+                .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .CreateLogger();
+            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
+            _sf = new SeatFactory(_db);
             _cf = new CustomerFactory(_db);
-            _rf = new ReservationFactory(_db, _cf, _sf);
             var df = new DirectorFactory(_db);
             var af = new ActorFactory(_db);
             var mf = new MovieFactory(_db, df, af);
             var rf = new RoomFactory(_db, _sf);
             var tf = new TimeTableFactory(_db, mf, rf);
+            _rf = new ReservationFactory(_db, _cf, _sf, tf);
             SeatModel SeatModel = new SeatModel("SeatModel1", "1", "1");
             RoomModel room = new RoomModel("room1", 10, 1, new List<SeatModel>() { SeatModel });
             MovieModel mov = new MovieModel("movie1", "descr1", 3, 300, "genre");
@@ -49,7 +52,7 @@ namespace DataAccessLibraryTest
                 "someone", 21, "email@mail.mail", "123456789", true
             );
             ReservationModel reservation = new ReservationModel(
-                cust, testTimeTable, testTimeTable.Room.SeatModels, "hi"
+                cust, testTimeTable, testTimeTable.Room.Seats, "hi"
             );
             Assert.IsTrue(_rf.ItemToDb(reservation));
             Assert.IsTrue(reservation.Exists);
@@ -61,7 +64,7 @@ namespace DataAccessLibraryTest
                 "someone else", 12, "someone@mail.mail", "12344321", true
             );
             ReservationModel reservation = new ReservationModel(
-                cust, testTimeTable, testTimeTable.Room.SeatModels, "I do not like u"
+                cust, testTimeTable, testTimeTable.Room.Seats, "I do not like u"
             );
             Assert.IsTrue(_rf.ItemToDb(reservation));
             var newReservation = _rf.GetItemFromId(reservation.ID ?? 0);
@@ -75,7 +78,7 @@ namespace DataAccessLibraryTest
                 "him", 12, "him@mail.mail", "321654987", false
             );
             ReservationModel reservation = new ReservationModel(
-                cust, testTimeTable, testTimeTable.Room.SeatModels, "I do like u"
+                cust, testTimeTable, testTimeTable.Room.Seats, "I do like u"
             );
             Assert.IsTrue(_rf.ItemToDb(reservation));
             reservation.Customer.Name = "her";

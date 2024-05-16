@@ -1,13 +1,14 @@
 using DataAccessLibrary;
 
+
 namespace DataAccessLibrary.logic
 {
     public class RoomFactory : IDbItemFactory<RoomModel>
     {
         private readonly DataAccess _db;
-        private readonly SeatModelFactory _sf;
+        private readonly SeatFactory _sf;
 
-        public RoomFactory(DataAccess db, SeatModelFactory sf)
+        public RoomFactory(DataAccess db, SeatFactory sf)
         {
             _db = db;
             _sf = sf;
@@ -18,22 +19,31 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID != null) throw new InvalidDataException("the room is already in the db.");
             if (!item.IsChanged) return true;
-            item.ID = _db.CreateData(
-                @"INSERT INTO Room(
-                    Name,
-                    Capacity,
-                    RowWidth
-                )
-                VALUES ($1,$2,$3)",
-                new Dictionary<string, dynamic?>(){
-                    {"$1", item.Name},
-                    {"$2", item.Capacity},
-                    {"$3", item.RowWidth}
-                }
-            );
-            bool result = RelatedItemsToDb(item);
-            if (item.ID > 0) item.IsChanged = false;
-            return item.ID > 0 && result;
+            bool dontClose = _db.IsOpen;
+            try
+            {
+                _db.OpenConnection();
+                item.ID = _db.CreateData(
+                    @"INSERT INTO Room(
+                        Name,
+                        Capacity,
+                        RowWidth
+                    )
+                    VALUES ($1,$2,$3)",
+                    new Dictionary<string, dynamic?>(){
+                        {"$1", item.Name},
+                        {"$2", item.Capacity},
+                        {"$3", item.RowWidth}
+                    }
+                );
+                bool result = RelatedItemsToDb(item);
+                if (item.ID > 0) item.IsChanged = false;
+                return item.ID > 0 && result;
+            }
+            finally
+            {
+                if (!dontClose) _db.CloseConnection();
+            }
         }
 
         public void CreateTable()
@@ -63,10 +73,33 @@ namespace DataAccessLibrary.logic
             catch { return null; }
         }
 
+        public RoomModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return new RoomModel[0];
+            bool dontClose = _db.IsOpen;
+            try
+            {
+                _db.OpenConnection();
+                RoomModel[] rooms = _db.ReadData<RoomModel>(
+                    $"SELECT * FROM Room LIMIT {count} OFFSET {count * page - count}"
+                );
+                if (deepcopyLv == 0) return rooms;
+                foreach (RoomModel room in rooms)
+                {
+                    getRelatedItemsFromDb(room, deepcopyLv - 1);
+                }
+                return rooms;
+            }
+            finally
+            {
+                if (!dontClose) _db.CloseConnection();
+            }
+        }
+
         public bool ItemToDb(RoomModel item)
         {
             bool SeatModelsChanged = false;
-            foreach (var SeatModel in item.SeatModels)
+            foreach (var SeatModel in item.Seats)
             {
                 if (SeatModel.IsChanged)
                 {
@@ -83,32 +116,68 @@ namespace DataAccessLibrary.logic
         {
             if (item.ID == null) throw new InvalidDataException("the id of the room is null. the item cannot be updated.");
             if (!item.IsChanged) return true;
-            bool result = RelatedItemsToDb(item);
-            if (!result) return result;
-            result = _db.SaveData(
-                @"UPDATE Room
-                SET Name = $1,
-                    Capacity = $2,
-                    RowWidth = $3
-                where ID = $4",
-                new Dictionary<string, dynamic?>(){
-                    {"$1", item.Name},
-                    {"$2", item.Capacity},
-                    {"$3", item.RowWidth},
-                    {"$4", item.ID}
-                }
-            );
-            if (result) item.IsChanged = false;
-            return result;
+            bool dontClose = _db.IsOpen;
+            try
+            {
+                _db.OpenConnection();
+                bool result = RelatedItemsToDb(item);
+                if (!result) return result;
+                result = _db.SaveData(
+                    @"UPDATE Room
+                    SET Name = $1,
+                        Capacity = $2,
+                        RowWidth = $3
+                    where ID = $4",
+                    new Dictionary<string, dynamic?>(){
+                        {"$1", item.Name},
+                        {"$2", item.Capacity},
+                        {"$3", item.RowWidth},
+                        {"$4", item.ID}
+                    }
+                );
+                if (result) item.IsChanged = false;
+                return result;
+            }
+            finally
+            {
+                if (!dontClose) _db.CloseConnection();
+            }
         }
 
         private bool RelatedItemsToDb(RoomModel item)
         {
-            foreach (SeatModel SeatModel in item.SeatModels)
+            bool dontClose = _db.IsOpen;
+            try
             {
-                if (!SeatModel.IsChanged) continue;
-                SeatModel.RoomID = item.ID;
-                _sf.ItemToDb(SeatModel);
+                _db.OpenConnection();
+                foreach (SeatModel seat in item.Seats)
+                {
+                    if (!seat.IsChanged) continue;
+                    seat.RoomID = item.ID;
+                    _sf.ItemToDb(seat);
+                }
+                return true;
+            }
+            finally
+            {
+                if (!dontClose) _db.CloseConnection();
+            }
+        }
+        public void getRelatedItemsFromDb(RoomModel item, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return;
+            item.AddSeatModels(
+                _db.ReadData<SeatModel>(
+                    $"SELECT * FROM SeatModel WHERE SeatModel.RoomID = {item.ID}"
+                )
+            );
+        }
+
+        public bool ItemsToDb(List<RoomModel> items)
+        {
+            foreach (var item in items)
+            {
+                ItemToDb(item);
             }
             return true;
         }

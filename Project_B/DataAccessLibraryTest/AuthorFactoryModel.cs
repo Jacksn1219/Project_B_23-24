@@ -1,5 +1,6 @@
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
+using Serilog;
 
 namespace DataAccessLibraryTest
 {
@@ -19,8 +20,10 @@ namespace DataAccessLibraryTest
             {
                 System.Console.WriteLine($"cannot delete testdb {TestDbPath}: {ex.Message}");
             }
-
-            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
+            using var logger = new LoggerConfiguration()
+                .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .CreateLogger();
+            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
             _df = new DirectorFactory(_db);
         }
         [TestMethod]

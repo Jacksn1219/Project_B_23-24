@@ -61,6 +61,23 @@ namespace DataAccessLibrary.logic
             ).First();
         }
 
+        public CustomerModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return new CustomerModel[0];
+            return _db.ReadData<CustomerModel>(
+                $"SELECT * FROM Customer LIMIT {count} OFFSET {count * page - count}"
+            );
+        }
+
+        public bool ItemsToDb(List<CustomerModel> items)
+        {
+            foreach (var item in items)
+            {
+                ItemToDb(item);
+            }
+            return true;
+        }
+
         public bool ItemToDb(CustomerModel item)
         {
             if (!item.IsChanged) return true;

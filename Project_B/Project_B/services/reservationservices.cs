@@ -1,13 +1,18 @@
 using System.Data.SQLite;
 using DataAccessLibrary;
+using DataAccessLibrary.logic;
 
 namespace Project_B.services
 {
-    public static class ReservationServices
+    public class ReservationService
     {
-        public static readonly SQLiteConnection sqlite_conn = Layout.CreateConnection();
+        private readonly ReservationFactory _rf;
+        public ReservationService(ReservationFactory rf)
+        {
+            _rf = rf;
+        }
 
-        public static void DisplayAvailableRooms()
+        public void DisplayAvailableRooms()
         {
             Console.WriteLine("Available Rooms:");
             Console.WriteLine("1. Room 1");
@@ -15,23 +20,18 @@ namespace Project_B.services
             Console.WriteLine("3. Room 3");
         }
 
-        public static void DisplayRoomLayout(int roomID)
+        public void DisplayRoomLayout(RoomModel room)
         {
-            // Fetch and display the layout of the selected room
-            // This is a placeholder; you'd replace this with actual database fetching logic
-
-            // For now, let's use the example layout creation logic from Layout class
-            var SeatModels = new List<SeatModel>(); // Placeholder for fetched SeatModels from the database
-            var room = new RoomModel($"Room{roomID}", 10, 10); // Example room with RowWidth 10
-            Layout.drawLayout(SeatModels, room);
+            RoomLayoutService model = new RoomLayoutService(room, room.Seats);
+            model.drawLayout(room.Seats, room);
         }
 
-        public static void ReserveSeats(int roomID, List<int> seatNumbers, int userAge, string fullName, string email, string phoneNumber)
+        public void ReserveSeats(List<int> seatNumbers, int userAge, string fullName, string email, string phoneNumber)
         {
             try
             {
                 // Fetch pegiAge of the movie associated with the selected room
-                int pegiAge = GetMoviePegiAgeForRoom(roomID);
+                int pegiAge = 0;//GetMoviePegiAgeForRoom();
 
                 // Check age requirement
                 if (userAge < pegiAge)
@@ -49,7 +49,7 @@ namespace Project_B.services
 
                 foreach (var seatNumber in seatNumbers)
                 {
-                    ReserveSeat(seatNumber, fullName, email, phoneNumber); // Corrected the placement of this method call
+                    //ReserveSeat(seatNumber, fullName, email, phoneNumber); // Corrected the placement of this method call
                     Console.WriteLine("Seat reserved successfully!");
                 }
             }
@@ -60,32 +60,15 @@ namespace Project_B.services
         }
 
 
-        private static int GetMoviePegiAgeForRoom(int roomID)
+        private int GetMoviePegiAgeForRoom(MovieModel mov)
         {
             // Fetch pegiAge of the movie associated with the selected room from the database
             // This is a placeholder; you'd replace this with actual database fetching logic
-            int pegiAge = 0;  // Placeholder for fetched pegiAge
-
-            try
-            {
-                using var cmd = new SQLiteCommand($"SELECT pegiAge FROM Movie WHERE RoomID = {roomID}", sqlite_conn);
-                using var reader = cmd.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    pegiAge = reader.GetInt32(0);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error fetching pegiAge for room {roomID}: {ex.Message}");
-            }
-
-            return pegiAge;
+            return (int)mov.PegiAge;
         }
 
 
-        public static List<SeatModel> GetAvailableSeats(int roomID)
+        public List<SeatModel> GetAvailableSeats(RoomModel room)
         {
             // Fetch available SeatModels for the selected room from the database
             // This is a placeholder; you'd replace this with actual database fetching logic
@@ -99,27 +82,5 @@ namespace Project_B.services
 
             return availableSeatModels;
         }
-
-        private static void ReserveSeat(int seatNumber, string fullName, string email, string phoneNumber)
-        {
-            // Update the seat status in the database to "Reserved" and associate with user information
-            try
-            {
-                using var cmd = new SQLiteCommand($"UPDATE Seat SET Status = 'Reserved', FullName = '{fullName}', Email = '{email}', PhoneNumber = '{phoneNumber}' WHERE SeatID = {seatNumber}", sqlite_conn);
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error updating SeatModel {seatNumber}: {ex.Message}");
-            }
-        }
-
-        public static void DisplayAvailableMovies()
-        {
-            Console.WriteLine("Available Movies:");
-            Console.WriteLine("1. Movie A");
-            Console.WriteLine("2. Movie B");
-        }
-
     }
 }

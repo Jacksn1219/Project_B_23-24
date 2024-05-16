@@ -2,10 +2,10 @@ using DataAccessLibrary;
 
 namespace DataAccessLibrary.logic
 {
-    public class SeatModelFactory : IDbItemFactory<SeatModel>
+    public class SeatFactory : IDbItemFactory<SeatModel>
     {
         private readonly DataAccess _db;
-        public SeatModelFactory(DataAccess db)
+        public SeatFactory(DataAccess db)
         {
             _db = db;
             CreateTable();
@@ -36,7 +36,7 @@ namespace DataAccessLibrary.logic
         {
             foreach (SeatModel seat in item)
             {
-                if ( !CreateItem(seat) ) return false;
+                if (!CreateItem(seat)) return false;
             }
             return true;
         }
@@ -64,6 +64,23 @@ namespace DataAccessLibrary.logic
                     {"$1", id},
                 }
             ).First();
+        }
+
+        public SeatModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return new SeatModel[0];
+            return _db.ReadData<SeatModel>(
+                $"SELECT * FROM SeatModel LIMIT {count} OFFSET {count * page - count}"
+            );
+        }
+
+        public bool ItemsToDb(List<SeatModel> items)
+        {
+            foreach (var item in items)
+            {
+                ItemToDb(item);
+            }
+            return true;
         }
 
         public bool ItemToDb(SeatModel item)

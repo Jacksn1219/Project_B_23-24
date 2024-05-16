@@ -14,11 +14,13 @@ public interface IDbItemFactory<T>
     /// </summary>
     /// <returns>true if succesfull, else false</returns>
     public bool ItemToDb(T item);
+    public bool ItemsToDb(List<T> items);
     /// <summary>
     /// creates a new item in the db
     /// </summary>
     /// <param name="item"> the item to add te the db</param>
     /// <returns>true if succes, else false</returns>
+
     public bool CreateItem(T item);
     /// <summary>
     /// updates an existing item to the db
@@ -33,6 +35,12 @@ public interface IDbItemFactory<T>
     /// <param name="id">the Id of the item</param>
     /// <returns>the DbItem as </returns>
     public T GetItemFromId(int id, int deepcopyLv = 0);
-
-
+    /// <summary>
+    /// gets all items from the db.
+    /// </summary>
+    /// <param name="count">the max amount to return</param>
+    /// <param name="page">the page of the items. for example if count is 10, item number 11 is the first item returned if the page is 2</param>
+    /// <param name="deepcopyLv">if you also want connected items set the deepcopy level higher</param>
+    /// <returns></returns>
+    public T[] GetItems(int count, int page = 1, int deepcopyLv = 0);
 }

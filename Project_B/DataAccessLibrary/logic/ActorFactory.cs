@@ -57,6 +57,23 @@ namespace DataAccessLibrary.logic
             }catch (Exception) { return null; }
         }
 
+        public ActorModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return new ActorModel[0];
+            return _db.ReadData<ActorModel>(
+                $"SELECT * FROM Actor LIMIT {count} OFFSET {count * page - count}"
+            );
+        }
+
+        public bool ItemsToDb(List<ActorModel> items)
+        {
+            foreach (var item in items)
+            {
+                ItemToDb(item);
+            }
+            return true;
+        }
+
         public bool ItemToDb(ActorModel item)
         {
             if (!item.IsChanged) return true;
