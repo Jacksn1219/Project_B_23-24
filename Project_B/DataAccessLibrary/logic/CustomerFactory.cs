@@ -11,8 +11,9 @@ namespace DataAccessLibrary.logic
             CreateTable();
         }
 
-        public bool CreateItem(CustomerModel item)
+        public bool CreateItem(CustomerModel item, int deepcopyLv = 99)
         {
+            if (deepcopyLv < 0) return true;
             if (item.Exists) throw new InvalidDataException("this Customer already exists in the db.");
             if (!item.IsChanged) return true;
             item.ID = _db.CreateData(
@@ -50,15 +51,19 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public CustomerModel GetItemFromId(int id, int deepcopyLv = 0)
+        public CustomerModel? GetItemFromId(int id, int deepcopyLv = 0)
         {
-            return _db.ReadData<CustomerModel>(
-                @"SELECT * FROM Customer
-                WHERE ID = $1",
-                new Dictionary<string, dynamic?>(){
-                    {"$1", id},
-                }
-            ).First();
+            if (deepcopyLv < 0) return null;
+            try{
+                return _db.ReadData<CustomerModel>(
+                    @"SELECT * FROM Customer
+                    WHERE ID = $1",
+                    new Dictionary<string, dynamic?>(){
+                        {"$1", id},
+                    }
+                ).First();
+            }
+            catch{return null;}
         }
 
         public CustomerModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
@@ -69,24 +74,27 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public bool ItemsToDb(List<CustomerModel> items)
+        public bool ItemsToDb(List<CustomerModel> items, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             foreach (var item in items)
             {
-                ItemToDb(item);
+                ItemToDb(item, deepcopyLv);
             }
             return true;
         }
 
-        public bool ItemToDb(CustomerModel item)
+        public bool ItemToDb(CustomerModel item, int deepcopyLv = 99)
         {
+            if (deepcopyLv < 0) return true;
             if (!item.IsChanged) return true;
-            if (!item.Exists) return CreateItem(item);
-            return UpdateItem(item);
+            if (!item.Exists) return CreateItem(item, deepcopyLv);
+            return UpdateItem(item, deepcopyLv);
         }
 
-        public bool UpdateItem(CustomerModel item)
+        public bool UpdateItem(CustomerModel item, int deepcopyLv = 99)
         {
+            if (deepcopyLv < 0) return true;
             if (item.ID == null) throw new InvalidDataException("the ID of the Customer is null. the Customer cannot be updated.");
             if (!item.IsChanged) return true;
             bool toReturn = _db.SaveData(

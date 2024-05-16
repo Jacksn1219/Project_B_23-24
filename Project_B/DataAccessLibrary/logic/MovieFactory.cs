@@ -63,11 +63,12 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// </summary>
     /// <param name="id">the ID of the Movie</param>
     /// <returns>the first movie returned from the query</returns>
-    public MovieModel GetItemFromId(int id, int deepcopyLv = 0)
+    public MovieModel? GetItemFromId(int id, int deepcopyLv = 0)
     {
+        if(deepcopyLv < 0) return null;
         try
         {
-            return _db.ReadData<MovieModel>(
+            var toReturn = _db.ReadData<MovieModel>(
             @"SELECT * FROM Movie
             WHERE ID=$1",
             new Dictionary<string, dynamic?>()
@@ -75,48 +76,20 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 {"$1", id}
             }
             ).First();
+            getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
+            return toReturn;
         }
         catch { return null; }
     }
-    /// <summary>
-    /// Get the ActorModels related to a MovieModel from the ID
-    /// </summary>
-    /// <param name="id">the ID of the Movie</param>
-    /// <returns>the first movie returned from the query</returns>
-    public bool AddRelatedActors(MovieModel movieItem)
-    {
-        try
-        {
-            // this wont work, because int does not have parameter ActorID. (use ActorModel)
-            int[] list = _db.ReadData<int>(
-            @"SELECT ActorID FROM ActorInMovie
-            WHERE MovieID=$1",
-            new Dictionary<string, dynamic?>()
-            {
-                {"$1", movieItem.ID}
-            });
 
-            ActorFactory actorFactory = new ActorFactory(_db);
-            List<ActorModel> actorList = new List<ActorModel>();
-            foreach (int actorid in list)
-            {
-                actorList.Add(actorFactory.GetItemFromId(actorid));
-            }
-            foreach (ActorModel actor in actorList)
-            {
-                movieItem.addActor(actor);
-            }
-            return true;
-        }
-        catch { return false; }
-    }
     /// <summary>
     /// updates or creates the movie in the db
     /// </summary>
     /// <param name="item">the movie to update or create</param>
     /// <returns>true if succesfull, else false</returns>
-    public bool ItemToDb(MovieModel item)
+    public bool ItemToDb(MovieModel item,int deepcopyLv = 99 )
     {
+        if(deepcopyLv < 0) return true;
         bool directorchanged = item.Director != null && item.Director.IsChanged;
         bool actorsChanged = false;
         foreach (var act in item.Actors)
@@ -127,10 +100,10 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 break;
             }
         }
-        if (!item.IsChanged && (actorsChanged || directorchanged)) return RelatedItemsToDb(item);
+        if (!item.IsChanged && (actorsChanged || directorchanged) && deepcopyLv > 0) return RelatedItemsToDb(item, deepcopyLv - 1);
         if (!item.IsChanged) return true;
-        if (item.ID == null) return CreateItem(item);
-        return UpdateItem(item);
+        if (item.ID == null) return CreateItem(item, deepcopyLv);
+        return UpdateItem(item, deepcopyLv);
 
     }
     /// <summary>
@@ -139,13 +112,15 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// <param name="item">the movie to create</param>
     /// <returns>true if successfull, else false</returns>
     /// <exception cref="InvalidOperationException">when ID is not null</exception>
-    public bool CreateItem(MovieModel item)
+    public bool CreateItem(MovieModel item, int deepcopyLv = 99)
     {
+        if (deepcopyLv < 0) return true;
         bool dontClose = _db.IsOpen;
         try
         {
             if (item.ID != null) throw new InvalidOperationException("this movie already exists in the db");
             if (!item.IsChanged) return true;
+            if(!DependingItemsToDb(item, deepcopyLv - 1)) return false;
             _db.OpenConnection();
             item.ID = _db.CreateData(
                 @"INSERT INTO Movie(
@@ -166,7 +141,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {"$6", item.DurationInMin}
                 }
             );
-            bool result = RelatedItemsToDb(item);
+            bool result = RelatedItemsToDb(item, deepcopyLv - 1);
             if (!result) return result;
             if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
@@ -182,14 +157,16 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// <param name="item">the movie to update</param>
     /// <returns>true if succesfull, else false</returns>
     /// <exception cref="InvalidOperationException">if ID of the movie is null</exception>
-    public bool UpdateItem(MovieModel item)
+    public bool UpdateItem(MovieModel item, int deepcopyLv = 99)
     {
+        if(deepcopyLv < 0) return true;
         bool dontClose = _db.IsOpen;
         try
         {
             if (item.ID == null) throw new InvalidOperationException("cannot update a movie without an ID.");
             if (!item.IsChanged) return true;
             _db.OpenConnection();
+            if (!DependingItemsToDb(item, deepcopyLv - 1)) return false;
             bool toReturn = _db.SaveData(
                 @"UPDATE Movie
                 SET Name = $1,
@@ -208,7 +185,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {"$6", item.DurationInMin},
                     {"$7", item.ID}
                 }
-            ) && RelatedItemsToDb(item);
+            ) && RelatedItemsToDb(item, deepcopyLv - 1);
             if (toReturn) item.IsChanged = false;
             return toReturn;
         }
@@ -217,22 +194,38 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (!dontClose) _db.CloseConnection();
         }
     }
-    private bool RelatedItemsToDb(MovieModel item)
+    private bool DependingItemsToDb(MovieModel item, int deepcopyLv){
+        if (item.DirectorID == null) return true;
+        if (item.Director != null)
+        {
+            if(!_df.ItemToDb(item.Director, deepcopyLv)) return false;
+            item.DirectorID = item.Director.ID;
+        }
+        return true;
+    }
+    private bool RelatedItemsToDb(MovieModel item, int deepcopyLv)
     {
+        if(deepcopyLv < 0) return true;
         bool dontClose = _db.IsOpen;
         try
         {
-            if (item.Director != null)
-            {
-                _df.ItemToDb(item.Director);
-                item.DirectorID = item.Director.ID;
-            }
             foreach (ActorModel actor in item.Actors)
             {
                 try
                 {
-                    // need a check for already existing actors of the movie...
-                    _af.ItemToDb(actor);
+                    //try add actor
+                    _af.ItemToDb(actor, deepcopyLv);
+                    //check if actorInMovie already exists
+                    if (_db.ReadData<ActorModel>
+                    (
+                        @"SELECT ID FROM ActorInMovie
+                        WHERE MovieID = $1, ActorID = $2",
+                        new(){
+                            {"$1", item.ID},
+                            {"$2", actor.ID}
+                        }
+                    ).Length > 0) continue;
+                    //add actorinmovie
                     var x = _db.SaveData(
                         @"INSERT INTO ActorInMovie(
                             ActorID,
@@ -282,7 +275,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (!dontClose) _db.CloseConnection();
         }
     }
-    public void getRelatedItemsFromDb(MovieModel item, int deepcopyLv = 0)
+    public void getRelatedItemsFromDb(MovieModel item, int deepcopyLv)
     {
         bool dontClose = _db.IsOpen;
         try
@@ -314,11 +307,12 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         );
     }
 
-    public bool ItemsToDb(List<MovieModel> items)
+    public bool ItemsToDb(List<MovieModel> items, int deepcopyLv = 99)
     {
+        if (deepcopyLv < 0) return true;
         foreach (var item in items)
         {
-            ItemToDb(item);
+            ItemToDb(item, deepcopyLv);
         }
         return true;
     }

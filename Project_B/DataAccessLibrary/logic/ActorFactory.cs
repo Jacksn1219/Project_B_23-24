@@ -10,8 +10,9 @@ namespace DataAccessLibrary.logic
             _db = db;
             CreateTable();
         }
-        public bool CreateItem(ActorModel item)
+        public bool CreateItem(ActorModel item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             if (item.Exists) throw new InvalidDataException("this Actor already exists in the db.");
             if (!item.IsChanged) return true;
             item.ID = _db.CreateData(
@@ -43,8 +44,9 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public ActorModel GetItemFromId(int id, int deepcopyLv = 0)
+        public ActorModel? GetItemFromId(int id, int deepcopyLv = 0)
         {
+            if(deepcopyLv < 0) return null;
             try
             {
                 return _db.ReadData<ActorModel>(
@@ -65,24 +67,27 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public bool ItemsToDb(List<ActorModel> items)
+        public bool ItemsToDb(List<ActorModel> items, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 1) return true;
             foreach (var item in items)
             {
-                ItemToDb(item);
+                ItemToDb(item, deepcopyLv);
             }
             return true;
         }
 
-        public bool ItemToDb(ActorModel item)
+        public bool ItemToDb(ActorModel item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             if (!item.IsChanged) return true;
-            if (!item.Exists) return CreateItem(item);
-            return UpdateItem(item);
+            if (!item.Exists) return CreateItem(item, deepcopyLv);
+            return UpdateItem(item, deepcopyLv);
         }
 
-        public bool UpdateItem(ActorModel item)
+        public bool UpdateItem(ActorModel item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             if (!item.Exists) throw new InvalidDataException("this Actor's ID is null. this actor cannot be updated.");
             if (!item.IsChanged) return true;
             bool toReturn = _db.SaveData(

@@ -15,8 +15,9 @@ namespace DataAccessLibrary.logic
             CreateTable();
         }
 
-        public bool CreateItem(RoomModel item)
+        public bool CreateItem(RoomModel item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             if (item.ID != null) throw new InvalidDataException("the room is already in the db.");
             if (!item.IsChanged) return true;
             bool dontClose = _db.IsOpen;
@@ -36,7 +37,7 @@ namespace DataAccessLibrary.logic
                         {"$3", item.RowWidth}
                     }
                 );
-                bool result = RelatedItemsToDb(item);
+                bool result = RelatedItemsToDb(item, deepcopyLv - 1);
                 if (item.ID > 0) item.IsChanged = false;
                 return item.ID > 0 && result;
             }
@@ -58,17 +59,20 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public RoomModel GetItemFromId(int id, int deepcopyLv = 0)
+        public RoomModel? GetItemFromId(int id, int deepcopyLv = 0)
         {
+            if(deepcopyLv < 0) return null;
             try
             {
-                return _db.ReadData<RoomModel>(
-            @"SELECT * FROM Room
-            WHERE ID = $1",
-            new Dictionary<string, dynamic?>(){
-                {"$1", id},
-            }
+            RoomModel toReturn = _db.ReadData<RoomModel>(
+                @"SELECT * FROM Room
+                WHERE ID = $1",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", id},
+                }
             ).First();
+            RelatedItemsToDb(toReturn, deepcopyLv - 1);
+            return toReturn;
             }
             catch { return null; }
         }
@@ -96,8 +100,9 @@ namespace DataAccessLibrary.logic
             }
         }
 
-        public bool ItemToDb(RoomModel item)
+        public bool ItemToDb(RoomModel item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             bool SeatModelsChanged = false;
             foreach (var SeatModel in item.Seats)
             {
@@ -107,20 +112,21 @@ namespace DataAccessLibrary.logic
                     break;
                 }
             }
-            if (!item.IsChanged && SeatModelsChanged) return RelatedItemsToDb(item);
+            if (!item.IsChanged && SeatModelsChanged) return RelatedItemsToDb(item, deepcopyLv - 1);
             if (!item.IsChanged) return true;
-            if (item.ID == null) return CreateItem(item);
-            return UpdateItem(item);
+            if (item.ID == null) return CreateItem(item, deepcopyLv);
+            return UpdateItem(item, deepcopyLv);
         }
-        public bool UpdateItem(RoomModel item)
+        public bool UpdateItem(RoomModel item, int deepcopyLv = 99)
         {
+            if (deepcopyLv < 0) return true;
             if (item.ID == null) throw new InvalidDataException("the id of the room is null. the item cannot be updated.");
             if (!item.IsChanged) return true;
             bool dontClose = _db.IsOpen;
             try
             {
                 _db.OpenConnection();
-                bool result = RelatedItemsToDb(item);
+                bool result = RelatedItemsToDb(item, deepcopyLv - 1);
                 if (!result) return result;
                 result = _db.SaveData(
                     @"UPDATE Room
@@ -144,8 +150,9 @@ namespace DataAccessLibrary.logic
             }
         }
 
-        private bool RelatedItemsToDb(RoomModel item)
+        private bool RelatedItemsToDb(RoomModel item, int deepcopyLv)
         {
+            if(deepcopyLv < 0) return true;
             bool dontClose = _db.IsOpen;
             try
             {
@@ -154,7 +161,7 @@ namespace DataAccessLibrary.logic
                 {
                     if (!seat.IsChanged) continue;
                     seat.RoomID = item.ID;
-                    _sf.ItemToDb(seat);
+                    _sf.ItemToDb(seat, deepcopyLv);
                 }
                 return true;
             }
@@ -173,11 +180,12 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public bool ItemsToDb(List<RoomModel> items)
+        public bool ItemsToDb(List<RoomModel> items, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             foreach (var item in items)
             {
-                ItemToDb(item);
+                ItemToDb(item, deepcopyLv);
             }
             return true;
         }

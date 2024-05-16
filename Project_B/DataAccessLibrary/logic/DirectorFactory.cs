@@ -9,8 +9,9 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
         CreateTable();
     }
 
-    public bool CreateItem(DirectorModel item)
+    public bool CreateItem(DirectorModel item, int deepcopyLv = 99)
     {
+        if (deepcopyLv < 0) return true;
         if (item.ID != null) throw new InvalidOperationException("this director already exists in the db");
         if (!item.IsChanged) return true;
         item.ID = _db.CreateData(
@@ -42,8 +43,9 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
         );
     }
 
-    public DirectorModel GetItemFromId(int id, int deepcopyLv = 0)
+    public DirectorModel? GetItemFromId(int id, int deepcopyLv = 0)
     {
+        if(deepcopyLv < 0) return null;
         try
         {
             return _db.ReadData<DirectorModel>(
@@ -63,40 +65,47 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
             );
     }
 
-    public bool ItemsToDb(List<DirectorModel> items)
+    public bool ItemsToDb(List<DirectorModel> items, int deepcopyLv = 99)
     {
+        if(deepcopyLv < 0) return true;
         foreach (var item in items)
         {
-            ItemToDb(item);
+            ItemToDb(item, deepcopyLv);
         }
         return true;
     }
 
-    public bool ItemToDb(DirectorModel item)
+    public bool ItemToDb(DirectorModel item, int deepcopyLv = 99)
     {
+        if (deepcopyLv < 0) return true;
         if (!item.IsChanged) return true;
         if (item.ID != null) return UpdateItem(item);
         return CreateItem(item);
     }
 
-    public bool UpdateItem(DirectorModel item)
+    public bool UpdateItem(DirectorModel item, int deepcopyLv = 99)
     {
-        if (item.ID == null) throw new InvalidOperationException("cannot update a director without an ID.");
-        if (!item.IsChanged) return true;
-        bool toReturn = _db.SaveData(
-            @"UPDATE Director
+        if (deepcopyLv >= 0)
+        {
+            if (item.ID == null) throw new InvalidOperationException("cannot update a director without an ID.");
+            if (!item.IsChanged) return true;
+            bool toReturn = _db.SaveData(
+                @"UPDATE Director
             SET Name = $1,
                 Age = $2,
                 Description = $3
             WHERE ID = $4;",
-            new Dictionary<string, dynamic?>(){
+                new Dictionary<string, dynamic?>(){
                 {"$1", item.Name},
                 {"$2", item.Age},
                 {"$3", item.Description},
                 {"$4", item.ID}
-            }
-        );
-        if (toReturn) item.IsChanged = false;
-        return toReturn;
+                }
+            );
+            if (toReturn) item.IsChanged = false;
+            return toReturn;
+        }
+
+        return true;
     }
 }

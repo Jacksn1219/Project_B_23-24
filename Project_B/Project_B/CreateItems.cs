@@ -250,10 +250,15 @@ namespace Project_B
                 movieToEdit.Director = _df.GetItemFromId(movieToEdit.DirectorID ?? 1);
 
                 // Menu to chose director
-                InputMenu directorMenu = new InputMenu(Universal.centerToScreen($"Current director = {movieToEdit.Director.Name}") + "\n" + Universal.centerToScreen("Choose a new director:"), null);
+                string title = "No director yet";
+                if(movieToEdit.Director != null){
+                    title = $"Current director = {movieToEdit.Director.Name}";
+                }
+
+                InputMenu directorMenu = new InputMenu(Universal.centerToScreen(title) + "\n" + Universal.centerToScreen("Choose a new director:"), null);
                 foreach (DirectorModel director in directorList)
                 {
-                    if (movieToEdit.Director.Name == director.Name) continue;
+                    if (movieToEdit.Director != null && movieToEdit.Director.Name == director.Name) continue;
                     directorMenu.Add(director.Name, (x) => { Director = director; });
                 }
                 if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
@@ -283,7 +288,7 @@ namespace Project_B
                     catch { }
 
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
-                    _mf.AddRelatedActors(movieToEdit);
+                    //_mf.AddRelatedActors(movieToEdit); // this is built into _mf.ItemToDb() if  deepcopy greater than 0.
 
                     // Menu to chose director
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
@@ -317,8 +322,8 @@ namespace Project_B
                 addOrRemove.Add("Remove an actor", (x) =>
                 {
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
-                    _mf.AddRelatedActors(movieToEdit);
-
+                    //_mf.AddRelatedActors(movieToEdit);
+                    if(movieToEdit.Actors.Count < 1) _mf.getRelatedItemsFromDb(movieToEdit, 1);
                     // Menu to chose director
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
                     foreach (ActorModel actor in movieToEdit.Actors)

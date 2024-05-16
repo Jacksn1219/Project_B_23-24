@@ -10,8 +10,9 @@ namespace DataAccessLibrary.logic
             _db = db;
             CreateTable();
         }
-        public bool CreateItem(SeatModel item)
+        public bool CreateItem(SeatModel item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             if (item.ID != null) throw new InvalidDataException("the SeatModel is already in the db.");
             if (!item.IsChanged) return true;
             item.ID = _db.CreateData(
@@ -32,11 +33,12 @@ namespace DataAccessLibrary.logic
             if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
-        public bool CreateItem(SeatModel[] item)
+        public bool CreateItems(SeatModel[] item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             foreach (SeatModel seat in item)
             {
-                if (!CreateItem(seat)) return false;
+                if (!CreateItem(seat, deepcopyLv)) return false;
             }
             return true;
         }
@@ -55,15 +57,20 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public SeatModel GetItemFromId(int id, int deepcopyLv = 0)
+        public SeatModel? GetItemFromId(int id, int deepcopyLv = 0)
         {
-            return _db.ReadData<SeatModel>(
-                @"SELECT * FROM SeatModel
-                WHERE ID = $1",
-                new Dictionary<string, dynamic?>(){
-                    {"$1", id},
-                }
-            ).First();
+            if(deepcopyLv < 0) return null;
+            try
+            {
+                return _db.ReadData<SeatModel>(
+                    @"SELECT * FROM SeatModel
+                    WHERE ID = $1",
+                    new Dictionary<string, dynamic?>(){
+                        {"$1", id},
+                    }
+                ).First();
+            }
+            catch(Exception ex){ return null;}
         }
 
         public SeatModel[] GetItems(int count, int page = 1, int deepcopyLv = 0)
@@ -74,24 +81,27 @@ namespace DataAccessLibrary.logic
             );
         }
 
-        public bool ItemsToDb(List<SeatModel> items)
+        public bool ItemsToDb(List<SeatModel> items, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             foreach (var item in items)
             {
-                ItemToDb(item);
+                ItemToDb(item, deepcopyLv);
             }
             return true;
         }
 
-        public bool ItemToDb(SeatModel item)
+        public bool ItemToDb(SeatModel item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             if (!item.IsChanged) return true;
-            if (item.ID == null) return CreateItem(item);
-            return UpdateItem(item);
+            if (item.ID == null) return CreateItem(item, deepcopyLv);
+            return UpdateItem(item, deepcopyLv);
         }
 
-        public bool UpdateItem(SeatModel item)
+        public bool UpdateItem(SeatModel item, int deepcopyLv = 99)
         {
+            if(deepcopyLv < 0) return true;
             if (item.ID == null) throw new InvalidDataException("the SeatModel has no ID therefore it cannot be updated.");
             if (!item.IsChanged) return true;
             bool toReturn = _db.SaveData(
