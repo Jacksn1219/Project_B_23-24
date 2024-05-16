@@ -18,12 +18,13 @@ class RoomLayoutService : LayoutModel
     }
     //public Layout(RoomModel room, List<SeatModel> SeatModelList) : base(room, SeatModelList) { }
 
-    public void drawLayout(List<SeatModel> layout, RoomModel room)
+    public void drawLayout(RoomModel room)
     {
         Console.Clear();
         Console.ResetColor();
 
-        //List<SeatModel> layout = getSeatModelsFromDatabase();
+        List<SeatModel> layout = room.Seats;
+
         string alfabet = "abcdefghijklmnopqrstuvwxyz";
         for (int i = 1; i < room.RowWidth + 1; i++) { Console.Write("  " + alfabet[i - 1]); }
 
@@ -45,9 +46,9 @@ class RoomLayoutService : LayoutModel
         Console.Write($"[{room.RowWidth - 8 / 2}Screen{room.RowWidth - 8 / 2}]");
         Console.ResetColor();
     }
-    public static SeatModel? selectSeatModel(List<SeatModel> layout, RoomModel room)
+    public static SeatModel? selectSeatModel(RoomModel room)
     {
-        //List<SeatModel> layout = getSeatModelsFromDatabase(); - Aymane
+        List<SeatModel> layout = room.Seats;
         //drawLayout(layout, room);
 
         SeatModel? selectedOption = null;
@@ -69,18 +70,18 @@ class RoomLayoutService : LayoutModel
         SeatModelSelectionMenu.UseMenu();
         return selectedOption;
     }
-    public void editLayout()
+    public void editLayout(SeatFactory _sf, RoomFactory _rf)
     {
         List<RoomModel> roomList = new List<RoomModel>();
-        SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
-        RoomFactory roomFactory = new RoomFactory(Universal.Db, seatModelFactory);
+        //SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
+        //RoomFactory roomFactory = new RoomFactory(Universal.Db, seatModelFactory);
         try
         {
             int i = 1;
             RoomModel? room = null;
             do
             {
-                room = roomFactory.GetItemFromId(i);
+                room = _rf.GetItemFromId(i);
                 if (room != null) roomList.Add(room);
                 i++;
             } while (room != null);
@@ -94,7 +95,7 @@ class RoomLayoutService : LayoutModel
             SeatModel? seat = new SeatModel();
             while (seat != null)
             {
-                seat = seatModelFactory.GetItemFromId(i, 1);
+                seat = _sf.GetItemFromId(i, 1);
                 if (seat != null) seatList.Add(seat);
                 i++;
             }
@@ -109,18 +110,23 @@ class RoomLayoutService : LayoutModel
             else layouts[(seat.RoomID ?? 0) - 1].Add(seat);
         }
 
-        SeatModel? selectedOption = null;
+        //SeatModel? selectedOption = null;
 
         InputMenu selectRoom = new InputMenu("useLambda", null);
         foreach (RoomModel room in roomList)
         {
             selectRoom.Add($"{room.Name}", (x) => {
                 room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
-                selectedOption = Layout.selectSeatModel(room.SeatModels, room);
+                editLayout(room);
+                //selectedOption = RoomLayoutService.selectSeatModel(room.Seats, room);
             });
         }
         selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
-        return selectedOption;
+        //return selectedOption;
+    }
+    public void editLayout()
+    {
+        editLayout(room);
     }
     public static void editLayout(RoomModel room)
     {
@@ -444,23 +450,12 @@ class RoomLayoutService : LayoutModel
         //Adding the SeatModels to the database
         currentRoom.AddSeatModels(SeatModels.ToArray());
 
-        //upload_to_database(currentRoom);
-
-        /*Console.WriteLine("\n\nList<SeatModel> layout = new List<SeatModel> {");
-        foreach (SeatModel SeatModel in SeatModels)
-        {
-            Console.WriteLine($"new SeatModel(\"{SeatModel.Name}\", \"{SeatModel.Rank}\", \"{SeatModel.Type}\", Room3),");
-        }
-        Console.WriteLine("};");
-        Console.ReadLine();*/
-
         Console.Write("The room is created ");
         Universal.WriteColor("succesfully", ConsoleColor.Green);
         Console.ReadLine();
 
-        selectSeatModel(SeatModels, currentRoom);
+        selectSeatModel(currentRoom);
     }
-
 
     public static SeatModel? selectSeatModelForUser(List<SeatModel> layout, RoomModel room)
     {

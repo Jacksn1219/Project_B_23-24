@@ -47,11 +47,8 @@ static class Universal
             return System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\DataSource"));
         }
     }
-    public static void showReservedSeats()
+    public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf)
     {
-        SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
-        CustomerFactory customerFactory = new CustomerFactory(Db);
-        ReservationFactory reservationFactory = new ReservationFactory(Db, customerFactory, seatModelFactory);
 
         List<ReservationModel> reservationList = new List<ReservationModel>();
         try
@@ -60,7 +57,7 @@ static class Universal
             ReservationModel? reservation = new ReservationModel();
             while (reservation != null)
             {
-                reservation = reservationFactory.GetItemFromId(i);
+                reservation = _rf.GetItemFromId(i);
                 if (reservation != null) reservationList.Add(reservation);
                 i++;
             }
@@ -74,7 +71,7 @@ static class Universal
             SeatModel? seat = new SeatModel();
             while (seat != null)
             {
-                seat = seatModelFactory.GetItemFromId(reservationList[i].ID ?? 1, 1);
+                seat = _sf.GetItemFromId(reservationList[i].ID ?? 1, 1);
                 if (seat != null) reservesSeatList.Add(seat);
                 i++;
             }

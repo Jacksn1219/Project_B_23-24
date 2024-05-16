@@ -167,7 +167,8 @@ namespace Project_B
                     {"add movie", (x) => {createItems.CreateNewMovie();}},
                     {"edit movie", (x) => {createItems.ChangeMovie();}},
                     {"add movie to timetable", (x) => {/*not yet*/}},
-                    {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
+                    {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}},
+                    {"show reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory);}}
                 }
             );
 
@@ -313,3 +314,9 @@ namespace Project_B
 //         }
 //     }
 // }
+
+
+/*
+ * Seat menu, start on chair
+ 
+ */
