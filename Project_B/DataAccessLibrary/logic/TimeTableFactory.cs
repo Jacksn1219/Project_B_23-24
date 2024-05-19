@@ -198,4 +198,9 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 {"$2", tt.ID}
             });
     }
+
+    public RoomModel getRelatedItemsFromDb(int roomNumber)
+    {
+        throw new NotImplementedException();
+    }
 }

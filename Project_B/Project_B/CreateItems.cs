@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Linq;
+using DataAccessLibrary.models;
 
 namespace Project_B
 {
@@ -16,11 +17,13 @@ namespace Project_B
         private readonly ActorFactory _af;
         private readonly DirectorFactory _df;
         private readonly MovieFactory _mf;
-        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf)
+        private readonly TimeTableFactory _ttf;
+        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf, TimeTableFactory ttf)
         {
             _af = af;
             _df = df;
             _mf = mf;
+            _ttf = ttf;
         }
         public void CreateNewMovie()
         {
@@ -357,6 +360,142 @@ namespace Project_B
         }
 
         public void CreateTimeTable()
-        {}
+        {
+            // Select a movie from the database
+            List<MovieModel> movieList = new List<MovieModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var movs = _mf.GetItems(100, page, 6);
+                    movieList.AddRange(movs);
+                    page++;
+                    if (movs.Length < 100) break;
+                }
+            }
+            catch { }
+
+            MovieModel selectedMovie = new MovieModel("", "", 4, 120, "");
+            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
+            foreach (MovieModel movie in movieList)
+            {
+                movieMenu.Add(movie.Name ?? "", (x) => { selectedMovie = movie; });
+            }
+            movieMenu.UseMenu();
+
+            // Select a room
+            RoomModel selectedRoom = new RoomModel(); // Assuming you have a RoomModel class
+
+            Console.WriteLine("Enter the room number:");
+            int roomNumber = int.Parse(Console.ReadLine() ?? "0");
+
+            // Assuming you have a method to get RoomModel by room number
+            try
+            {
+                selectedRoom = _ttf.getRelatedItemsFromDb(roomNumber); // Implement this method in _ttf
+            }
+            catch
+            {
+                Console.WriteLine("Invalid room number. Please try again.");
+                return;
+            }
+
+            // Set start date and end date
+            Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
+            DateTime startDate;
+            while (!DateTime.TryParse(Console.ReadLine(), out startDate))
+            {
+                Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+            }
+
+            Console.WriteLine("Enter the end date (yyyy-MM-dd HH:mm):");
+            DateTime endDate;
+            while (!DateTime.TryParse(Console.ReadLine(), out endDate))
+            {
+                Console.WriteLine("Invalid date format. Please enter the end date (yyyy-MM-dd HH:mm):");
+            }
+
+            // Create new timetable
+            TimeTableModel newTimeTable = new TimeTableModel(selectedRoom, selectedMovie, startDate, endDate);
+            _ttf.CreateItem(newTimeTable);
+        }
+
+
+        public void EditTimeTable()
+        {
+            // Fetch existing timetables from the database
+            // List<TimeTableModel> timeTableList = new List<TimeTableModel>();
+            // try
+            // {
+            //     int page = 1;
+            //     while (true)
+            //     {
+            //         var tts = _ttf.GetItems(100, page, 6);
+            //         timeTableList.AddRange(tts);
+            //         page++;
+            //         if (tts.Length < 100) break;
+            //     }
+            // }
+            // catch { }
+
+            // TimeTableModel selectedTimeTable = new TimeTableModel(0, 0, DateTime.Now, DateTime.Now);
+            // InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Select a timetable to edit:"), null);
+            // foreach (TimeTableModel tt in timeTableList)
+            // {
+            //     string movieName = _mf.GetItemFromId(tt.MovieID)?.Name ?? "Unknown Movie";
+            //     timeTableMenu.Add($"{movieName} in Room {tt.RoomID} from {tt.StartDate} to {tt.EndDate}", (x) => { selectedTimeTable = tt; });
+            // }
+            // timeTableMenu.UseMenu();
+
+            // InputMenu editMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
+            // editMenu.Add("Movie", (x) =>
+            // {
+            //     List<MovieModel> movieList = new List<MovieModel>();
+            //     try
+            //     {
+            //         int page = 1;
+            //         while (true)
+            //         {
+            //             var movs = _mf.GetItems(100, page, 6);
+            //             movieList.AddRange(movs);
+            //             page++;
+            //             if (movs.Length < 100) break;
+            //         }
+            //     }
+            //     catch { }
+
+            //     MovieModel selectedMovie = new MovieModel("", "", 4, 120, "");
+            //     InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a new movie:"), null);
+            //     foreach (MovieModel movie in movieList)
+            //     {
+            //         movieMenu.Add(movie.Name ?? "", (x) => { selectedMovie = movie; });
+            //     }
+            //     movieMenu.UseMenu();
+
+            //     selectedTimeTable.MovieID = selectedMovie.ID;
+            // });
+            // editMenu.Add("Room", (x) =>
+            // {
+            //     Console.WriteLine($"Current Room = {selectedTimeTable.RoomID}\nEnter the new room number:");
+            //     int roomNumber = int.Parse(Console.ReadLine() ?? selectedTimeTable.RoomID.ToString());
+            //     selectedTimeTable.RoomID = roomNumber;
+            // });
+            // editMenu.Add("Start Date", (x) =>
+            // {
+            //     Console.WriteLine($"Current Start Date = {selectedTimeTable.StartDate}\nEnter the new start date (yyyy-MM-dd HH:mm):");
+            //     DateTime startDate = DateTime.Parse(Console.ReadLine() ?? selectedTimeTable.StartDate.ToString());
+            //     selectedTimeTable.StartDate = startDate;
+            // });
+            // editMenu.Add("End Date", (x) =>
+            // {
+            //     Console.WriteLine($"Current End Date = {selectedTimeTable.EndDate}\nEnter the new end date (yyyy-MM-dd HH:mm):");
+            //     DateTime endDate = DateTime.Parse(Console.ReadLine() ?? selectedTimeTable.EndDate.ToString());
+            //     selectedTimeTable.EndDate = endDate;
+            // });
+            // editMenu.UseMenu();
+
+            // _ttf.UpdateItem(selectedTimeTable);
+        }
     }
 }
