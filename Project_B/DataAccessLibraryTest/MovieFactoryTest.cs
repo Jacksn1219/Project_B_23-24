@@ -27,9 +27,9 @@ namespace DataAccessLibraryTest
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
-            _af = new ActorFactory(_db);
-            _df = new DirectorFactory(_db);
-            _mf = new MovieFactory(_db, _df, _af);
+            _af = new ActorFactory(_db, logger);
+            _df = new DirectorFactory(_db, logger);
+            _mf = new MovieFactory(_db, _df, _af, logger);
         }
         [TestMethod]
         public void TestAddMovieNoOtherFactories()
@@ -126,7 +126,7 @@ namespace DataAccessLibraryTest
         {
             MovieModel[] movs = _mf.GetItems(100);
             MovieModel[] movsPageTwoLvTwo = _mf.GetItems(100, 2, 2);
-            _mf.getRelatedItemsFromDb(movs.First());
+            _mf.getRelatedItemsFromDb(movs.First(), 66);
         }
     }
 }

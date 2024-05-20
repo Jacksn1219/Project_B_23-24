@@ -24,7 +24,7 @@ namespace DataAccessLibraryTest
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
-            _cf = new CustomerFactory(_db);
+            _cf = new CustomerFactory(_db, logger);
         }
         [TestMethod]
         public void TestCustomerWithInvalidEmail()

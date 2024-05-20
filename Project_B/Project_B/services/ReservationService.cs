@@ -95,7 +95,7 @@ public class ReservationService
     private TimeTableModel? SelectTimeTableInDay(string weekday)
     {
         TimeTableModel? mov = null;
-        InputMenu movieSelecter = new InputMenu("| Selecteer een film |");
+        InputMenu movieSelecter = new InputMenu("| Selecteer een film |", true);
         TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
         foreach (TimeTableModel timeTable in timetables)
         {

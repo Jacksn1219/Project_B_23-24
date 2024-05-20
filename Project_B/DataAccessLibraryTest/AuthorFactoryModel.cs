@@ -10,6 +10,7 @@ namespace DataAccessLibraryTest
         private const string TestDbPath = "directorTest.db";
         private readonly DataAccess _db;
         private readonly DirectorFactory _df;
+        private readonly Serilog.Core.Logger _logger;
         public DirectorFactoryTest()
         {
             try
@@ -20,11 +21,11 @@ namespace DataAccessLibraryTest
             {
                 System.Console.WriteLine($"cannot delete testdb {TestDbPath}: {ex.Message}");
             }
-            using var logger = new LoggerConfiguration()
+            _logger = new LoggerConfiguration()
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
-            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
-            _df = new DirectorFactory(_db);
+            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", _logger);
+            _df = new DirectorFactory(_db, _logger); 
         }
         [TestMethod]
         public void TestCreateDirector()

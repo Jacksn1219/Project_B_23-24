@@ -28,12 +28,12 @@ namespace DataAccessLibraryTest
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
-            var af = new ActorFactory(_db);
-            var df = new DirectorFactory(_db);
-            var sf = new SeatFactory(_db);
-            _mf = new MovieFactory(_db, df, af);
-            _rf = new RoomFactory(_db, sf);
-            _tf = new TimeTableFactory(_db, _mf, _rf);
+            var af = new ActorFactory(_db, logger);
+            var df = new DirectorFactory(_db, logger);
+            var sf = new SeatFactory(_db, logger);
+            _mf = new MovieFactory(_db, df, af, logger);
+            _rf = new RoomFactory(_db, sf, logger);
+            _tf = new TimeTableFactory(_db, _mf, _rf, logger);
         }
         [TestMethod]
         public void TestAddTimeTable()

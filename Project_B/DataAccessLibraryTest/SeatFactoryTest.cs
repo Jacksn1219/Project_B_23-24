@@ -26,8 +26,8 @@ namespace DataAccessLibraryTest
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
-            _sf = new SeatFactory(_db);
-            var rf = new RoomFactory(_db, _sf);
+            _sf = new SeatFactory(_db, logger);
+            var rf = new RoomFactory(_db, _sf, logger);
             _room = new RoomModel(
                     "test", 10, 10
                 );

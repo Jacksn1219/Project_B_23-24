@@ -28,14 +28,14 @@ namespace DataAccessLibraryTest
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
-            _sf = new SeatFactory(_db);
-            _cf = new CustomerFactory(_db);
-            var df = new DirectorFactory(_db);
-            var af = new ActorFactory(_db);
-            var mf = new MovieFactory(_db, df, af);
-            var rf = new RoomFactory(_db, _sf);
-            var tf = new TimeTableFactory(_db, mf, rf);
-            _rf = new ReservationFactory(_db, _cf, _sf, tf);
+            _sf = new SeatFactory(_db, logger);
+            _cf = new CustomerFactory(_db, logger);
+            var df = new DirectorFactory(_db, logger);
+            var af = new ActorFactory(_db, logger);
+            var mf = new MovieFactory(_db, df, af, logger);
+            var rf = new RoomFactory(_db, _sf, logger);
+            var tf = new TimeTableFactory(_db, mf, rf, logger);
+            _rf = new ReservationFactory(_db, _cf, _sf, tf, logger);
             SeatModel SeatModel = new SeatModel("SeatModel1", "1", "1");
             RoomModel room = new RoomModel("room1", 10, 1, new List<SeatModel>() { SeatModel });
             MovieModel mov = new MovieModel("movie1", "descr1", 3, 300, "genre");

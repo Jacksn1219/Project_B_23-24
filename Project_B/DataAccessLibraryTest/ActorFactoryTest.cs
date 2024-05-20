@@ -25,7 +25,7 @@ namespace DataAccessLibraryTest
                 .CreateLogger();
 
             _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
-            _af = new ActorFactory(_db);
+            _af = new ActorFactory(_db, logger);
         }
         [TestMethod]
         public void AddActorTest()

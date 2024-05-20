@@ -12,8 +12,13 @@ public class SQLite_setup
     {
         //----- Setting up JSON file for password -----//
         string fileName = "Medewerker.json";
-        string jsonString = JsonSerializer.Serialize(new KeyValuePair<string, string>("PassWord", "w817"));
-        File.WriteAllText(JSONPath + "\\" + fileName, jsonString);
+        if (!File.Exists(JSONPath + "\\" + fileName))
+        {
+            
+            string jsonString = JsonSerializer.Serialize(new KeyValuePair<string, string>("PassWord", "w817"));
+            File.WriteAllText(JSONPath + "\\" + fileName, jsonString);
+        }
+        
 
         if (rf.GetItemFromId(1) == null)
         {

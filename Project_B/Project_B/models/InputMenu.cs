@@ -152,7 +152,7 @@ namespace Models
                     {
                         this.menuoptions[cursor].Act("");
                         Console.Clear();
-                        if (this.exit == null) return;
+                        if (this.exit == true) return;
                     }
                 }
             }
