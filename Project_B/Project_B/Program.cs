@@ -29,7 +29,7 @@ namespace Project_B
             ReservationFactory reservationFactory = new ReservationFactory(db, cf, sf, ttf);
 
             //set up services
-            CreateItems createItems = new CreateItems(af, df, mf, ttf);
+            CreateItems createItems = new CreateItems(af, df, mf, rf, ttf);
             RoomService roomservice = new(rf);
             ReservationService rs = new(reservationFactory, mf, ttf);
 
