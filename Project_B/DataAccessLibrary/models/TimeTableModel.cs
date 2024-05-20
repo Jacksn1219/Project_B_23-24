@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Reflection.Metadata;
 using System.Runtime.Serialization;
+using System.Text;
 using DataAccessLibrary;
 using DataAccessLibrary.models.interfaces;
 
@@ -69,6 +70,15 @@ namespace DataAccessLibrary.models
             MovieID = movieId;
             StartDate = startDate.ToString(CultureInfo.InvariantCulture);
             EndDate = endDate.ToString(CultureInfo.InvariantCulture);
+        }
+        public override string ToString()
+        {
+            StringBuilder sb = new();
+            if(Movie != null) sb.AppendLine($"Movie: \n{Movie.ToString()}");
+            if(Room != null) sb.AppendLine($"Room: \n{Room.ToString()}");
+            sb.AppendLine($"Start of movie: {StartDate}");
+            sb.AppendLine($"End of movie: {EndDate}");
+            return sb.ToString();
         }
     }
 }

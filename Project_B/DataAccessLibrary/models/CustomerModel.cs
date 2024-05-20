@@ -99,4 +99,8 @@ public class CustomerModel : DbItem
             return false;
         }
     }
+    public override string ToString()
+    {
+        return $"Name: {Name}, Age: {Age}, Email: {Email}, PhoneNumber: {PhoneNumber}, IsSubscribed: {IsSubscribed}";
+    }
 }

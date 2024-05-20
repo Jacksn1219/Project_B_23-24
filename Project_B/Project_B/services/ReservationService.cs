@@ -43,11 +43,11 @@ public class ReservationService
         //print number
 
     }
-    public void GetReservationByNumber()
+    public void GetReservationByNumber(int nr)
     {
-        int id = 0;
-        ReservationModel res = _rf.GetItemFromId(id);
-        System.Console.WriteLine(res.ToString());
+        ReservationModel? res = _rf.GetItemFromId(nr);
+        if (res == null) System.Console.WriteLine("reservation not found.");
+        else System.Console.WriteLine(res.ToString());
     }
     public string? GetWeekDay()
     {

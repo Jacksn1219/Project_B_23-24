@@ -6,6 +6,7 @@ using DataAccessLibrary.logic;
 using Project_B.menu_s;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using static Project_B.Universal;
 
 namespace Project_B
 {
@@ -46,7 +47,21 @@ namespace Project_B
                 new Dictionary<string, Action<string>>(){
                     {"reserve seats", (x) => {rs.CreateReservation(); Console.ReadLine();}},
                     {"browse movies", (x) => {Console.ReadLine();}},
-                    {"get reservation", (x) => {rs.GetReservationByNumber(); Console.ReadLine();}}
+                    {"get reservation", (x) => 
+                    { 
+                        while(true)
+                        {
+                            Console.WriteLine("fill in your reservation number:"); 
+                            var result = System.Console.ReadLine();
+                            if (result != null && int.TryParse(result, out int nr))
+                            {
+                                rs.GetReservationByNumber(nr); 
+                                break;
+                            }
+                            System.Console.WriteLine(ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + ChangeColour(ConsoleColor.Black));
+                        }
+                        
+                        Console.ReadLine();}}
 
                 },
                 //admin options
