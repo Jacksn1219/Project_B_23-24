@@ -10,7 +10,13 @@ namespace Models
         bool? exit;
         List<InputMenuOption> menuoptions;
         int row;
-
+        
+        /// <summary>
+        /// Title (useLambda for use of displayAsTitle()) | exit (null = back after choice, false = Back, true = Exit)
+        /// </summary>
+        /// <param name="introduction"></param>
+        /// <param name="exit"></param>
+        /// <param name="row"></param>
         public InputMenu(string introduction = "", bool? exit = false, int row = 1)
         {
             this.introduction = introduction;
@@ -38,7 +44,8 @@ namespace Models
         public void Remove() => this.menuoptions.Remove(this.menuoptions[this.menuoptions.Count - 1]);
         public void Remove(string optionName)
         {
-            this.menuoptions.Remove(this.menuoptions[this.menuoptions.FindIndex(menuoption => menuoption.Name == optionName)]);
+            try { this.menuoptions.Remove(this.menuoptions[this.menuoptions.FindIndex(menuoption => menuoption.Name == optionName)]); }
+            catch { }
         }
 
         public void Edit(int ID, string newName) => this.menuoptions[this.menuoptions.FindIndex((x) => x.ID == ID)].Name = newName;
@@ -74,7 +81,8 @@ namespace Models
                             "L" => ConsoleColor.Magenta,
                             _ => ConsoleColor.Gray
                         };
-                    } catch { }
+                    }
+                    catch { }
                     try { if (this.menuoptions[i].isTaken == true) Console.ForegroundColor = ConsoleColor.DarkGray; } catch { }
                     Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
@@ -124,6 +132,13 @@ namespace Models
                     cursor++;
                     while (cursor < this.menuoptions.Count && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].isTaken == true)) cursor++;
                 }
+                else if (userInput == ConsoleKey.Escape)
+                {
+                    Console.Clear();
+                    Console.WriteLine("\x1b[3J");
+                    if (this.exit == true) Environment.Exit(0);
+                    return;
+                }
                 else if (userInput == ConsoleKey.Enter)
                 {
                     Console.Clear();
@@ -133,7 +148,8 @@ namespace Models
                         if (this.exit == true) Environment.Exit(0);
                         return;
                     }
-                    else {
+                    else
+                    {
                         this.menuoptions[cursor].Act("");
                         Console.Clear();
                         if (this.exit == null) return;

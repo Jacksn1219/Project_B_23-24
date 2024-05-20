@@ -8,10 +8,10 @@ namespace DataAccessLibrary.models
 {
     public class TimeTableModel : DbItem
     {
-        public int? MovieID { get; set; }
-        public readonly MovieModel? Movie;
+        public MovieModel? Movie;
         public int? RoomID { get; set; }
-        public readonly RoomModel? Room;
+        public RoomModel? Room;
+        public int? MovieID { get; set; }
         private string _startDate;
         private string _endDate;
         public DateTime DateTimeStartDate

@@ -1,5 +1,7 @@
 using System.Data;
 using System.Data.SQLite;
+using Microsoft.Extensions.Logging;
+using Serilog.Core;
 
 namespace DataAccessLibrary
 {
@@ -14,9 +16,18 @@ namespace DataAccessLibrary
         /// the constructor. takes a connectionstring to create a SQLiteConnection
         /// </summary>
         /// <param name="connectionString">the connectionstring of the sqlite db</param>
-        public SQliteDataAccess(string connectionString)
+        public SQliteDataAccess(string connectionString, Logger logger) : base(logger)
         {
-            _dbAccess = new SQLiteConnection(connectionString);
+            try
+            {
+                _dbAccess = new SQLiteConnection(connectionString);
+            }
+            catch (Exception ex)
+            {
+                _logger.Fatal("failed to create a sqlite connection. is the connectionstring corupted?", ex);
+                throw;
+            }
+
         }
         /// <summary>
         /// dispose the SQLiteDataAccess.
@@ -34,7 +45,7 @@ namespace DataAccessLibrary
         public override bool SaveData(string sqlStatement)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -44,7 +55,7 @@ namespace DataAccessLibrary
             }
             finally
             {
-                dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
         /// <summary>
@@ -74,7 +85,7 @@ namespace DataAccessLibrary
         public bool SaveData(string sqlStatement, SQLiteParameter[] parameters)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -85,25 +96,25 @@ namespace DataAccessLibrary
             }
             finally
             {
-                dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
-        public override List<T> ReadData<T>(string sqlStatement)
+        public override T[] ReadData<T>(string sqlStatement)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
                 command.CommandText = sqlStatement;
-                return ConvertToObject<T>(command.ExecuteReader()) ?? new List<T>();
+                return ConvertToObject<T>(command.ExecuteReader()) ?? new T[0];
             }
             finally
             {
-                dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
-        public override List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters)
+        public override T[] ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters)
         {
             List<SQLiteParameter> sqliteParameters = new();
             foreach (string key in parameters.Keys)
@@ -114,27 +125,27 @@ namespace DataAccessLibrary
             }
             return ReadData<T>(sqlStatement, sqliteParameters.ToArray());
         }
-        public List<T> ReadData<T>(string sqlStatement, SQLiteParameter[] parameters)
+        public T[] ReadData<T>(string sqlStatement, SQLiteParameter[] parameters)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
                 command.CommandText = sqlStatement;
                 command.Parameters.AddRange(parameters);
-                return ConvertToObject<T>(command.ExecuteReader()) ?? new List<T>();
+                return ConvertToObject<T>(command.ExecuteReader()) ?? new T[0];
             }
             finally
             {
-                dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
 
         public override int CreateData(string sqlStatement)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            dbAccess.Open();
+            if (!IsOpen) dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -145,7 +156,7 @@ namespace DataAccessLibrary
             }
             finally
             {
-                dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
 
@@ -163,7 +174,7 @@ namespace DataAccessLibrary
         public int CreateData(string sqlStatement, SQLiteParameter[] parameters)
         {
             SQLiteConnection dbAccess = _dbAccess as SQLiteConnection ?? throw new SQLiteException("_dbAccess is not a type of SQLiteConnection");
-            dbAccess.Open();
+            if (!IsOpen) _dbAccess.Open();
             try
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
@@ -178,7 +189,7 @@ namespace DataAccessLibrary
             }
             finally
             {
-                dbAccess.Close();
+                if (!IsOpen) dbAccess.Close();
             }
         }
     }

@@ -1,10 +1,11 @@
 using System;
+using DataAccessLibrary;
 
 namespace Project_B.services
 {
     public static class UserInfoInput
     {
-        public static (string fullName, string email, string phoneNumber, string userinput) GetUserInfo()
+        public static CustomerModel GetUserInfo()
         {
             string fullName;
             while (true)
