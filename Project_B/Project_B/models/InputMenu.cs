@@ -10,7 +10,7 @@ namespace Models
         bool? exit;
         List<InputMenuOption> menuoptions;
         int row;
-        
+
         /// <summary>
         /// Title (useLambda for use of displayAsTitle()) | exit (null = back after choice, false = Back, true = Exit)
         /// </summary>
@@ -162,7 +162,7 @@ namespace Models
                     {
                         this.menuoptions[cursor].Act("");
                         Console.Clear();
-                        if (this.exit == true) return;
+                        if (this.exit == null) return;
                     }
                 }
             }

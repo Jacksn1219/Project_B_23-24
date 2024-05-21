@@ -184,7 +184,7 @@ namespace Project_B
                     {"edit movie", (x) => {createItems.ChangeMovie();}},
                     {"add timetable", (x) => {createItems.CreateTimeTable();}},
                     {"edit timetable", (x) => {/*not yet*/}},
-                    {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
+                    {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}},
                     {"add movie to timetable", (x) => {/*not yet*/}},
                     {"show reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory);}}
                 }
