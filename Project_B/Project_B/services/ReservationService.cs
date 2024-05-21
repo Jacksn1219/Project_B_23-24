@@ -109,6 +109,7 @@ public class ReservationService
         if (reservation == null)
         {
             Console.WriteLine("No reservation found with this confirmation number");
+            return;
         }
         Console.Clear();
         Console.WriteLine($"These are the details of your reservation:\n");
