@@ -399,7 +399,7 @@ namespace Project_B
             }
             catch { }
 
-            MovieModel selectedMovie = new MovieModel("", "", 4, 120, "");
+            MovieModel selectedMovie = new ();
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
             foreach (MovieModel movie in movieList)
             {
@@ -421,7 +421,7 @@ namespace Project_B
             }
             catch { }
 
-            RoomModel selectedRoom = new RoomModel("", 0, 0);
+            RoomModel selectedRoom = new ();
             InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a room: (Room1, Room2, Room3)"), null);
             foreach (RoomModel room in roomList)
             {
@@ -445,6 +445,7 @@ namespace Project_B
                 System.Console.WriteLine("added movie to timetable.");
             }
             else System.Console.WriteLine("failed to add movie to timetable");
+            Console.ReadLine();
         }
 
         // public void EditTimeTable()
