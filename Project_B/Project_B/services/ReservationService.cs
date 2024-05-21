@@ -112,6 +112,11 @@ public class ReservationService
     public void GetReservationById(int id)
     {
         ReservationModel reservation = _rf.GetItemFromId(id, 3);
+        if (reservation == null)
+        {
+            Console.WriteLine("No reservation found with this confirmation number");
+            return;
+        }
         Console.Clear();
         Console.WriteLine($"These are the details of your reservation:\n");
         Console.WriteLine($"Confirmation number: {reservation.ID}");
