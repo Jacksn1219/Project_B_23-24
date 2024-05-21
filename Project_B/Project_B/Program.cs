@@ -70,7 +70,7 @@ namespace Project_B
                     {"add movie", (x) => {createItems.CreateNewMovie();}},
                     {"edit movie", (x) => {createItems.ChangeMovie();}},
                     {"add timetable", (x) => {createItems.CreateTimeTable();}},
-                    {"edit timetable", (x) => {createItems.EditTimeTable();}},
+                    {"edit timetable", (x) => {/*not yet*/}},
                     {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                 }
             );
