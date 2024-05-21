@@ -41,14 +41,20 @@ public class ReservationService
         //select seats to reserve
         //ook in layout -> select Seatperroom of selectseatmodel
 
-        RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1,3));
+        var seats = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1,3));
         //fill in user data
         var user = UserInfoInput.GetUserInfo();
+        CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
+        // create reservation
+        ReservationModel res = new ReservationModel(cust, tt, new List<SeatModel>(){ seats}, user.userinput);
+        _rf.ItemToDb(res);
         //print number
+        System.Console.WriteLine(res.ID);
+
 
     }
 
-    public void SelectSeatt(RoomFactory roomFactory){
+    public void SelectSeat(RoomFactory roomFactory){
 
         RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1,3));
         var user = UserInfoInput.GetUserInfo();

@@ -441,6 +441,10 @@ namespace Project_B
 
             TimeTableModel newTimeTable = new TimeTableModel(selectedRoom, selectedMovie, startDate, endDate);
             _ttf.CreateItem(newTimeTable);
+            if(newTimeTable.ID != null){
+                System.Console.WriteLine("added movie to timetable.");
+            }
+            else System.Console.WriteLine("failed to add movie to timetable");
         }
 
         // public void EditTimeTable()

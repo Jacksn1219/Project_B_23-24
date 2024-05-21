@@ -50,7 +50,7 @@ namespace DataAccessLibrary.models
         /// <summary>
         /// parameterless ctor to please the jsonserialiser gods
         /// </summary>
-        public TimeTableModel(int v)
+        public TimeTableModel()
         {
 
         }
