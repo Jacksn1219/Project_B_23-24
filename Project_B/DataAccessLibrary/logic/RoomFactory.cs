@@ -85,7 +85,7 @@ namespace DataAccessLibrary.logic
                         {"$1", id},
                     }
                 ).First();
-                RelatedItemsToDb(toReturn, deepcopyLv - 1);
+                getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
                 return toReturn;
             }
             catch (Exception ex) 
@@ -206,7 +206,7 @@ namespace DataAccessLibrary.logic
                 if (deepcopyLv < 0) return;
                 item.AddSeatModels(
                     _db.ReadData<SeatModel>(
-                        $"SELECT * FROM SeatModel WHERE SeatModel.RoomID = {item.ID}"
+                        $"SELECT * FROM Seat WHERE Seat.RoomID = {item.ID}"
                     )
                 );
                 item.IsChanged = false;

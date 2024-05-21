@@ -158,8 +158,10 @@ namespace Project_B
             MainMenu.UseMenu(
                 //user options
                 new Dictionary<string, Action<string>>(){
-                    {"reserve seats", (x) => {rs.CreateReservation(); Console.ReadLine();}},
+                    {"reserve seats", (x) => {rs.CreateReservation(rf); Console.ReadLine();}},
                     {"browse movies", (x) => {Console.ReadLine();}},
+                    {"select seat", (x) => {rs.SelectSeatt(rf);} },
+
                     {"get reservation", (x) => 
                     { 
                         while(true)

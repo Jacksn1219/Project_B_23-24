@@ -1,10 +1,12 @@
 using System.ComponentModel.Design;
 using System.Formats.Tar;
+using System.Security.Cryptography;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Microsoft.Extensions.Logging;
 using Models;
+using Project_B;
 using Project_B.services;
 
 public class ReservationService
@@ -19,7 +21,7 @@ public class ReservationService
         _tf = tf;
     }
     //add methodes to get and add reservations
-    public void CreateReservation()
+    public void CreateReservation(RoomFactory roomFactory)
     {
         //select timetable day
         string? day = GetWeekDay();
@@ -38,9 +40,18 @@ public class ReservationService
         //select seats to reserve
         //ook in layout -> select Seatperroom of selectseatmodel
 
+        RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1,3));
         //fill in user data
         var user = UserInfoInput.GetUserInfo();
         //print number
+
+    }
+
+    public void SelectSeatt(RoomFactory roomFactory){
+
+        RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1,3));
+        var user = UserInfoInput.GetUserInfo();
+
 
     }
     public void GetReservationByNumber(int nr)
