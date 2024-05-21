@@ -25,6 +25,8 @@ namespace Models
             this.row = row;
         }
 
+        public void editIntro(string newIntro) => this.introduction = newIntro;
+
         public int GetMenuOptionsCount() => menuoptions.Count;
 
         /// <summary>
@@ -89,7 +91,7 @@ namespace Models
                         };
                     }
                     catch { }
-                    try { if (this.menuoptions[i].isTaken == true) Console.ForegroundColor = ConsoleColor.DarkGray; } catch { }
+                    try { if (this.menuoptions[i].isTaken == true) Console.ForegroundColor = ConsoleColor.DarkGray; } catch { Console.ForegroundColor = ConsoleColor.Gray; }
                     Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 Console.ResetColor();
@@ -139,13 +141,6 @@ namespace Models
                 {
                     cursor++;
                     while (cursor < this.menuoptions.Count && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].Name == "X" || this.menuoptions[cursor].isTaken == true)) cursor++;
-                }
-                else if (userInput == ConsoleKey.Escape)
-                {
-                    Console.Clear();
-                    Console.WriteLine("\x1b[3J");
-                    if (this.exit == true) Environment.Exit(0);
-                    return;
                 }
                 else if (userInput == ConsoleKey.Escape)
                 {
