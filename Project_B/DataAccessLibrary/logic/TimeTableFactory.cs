@@ -252,4 +252,9 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             return null;
         }
     }
+
+    public RoomModel getRelatedItemsFromDb(int roomNumber)
+    {
+        throw new NotImplementedException();
+    }
 }

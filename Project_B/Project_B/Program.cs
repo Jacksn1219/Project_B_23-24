@@ -69,7 +69,8 @@ namespace Project_B
                     {"edit seat prices", (x) => {SeatPriceCalculator.UpdatePrices();}},
                     {"add movie", (x) => {createItems.CreateNewMovie();}},
                     {"edit movie", (x) => {createItems.ChangeMovie();}},
-                    {"add movie to timetable", (x) => {createItems.CreateTimeTable();}},
+                    {"add timetable", (x) => {createItems.CreateTimeTable();}},
+                    {"edit timetable", (x) => {createItems.EditTimeTable();}},
                     {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                 }
             );
