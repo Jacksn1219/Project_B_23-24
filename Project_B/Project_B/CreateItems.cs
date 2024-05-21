@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Linq;
+using DataAccessLibrary.models;
 
 namespace Project_B
 {
@@ -16,11 +17,15 @@ namespace Project_B
         private readonly ActorFactory _af;
         private readonly DirectorFactory _df;
         private readonly MovieFactory _mf;
-        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf)
+        private readonly RoomFactory _rf;
+        private readonly TimeTableFactory _ttf;
+        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf, RoomFactory rf, TimeTableFactory ttf) 
         {
             _af = af;
             _df = df;
             _mf = mf;
+            _rf = rf;
+            _ttf = ttf;
         }
         public void CreateNewMovie()
         {
@@ -359,6 +364,66 @@ namespace Project_B
             });
             whatToEditMenu.UseMenu();
             _mf.ItemToDb(movieToEdit);
+        }
+
+        public void CreateTimeTable()
+        {
+            List<MovieModel> movieList = new List<MovieModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var movs = _mf.GetItems(100, page, 6);
+                    movieList.AddRange(movs);
+                    page++;
+                    if (movs.Length < 100) break;
+                }
+            }
+            catch { }
+
+            MovieModel selectedMovie = new MovieModel("", "", 4, 120, "");
+            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
+            foreach (MovieModel movie in movieList)
+            {
+                movieMenu.Add(movie.Name ?? "", (x) => { selectedMovie = movie; });
+            }
+            movieMenu.UseMenu();
+
+            List<RoomModel> roomList = new List <RoomModel>();
+            try
+            {
+                int i = 1;
+                while (true)
+                {
+                    var roms = _rf.GetItems(100, i, 6);
+                    roomList.AddRange(roms);
+                    i++;
+                    if (roms.Length < 100) break;
+                }
+            }
+            catch { }
+
+            RoomModel selectedRoom = new RoomModel("", 0, 0);
+            InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a room: (Room1, Room2, Room3)"), null);
+            foreach (RoomModel room in roomList)
+            {
+                roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
+            }
+            roomMenu.UseMenu();
+
+
+            Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
+            DateTime startDate;
+            while (!DateTime.TryParse(Console.ReadLine(), out startDate))
+            {
+                Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+            }
+
+            DateTime endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
+
+            TimeTableModel newTimeTable = new TimeTableModel(selectedRoom, selectedMovie, startDate, endDate);
+            _ttf.CreateItem(newTimeTable);
         }
     }
 }

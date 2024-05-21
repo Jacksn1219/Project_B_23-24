@@ -31,7 +31,7 @@ namespace Project_B
             ReservationFactory reservationFactory = new ReservationFactory(db, cf, sf, ttf, logger);
 
             //set up services
-            CreateItems createItems = new CreateItems(af, df, mf);
+            CreateItems createItems = new CreateItems(af, df, mf, rf, ttf);
             RoomService roomservice = new(rf);
             ReservationService rs = new(reservationFactory, mf, ttf);
 
@@ -69,7 +69,7 @@ namespace Project_B
                     {"edit seat prices", (x) => {SeatPriceCalculator.UpdatePrices();}},
                     {"add movie", (x) => {createItems.CreateNewMovie();}},
                     {"edit movie", (x) => {createItems.ChangeMovie();}},
-                    {"add movie to timetable", (x) => {/*not yet*/}},
+                    {"add movie to timetable", (x) => {createItems.CreateTimeTable();}},
                     {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                 }
             );
