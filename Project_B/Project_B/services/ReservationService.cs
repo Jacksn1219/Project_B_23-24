@@ -91,6 +91,20 @@ public class ReservationService
         selectDay.UseMenu();
         return toReturn;
     }
+    public void GetReservationById(int id)
+    {
+        ReservationModel reservation = _rf.GetItemFromId(id, 3);
+        Console.Clear();
+        Console.WriteLine($"These are the details of your reservation:\n");
+        Console.WriteLine($"Confirmation number: {reservation.ID}");
+        Console.WriteLine($"Name: {reservation.Customer.Name}");
+        Console.WriteLine($"E-mail: {reservation.Customer.Email}");
+        Console.WriteLine($"Phone number: {reservation.Customer.PhoneNumber}");
+        Console.WriteLine($"Movie: {reservation.TimeTable.Movie.Name}");
+        Console.WriteLine($"Movie duration: {reservation.TimeTable.Movie.DurationInMin} minutes");
+        Console.WriteLine($"Room: {reservation.TimeTable.Room.Name}");
+        Console.WriteLine($"Seats: {reservation.ReservedSeats}");
+    }
 
     private TimeTableModel? SelectTimeTableInDay(string weekday)
     {

@@ -47,20 +47,19 @@ namespace Project_B
                 new Dictionary<string, Action<string>>(){
                     {"reserve seats", (x) => {rs.CreateReservation(); Console.ReadLine();}},
                     {"browse movies", (x) => {Console.ReadLine();}},
-                    {"get reservation", (x) => 
+                    {"Check reservation", (x) => 
                     { 
                         while(true)
                         {
-                            Console.WriteLine("fill in your reservation number:"); 
-                            var result = System.Console.ReadLine();
-                            if (result != null && int.TryParse(result, out int nr))
+                            Console.Write("Please enter your confirmation number:");
+                            string result = Console.ReadLine();
+                            if (result != null && int.TryParse(result, out int reservationId))
                             {
-                                rs.GetReservationByNumber(nr); 
+                                rs.GetReservationById(reservationId); 
                                 break;
                             }
                             System.Console.WriteLine(ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + ChangeColour(ConsoleColor.Black));
                         }
-                        
                         Console.ReadLine();}}
 
                 },
@@ -74,7 +73,6 @@ namespace Project_B
                     {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                 }
             );
-
         }
     }
 }

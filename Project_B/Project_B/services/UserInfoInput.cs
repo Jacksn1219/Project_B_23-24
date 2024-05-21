@@ -52,7 +52,6 @@ namespace Project_B.services
             Console.Clear();
             Console.WriteLine("Thank you, YourEyes will do their utmost best to accompany your needs. Here is what you entered: ");
             Console.WriteLine(userinput);
-
             return (fullName, email, phoneNumber, userinput);
         }
     }
