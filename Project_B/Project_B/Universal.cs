@@ -1,4 +1,6 @@
 ﻿using DataAccessLibrary;
+using DataAccessLibrary.logic;
+using Models;
 
 namespace Project_B;
 public static class Universal
@@ -85,5 +87,43 @@ public static class Universal
             setupFolder("DataSource");
             return System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\DataSource"));
         }
+    }
+    public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf)
+    {
+
+        List<ReservationModel> reservationList = new List<ReservationModel>();
+        try
+        {
+            int i = 1;
+            ReservationModel? reservation = new ReservationModel();
+            while (reservation != null)
+            {
+                reservation = _rf.GetItemFromId(i);
+                if (reservation != null) reservationList.Add(reservation);
+                i++;
+            }
+        }
+        catch { }
+
+        List<SeatModel> reservesSeatList = new List<SeatModel>();
+        try
+        {
+            int i = 1;
+            SeatModel? seat = new SeatModel();
+            while (seat != null)
+            {
+                seat = _sf.GetItemFromId(reservationList[i].ID ?? 1, 1);
+                if (seat != null) reservesSeatList.Add(seat);
+                i++;
+            }
+        }
+        catch { }
+
+        InputMenu showReservedSeatMenu = new InputMenu("useLambda");
+        foreach (SeatModel seat in reservesSeatList)
+        {
+            showReservedSeatMenu.Add($"| {seat.Room} | {seat.Name}", (x) => { Console.WriteLine(seat.ToString()); });
+        }
+        showReservedSeatMenu.UseMenu(() => printAsTitle("Select a seat to show"));
     }
 }
