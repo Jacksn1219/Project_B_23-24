@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using DataAccessLibrary.models;
 using DataAccessLibrary.models.interfaces;
-
 namespace DataAccessLibrary;
 
 public class ReservationModel : DbItem
