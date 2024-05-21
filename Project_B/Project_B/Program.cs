@@ -39,7 +39,7 @@ namespace Project_B
             StartupMenu.UseMenu(() =>
             {
                 //loaddata
-                SQLite_setup.SetupProjectB(rf, Universal.datafolderPath);
+                SQLite_setup.SetupProjectB(rf, mf, Universal.datafolderPath);
             });
             //----- main screen -----//
             MainMenu.UseMenu(
