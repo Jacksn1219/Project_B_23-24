@@ -32,6 +32,7 @@ public class ReservationService
         while (tt == null)
         {
             tt = SelectTimeTableInDay(day);
+            if (tt == null) System.Console.WriteLine("failed to get timetable");
         }
         //get reserved seats,
 
@@ -63,7 +64,7 @@ public class ReservationService
     public string? GetWeekDay()
     {
         string? toReturn = null;
-        InputMenu selectDay = new InputMenu("| Selecteer een dag |", true);
+        InputMenu selectDay = new InputMenu("| Selecteer een dag |", null);
         selectDay.Add($"Maandag", (x) =>
         {
             toReturn = "Maandag";
@@ -102,11 +103,25 @@ public class ReservationService
         selectDay.UseMenu();
         return toReturn;
     }
+    public void GetReservationById(int id)
+    {
+        ReservationModel reservation = _rf.GetItemFromId(id, 3);
+        Console.Clear();
+        Console.WriteLine($"These are the details of your reservation:\n");
+        Console.WriteLine($"Confirmation number: {reservation.ID}");
+        Console.WriteLine($"Name: {reservation.Customer.Name}");
+        Console.WriteLine($"E-mail: {reservation.Customer.Email}");
+        Console.WriteLine($"Phone number: {reservation.Customer.PhoneNumber}");
+        Console.WriteLine($"Movie: {reservation.TimeTable.Movie.Name}");
+        Console.WriteLine($"Movie duration: {reservation.TimeTable.Movie.DurationInMin} minutes");
+        Console.WriteLine($"Room: {reservation.TimeTable.Room.Name}");
+        Console.WriteLine($"Seats: {reservation.ReservedSeats}");
+    }
 
     private TimeTableModel? SelectTimeTableInDay(string weekday)
     {
         TimeTableModel? mov = null;
-        InputMenu movieSelecter = new InputMenu("| Selecteer een film |", true);
+        InputMenu movieSelecter = new InputMenu("| Selecteer een film |", null);
         TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
         foreach (TimeTableModel timeTable in timetables)
         {
