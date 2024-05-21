@@ -30,6 +30,7 @@ public class ReservationService
         while (tt == null)
         {
             tt = SelectTimeTableInDay(day);
+            if (tt == null) System.Console.WriteLine("failed to get timetable");
         }
         //get reserved seats,
 
@@ -52,7 +53,7 @@ public class ReservationService
     public string? GetWeekDay()
     {
         string? toReturn = null;
-        InputMenu selectDay = new InputMenu("| Selecteer een dag |", true);
+        InputMenu selectDay = new InputMenu("| Selecteer een dag |", null);
         selectDay.Add($"Maandag", (x) =>
         {
             toReturn = "Maandag";
@@ -95,7 +96,7 @@ public class ReservationService
     private TimeTableModel? SelectTimeTableInDay(string weekday)
     {
         TimeTableModel? mov = null;
-        InputMenu movieSelecter = new InputMenu("| Selecteer een film |", true);
+        InputMenu movieSelecter = new InputMenu("| Selecteer een film |", null);
         TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
         foreach (TimeTableModel timeTable in timetables)
         {
