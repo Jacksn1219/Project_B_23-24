@@ -55,11 +55,16 @@ namespace Project_B
                     { 
                         while(true)
                         {
-                            Console.Write("Please enter your confirmation number:");
+                            Console.Write("Please enter your confirmation number: ");
                             string result = Console.ReadLine();
                             if (result != null && int.TryParse(result, out int reservationId))
                             {
                                 rs.GetReservationById(reservationId); 
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid input. Please try again");
                                 break;
                             }
                             System.Console.WriteLine(ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + ChangeColour(ConsoleColor.Black));
