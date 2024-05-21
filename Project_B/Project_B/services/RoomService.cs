@@ -55,7 +55,7 @@ public class RoomService
     }
     public SeatModel? SelectSeatOfRoom(RoomModel room, string title)
     {
-        return RoomLayoutService.selectSeatModel(room.Seats, room);
+        return RoomLayoutService.selectSeatModel(room);
         // InputMenu seatSelectionMenu = new InputMenu(title, null, room.RowWidth ?? 0);
 
         // foreach (SeatModel seatModel in room.Seats)

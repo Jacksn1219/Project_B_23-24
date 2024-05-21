@@ -23,7 +23,7 @@ namespace Project_B.services
         public void DisplayRoomLayout(RoomModel room)
         {
             RoomLayoutService model = new RoomLayoutService(room, room.Seats);
-            model.drawLayout(room.Seats, room);
+            model.drawLayout(room);
         }
 
         public void ReserveSeats(List<int> seatNumbers, int userAge, string fullName, string email, string phoneNumber)

@@ -73,9 +73,9 @@ namespace Project_B
 
             List<DirectorModel> directorList = new List<DirectorModel>();
             // Test directors
-            //_df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-            //_df.CreateItem(new DirectorModel("David Fincher", "", 61));
-
+            _df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+            _df.CreateItem(new DirectorModel("David Fincher", "", 61));
+            
             // Get directors from database
             try
             {
@@ -103,8 +103,10 @@ namespace Project_B
 
             List<ActorModel> actorList = new List<ActorModel>();
             // Test actors
-            //_af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-            //_af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+            _af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+            _af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+            _af.CreateItem(new ActorModel("Levi", "Something", 33));
+            _af.CreateItem(new ActorModel("Someone", "Something else", 46));
 
             // Get directors from database
             try
@@ -277,7 +279,9 @@ namespace Project_B
                 addOrRemove.Add("Add an actor", (x) =>
                 {
                     List<ActorModel> actorList = new List<ActorModel>();
-
+                    // Test actors
+                    //actorFactory.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+                    //actorFactory.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
                     // Get directors from database
                     try
                     {
@@ -299,7 +303,7 @@ namespace Project_B
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
                     foreach (ActorModel actor in actorList)
                     {
-                        actorMenu.Add(actor.Name, (x) => { movieToEdit.Actors.Add(actor); });
+                        actorMenu.Add(actor.Name, (x) => { movieToEdit.addActor(actor); });
                     }
 
                     // Deleting chosen actor
@@ -307,49 +311,62 @@ namespace Project_B
 
                     actorMenu.UseMenu();
 
+                    addOrRemoveTitle = Universal.centerToScreen($"Current actors are: ");
+                    foreach (ActorModel actor in movieToEdit.Actors) { addOrRemoveTitle += "\n" + actor.Name; }
+                    addOrRemove.editIntro(addOrRemoveTitle + "\n" + Universal.centerToScreen("What would you like to do?"));
+
                     // Menu to select more actors
-                    InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to add another actor?\nIf not, click Back..."), null);
+                    /*InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to add another actor?\nIf not, click Back..."), null);
                     anotherActorMenu.Add("Yes", (x) =>
                     {
                         if (actorMenu.GetMenuOptionsCount() > 0)
                         {
                             actorMenu.UseMenu();
-                            foreach (ActorModel actor in actorList) try { actorMenu.Remove(actor.Name); } catch { }
-                        }
-                        if (actorMenu.GetMenuOptionsCount() == 0)
-                        {
-                            anotherActorMenu.Remove("Yes");
-                            anotherActorMenu.Add("No more actors", (x) => { });
+                            foreach (ActorModel actor in actorList)
+                            {
+                                actorMenu.Remove(actor.Name);
+                                anotherActorMenu.UseMenu();
+                            }
+                            if (actorMenu.GetMenuOptionsCount() == 0)
+                            {
+                                anotherActorMenu.Remove("Yes");
+                                anotherActorMenu.Add("No more actors", (x) => { });
+                            }
                         }
                     });
-                    anotherActorMenu.UseMenu();
+                    anotherActorMenu.UseMenu();*/
                 });
                 addOrRemove.Add("Remove an actor", (x) =>
                 {
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
                     //_mf.AddRelatedActors(movieToEdit);
                     if(movieToEdit.Actors.Count < 1) _mf.getRelatedItemsFromDb(movieToEdit, 1);
+                    
                     // Menu to chose director
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
                     foreach (ActorModel actor in movieToEdit.Actors)
                     {
                         actorMenu.Add(actor.Name, (x) => {
-                            movieToEdit.Actors.Remove(actor); // Remove Actor function -> yet to be...     Line 372 / CreateItems.cs
+                            movieToEdit.removeActor(actor);
                             actorMenu.Remove(actor.Name);
                         });
                     }
                     actorMenu.UseMenu();
 
                     // Deleting chosen actor
-                    foreach (ActorModel actor in movieToEdit.Actors) actorMenu.Remove(actor.Name);
+                    
+                    addOrRemoveTitle = Universal.centerToScreen($"Current actors are: ");
+                    foreach (ActorModel actor in movieToEdit.Actors) { addOrRemoveTitle += "\n" + actor.Name; }
+                    addOrRemove.editIntro(addOrRemoveTitle + "\n" + Universal.centerToScreen("What would you like to do?"));
 
                     // Menu to select more actors
-                    InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to remove another actor?\nIf not, click Back..."), null);
+                    /*InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to remove another actor?\nIf not, click Back..."), null);
                     anotherActorMenu.Add("Yes", (x) =>
                     {
                         if (actorMenu.GetMenuOptionsCount() > 0)
                         {
                             actorMenu.UseMenu();
+                            foreach (ActorModel actor in movieToEdit.Actors) actorMenu.Remove(actor.Name);
                             //foreach (ActorModel actor in movieToEdit.Actors) try { actorMenu.Remove(actor.Name); } catch { }
                         }
                         if (actorMenu.GetMenuOptionsCount() == 0)
@@ -358,7 +375,7 @@ namespace Project_B
                             anotherActorMenu.Add("No more actors", (x) => { });
                         }
                     });
-                    anotherActorMenu.UseMenu();
+                    anotherActorMenu.UseMenu();*/
                 });
                 addOrRemove.UseMenu();
             });
