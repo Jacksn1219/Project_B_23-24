@@ -303,7 +303,7 @@ namespace Project_B
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
                     foreach (ActorModel actor in actorList)
                     {
-                        actorMenu.Add(actor.Name, (x) => { movieToEdit.Actors.Add(actor); });
+                        actorMenu.Add(actor.Name, (x) => { movieToEdit.addActor(actor); });
                     }
 
                     // Deleting chosen actor
@@ -316,7 +316,7 @@ namespace Project_B
                     addOrRemove.editIntro(addOrRemoveTitle + "\n" + Universal.centerToScreen("What would you like to do?"));
 
                     // Menu to select more actors
-                    InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to add another actor?\nIf not, click Back..."), null);
+                    /*InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to add another actor?\nIf not, click Back..."), null);
                     anotherActorMenu.Add("Yes", (x) =>
                     {
                         if (actorMenu.GetMenuOptionsCount() > 0)
@@ -334,7 +334,7 @@ namespace Project_B
                             }
                         }
                     });
-                    anotherActorMenu.UseMenu();
+                    anotherActorMenu.UseMenu();*/
                 });
                 addOrRemove.Add("Remove an actor", (x) =>
                 {
@@ -360,7 +360,7 @@ namespace Project_B
                     addOrRemove.editIntro(addOrRemoveTitle + "\n" + Universal.centerToScreen("What would you like to do?"));
 
                     // Menu to select more actors
-                    InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to remove another actor?\nIf not, click Back..."), null);
+                    /*InputMenu anotherActorMenu = new InputMenu(Universal.centerToScreen("Do you want to remove another actor?\nIf not, click Back..."), null);
                     anotherActorMenu.Add("Yes", (x) =>
                     {
                         if (actorMenu.GetMenuOptionsCount() > 0)
@@ -375,7 +375,7 @@ namespace Project_B
                             anotherActorMenu.Add("No more actors", (x) => { });
                         }
                     });
-                    anotherActorMenu.UseMenu();
+                    anotherActorMenu.UseMenu();*/
                 });
                 addOrRemove.UseMenu();
             });

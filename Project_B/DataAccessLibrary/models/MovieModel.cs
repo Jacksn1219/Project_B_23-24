@@ -115,7 +115,11 @@ public class MovieModel : DbItem
     public void editDuration(int newDuration) => this.DurationInMin = newDuration;
     public void editGenre(string newGenre) => this.Genre = newGenre;
     public void editDirector(DirectorModel newDirector) => this.Director = newDirector;
-    public void addActor(ActorModel newActors) => this.Actors.Add(newActors);
+    public void addActor(ActorModel newActor)
+    {
+        List<int?> IDList = Actors.Select(x => (int?)x.ID).ToList();
+        if(!IDList.Contains(newActor.ID)) this.Actors.Add(newActor);
+    }
     public void removeActor(ActorModel newActors) => this.Actors.Remove(newActors);
     public string SeeActors()
     {
