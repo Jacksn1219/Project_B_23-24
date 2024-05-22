@@ -7,7 +7,7 @@ public static class MainMenu
     public static void UseMenu(Dictionary<string, Action<string>> userActions, Dictionary<string, Action<string>> adminActions)
     {
         InputMenu main = new("useLambda", true);
-        main.Add("customer menu",
+        main.Add("Customer menu",
             (x) =>
             {
                 //customer actions here plz (return is already implemented)
@@ -16,7 +16,7 @@ public static class MainMenu
                 );
             }
         );
-        main.Add("admin menu",
+        main.Add("Admin menu",
         (x) =>
         {
             AdminMenu.UseMenu(
@@ -25,7 +25,7 @@ public static class MainMenu
             );
         });
 
-        main.UseMenu(() => Universal.printAsTitle("main menu"));
+        main.UseMenu(() => Universal.printAsTitle("Main menu"));
 
     }
 }

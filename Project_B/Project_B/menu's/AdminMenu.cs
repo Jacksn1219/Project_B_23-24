@@ -13,12 +13,9 @@ namespace Project_B.menu_s
             {
                 // ------ Medewerker menu met menu opties ------//
                 //create menu
-                InputMenu medewerkerMenu = new InputMenu("admin menu");
-                foreach (string key in menuItems.Keys)
-                {
-                    medewerkerMenu.Add(key, menuItems[key]);
-                }
-                medewerkerMenu.UseMenu();
+                InputMenu medewerkerMenu = new InputMenu("useLambda");
+                medewerkerMenu.Add(menuItems);
+                medewerkerMenu.UseMenu(() => Universal.printAsTitle("Admin menu"));
             }
             // medewerkerMenu.Add("Create/Edit", (x) =>
             // {
@@ -151,13 +148,14 @@ namespace Project_B.menu_s
             else passWord = "";
             while (!IsLogedIn)
             {
-                Console.Write("| Inlog |\nWachtwoord: ");
-                string userInput = Console.ReadLine() ?? "";
+                Universal.printAsTitle("Login");
+                Console.Write("\n");
+                string userInput = Universal.takeUserInput("Password") ?? "";
                 if (userInput.Equals(passWord)) IsLogedIn = true;
                 else
                 {
                     Universal.ChangeColour(ConsoleColor.Red);
-                    Console.WriteLine("Invalid password!\npress Q to quit.\npress any oter button to continue.");
+                    Console.WriteLine("Invalid password!\nPress Q to quit.\nPress any oter button to continue.");
                     Universal.ChangeColour(ConsoleColor.White);
                     char key = Console.ReadKey().KeyChar;
                     System.Console.WriteLine(); // enter

@@ -39,6 +39,10 @@ namespace Models
         {
             this.menuoptions.Add(ID == null ? new InputMenuOption(Name, Act, isTaken) : new InputMenuOption(Name, Act, isTaken, ID));
         }
+        public void Add(Dictionary<string, Action<string>> toAdd)
+        {
+            foreach (var item in toAdd) { Add(item.Key, item.Value); }
+        }
 
         /// <summary>
         /// Remove item from menu option list

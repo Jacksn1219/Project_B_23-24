@@ -46,42 +46,31 @@ namespace Project_B
             MainMenu.UseMenu(
                 //user options
                 new Dictionary<string, Action<string>>(){
-                    {"reserve seats", (x) => {rs.CreateReservation(rf); Console.ReadLine();}},
-                    {"browse movies", (x) => {Console.ReadLine();}},
-                    {"select seat", (x) => {rs.SelectSeat(rf);} },
-
-                    // {"get reservation", (x) => 
-                    {"Check reservation", (x) => 
-                    { 
-                        while(true)
-                        {
-                            Console.Write("Please enter your confirmation number: ");
-                            string result = Console.ReadLine();
-                            if (result != null && int.TryParse(result, out int reservationId))
-                            {
-                                rs.GetReservationById(reservationId); 
-                                break;
-                            }
-                            else
-                            {
-                                Console.WriteLine("Invalid input. Please try again");
-                                break;
-                            }
-                            System.Console.WriteLine(ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + ChangeColour(ConsoleColor.Black));
-                        }
-                        Console.ReadLine();}}
-
+                    {"# Show schedule #", (x) => { takeUserInput("Movie title");/*not yet*/ }},
+                    {"# Browse movies #", (x) => { /*not yet*/ }},
+                    {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation(rf);}},
+                    {"Select seat", (x) => {rs.SelectSeat(rf);}},
+                    {"\n" + Universal.centerToScreen("Search reservation"), (x) => { rs.GetReservation();}}
                 },
                 //admin options
                 new Dictionary<string, Action<string>>(){
-                    {"edit seat prices", (x) => {SeatPriceCalculator.UpdatePrices();}},
-                    {"add movie", (x) => {createItems.CreateNewMovie();}},
-                    {"edit movie", (x) => {createItems.ChangeMovie();}},
-                    {"add timetable", (x) => {createItems.CreateTimeTable();}},
-                    {"edit timetable", (x) => {/*not yet*/}},
-                    {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}},
-                    {"add movie to timetable", (x) => {/*not yet*/}},
-                    {"show reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory);}}
+                    {"# Schedule #", (x) => {/*not yet*/}},
+                    {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory);}},
+                    {"\n" + Universal.centerToScreen("Create/Edit"), (x) => {
+                        InputMenu CreateMenu = new InputMenu("useLambda");
+                        CreateMenu.Add(new Dictionary<string, Action<string>>()
+                        {
+                            {"Add movie", (x) => {createItems.CreateNewMovie();}},
+                            {"Edit movie", (x) => {createItems.ChangeMovie();}},
+                            {"\n" + centerToScreen("Add timetable"), (x) => {createItems.CreateTimeTable();}},
+                            {"# Edit timetable #", (x) => {/*not yet*/}},
+                            {"# Add movie to timetable #", (x) => {/*not yet*/}},
+                            {"\n" + centerToScreen("Edit seat prices"), (x) => {SeatPriceCalculator.UpdatePrices();}},
+                            {"Change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
+                        });
+                        CreateMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
+                    }},
+                    {"# History #", (x) => {/*not yet*/}}
                 }
             );
         }

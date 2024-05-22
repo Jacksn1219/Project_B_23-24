@@ -74,6 +74,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         if(deepcopyLv < 0) return null;
         try
         {
+            
             var toReturn = _db.ReadData<MovieModel>(
             @"SELECT * FROM Movie
             WHERE ID=$1",

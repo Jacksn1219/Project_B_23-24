@@ -26,14 +26,15 @@ public class ReservationService
 
         //select timetable
         TimeTableModel? tt = null;
-        while (tt == null)
+        
+        tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
+        if (tt == null)
         {
-            tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
-            if (tt == null)
-            {
-                return;
-            }
+            System.Console.WriteLine("failed to get timetable");
+            Console.ReadLine();
+            return;
         }
+
         //get reserved seats,
 
         //get seats
@@ -80,6 +81,28 @@ public class ReservationService
         if (res == null) System.Console.WriteLine("reservation not found.");
         else System.Console.WriteLine(res.ToString());
     }
+
+    public void GetReservation()
+    {
+        while (true)
+        {
+            Console.Write("Please enter your confirmation number: ");
+            string result = Console.ReadLine();
+            if (result != null && int.TryParse(result, out int reservationId))
+            {
+                GetReservationById(reservationId);
+                break;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please try again");
+                break;
+            }
+            System.Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + Universal.ChangeColour(ConsoleColor.Black));
+        }
+        Console.ReadLine();
+    }
+
     public DateOnly? GetWeekDay()
     {
         //get current day
@@ -137,7 +160,7 @@ public class ReservationService
             //get movies if missing
             if (timeTable.Movie == null)
             {
-                _tf.getRelatedItemsFromDb(timeTable);
+                _tf.getRelatedItemsFromDb(timeTable, 40);
             }
             if (timeTable.Movie == null) continue;
             movieSelecter.Add($"Film: {timeTable.Movie.Name}", (x) =>

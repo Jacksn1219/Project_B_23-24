@@ -79,6 +79,28 @@ public static class Universal
         Console.ForegroundColor = ConsoleColor.White;
         return "";
     }
+    public static string WriteBackgroundColor(string toPrint, ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+        Console.Write(toPrint);
+        Console.ForegroundColor = ConsoleColor.White;
+        return "";
+    }
+    public static string takeUserInput(string question)
+    {
+        Console.BackgroundColor = ConsoleColor.DarkGray;
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(" " + question);
+        for (int i = question.Length; i < 29; i++) Console.Write(" ");
+        Console.SetCursorPosition(Console.CursorLeft - 29, Console.CursorTop);
+        string userInput = Console.ReadKey().KeyChar.ToString() ?? "";
+        Console.Write("                            ");
+        Console.SetCursorPosition(Console.CursorLeft - 28, Console.CursorTop);
+        userInput += Console.ReadLine() ?? "";
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.WriteLine("");
+        return userInput;
+    }
     private static void setupFolder(string folderName) => System.IO.Directory.CreateDirectory(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\" + folderName)));
     public static string datafolderPath
     {

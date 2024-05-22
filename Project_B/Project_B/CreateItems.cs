@@ -29,44 +29,50 @@ namespace Project_B
         }
         public void CreateNewMovie()
         {
+            Universal.printAsTitle("Create new movie");
+
             // Name //
-            Console.WriteLine("What is the name of the movie?");
-            string Name = Console.ReadLine() ?? "";
+            Console.WriteLine("\nWhat is the name of the movie?");
+            string Name = Universal.takeUserInput("Type...") ?? "";
 
             // Discription //
             Console.WriteLine("What is the discription of the movie?");
-            string Discription = Console.ReadLine() ?? "";
+            string Discription = Universal.takeUserInput("Type...") ?? "";
 
             // pegiAge //
             int pegiAge = 0;
             Console.WriteLine("What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
-            int.TryParse(Console.ReadLine(), out pegiAge);
+            int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
             List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
             while (!possiblePegiAges.Contains(pegiAge))
             {
-                try
-                {
-                    Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                    Console.WriteLine("What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
-                    int.TryParse(Console.ReadLine(), out pegiAge);
-                }
-                catch { }
+                Console.SetCursorPosition(0, Console.CursorTop - 4);
+                Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
+                Console.WriteLine("\nWhat is the PEGIage of the movie? (4, 7, 12, 16, 18)");
+                int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
             }
+            Console.SetCursorPosition(0, Console.CursorTop - 4);
+            Console.Write("                          ");
+            Console.SetCursorPosition(0, Console.CursorTop + 4);
 
             // Duration in minutes //
             int Duration = 0;
             Console.WriteLine("What is the duration of the movie? (more than 0)");
-            int.TryParse(Console.ReadLine(), out Duration);
+            int.TryParse(Universal.takeUserInput("Type..."), out Duration);
             while (Duration == 0)
             {
+                Console.SetCursorPosition(0, Console.CursorTop - 4);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                Console.WriteLine("What is the duration of the movie? (more than 0)");
-                int.TryParse(Console.ReadLine(), out Duration);
+                Console.WriteLine("\nWhat is the duration of the movie? (more than 0)");
+                int.TryParse(Universal.takeUserInput("Type..."), out Duration);
             }
+            Console.SetCursorPosition(0, Console.CursorTop - 4);
+            Console.Write("                          ");
+            Console.SetCursorPosition(0, Console.CursorTop + 4);
 
             // genre //
             Console.WriteLine("What is the genre of the movie?");
-            string Genre = Console.ReadLine() ?? "";
+            string Genre = Universal.takeUserInput("Type...") ?? "";
 
             // Director //
             DirectorModel Director = new DirectorModel("", "", 0);
@@ -184,13 +190,13 @@ namespace Project_B
             whatToEditMenu.Add("Name", (x) =>
             {
                 Console.WriteLine($"Current Name = {movieToEdit.Name}" + "\n" + "What is the new name of the movie?");
-                string Name = Console.ReadLine() ?? movieToEdit.Name ?? "";
+                string Name = Universal.takeUserInput("Type...") ?? movieToEdit.Name ?? "";
                 movieToEdit.editName(Name);
             });
             whatToEditMenu.Add("Description", (x) =>
             {
                 Console.WriteLine($"Current Description = {movieToEdit.Description}" + "\n" + "What is the new discription of the movie?");
-                string Description = Console.ReadLine() ?? movieToEdit.Description ?? "";
+                string Description = Universal.takeUserInput("Type...") ?? movieToEdit.Description ?? "";
                 movieToEdit.editDescription(Description);
             });
             whatToEditMenu.Add("pegiAge", (x) =>
@@ -198,7 +204,7 @@ namespace Project_B
 
                 int pegiAge = 0;
                 Console.WriteLine($"Current pegiAge = {movieToEdit.PegiAge}" + "\n" + "What is the new PEGIage of the movie? (4, 7, 12, 16, 18)");
-                int.TryParse(Console.ReadLine(), out pegiAge);
+                int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
                 List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
                 while (!possiblePegiAges.Contains(pegiAge))
                 {
@@ -206,7 +212,7 @@ namespace Project_B
                     {
                         Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                         Console.WriteLine($"Current pegiAge = {movieToEdit.PegiAge}" + "\n" + "What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
-                        int.TryParse(Console.ReadLine(), out pegiAge);
+                        int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
                     }
                     catch { }
                 }
@@ -216,19 +222,19 @@ namespace Project_B
             {
                 int Duration = 0;
                 Console.WriteLine($"Current duration = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
-                int.TryParse(Console.ReadLine(), out Duration);
+                int.TryParse(Universal.takeUserInput("Type..."), out Duration);
                 while (Duration == 0)
                 {
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                     Console.WriteLine($"Current duration = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
-                    int.TryParse(Console.ReadLine(), out Duration);
+                    int.TryParse(Universal.takeUserInput("Type..."), out Duration);
                 }
                 movieToEdit.editDuration(Duration);
             });
             whatToEditMenu.Add("Genre", (x) =>
             {
                 Console.WriteLine($"Current genre = {movieToEdit.Genre}" + "\n" + "What is the new genre of the movie?");
-                string Genre = Console.ReadLine() ?? "";
+                string Genre = Universal.takeUserInput("Type...") ?? "";
                 movieToEdit.editGenre(Genre);
             });
             whatToEditMenu.Add("Director", (x) =>
