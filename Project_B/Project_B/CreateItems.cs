@@ -36,7 +36,7 @@ namespace Project_B
             string Name = Universal.takeUserInput("Type...") ?? "";
 
             // Discription //
-            Console.WriteLine("What is the discription of the movie?");
+            Console.WriteLine("What is the description of the movie?");
             string Discription = Universal.takeUserInput("Type...") ?? "";
 
             // pegiAge //
