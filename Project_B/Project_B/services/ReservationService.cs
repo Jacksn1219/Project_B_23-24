@@ -69,8 +69,11 @@ public class ReservationService
     public void SelectSeat(RoomFactory roomFactory)
     {
 
-        RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
-        var user = UserInfoInput.GetUserInfo();
+        var seat = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
+        if (seat != null) 
+        {
+            var user = UserInfoInput.GetUserInfo();
+        }
 
 
     }

@@ -56,7 +56,7 @@ namespace Project_B
                         while(true)
                         {
                             Console.Write("Please enter your confirmation number: ");
-                            string result = Console.ReadLine();
+                            string result = Console.ReadLine() ?? "";
                             if (result != null && int.TryParse(result, out int reservationId))
                             {
                                 rs.GetReservationById(reservationId); 
