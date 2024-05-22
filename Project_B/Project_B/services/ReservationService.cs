@@ -36,8 +36,9 @@ public class ReservationService
 
         //select seats to reserve
         //ook in layout -> select Seatperroom of selectseatmodel
-
-        var seats = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
+        if (tt.Room == null) _tf.getRelatedItemsFromDb(tt);
+        if (tt.Room == null) { return; }
+        var seats = RoomLayoutService.selectSeatModel(tt.Room);
         //fill in user data
         var user = UserInfoInput.GetUserInfo();
         CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
@@ -108,7 +109,7 @@ public class ReservationService
     }
     public void GetReservationById(int id)
     {
-        ReservationModel reservation = _rf.GetItemFromId(id, 3);
+        ReservationModel? reservation = _rf.GetItemFromId(id, 3);
         if (reservation == null)
         {
             Console.Clear();
