@@ -448,7 +448,7 @@ namespace Project_B
                     }
                     else
                     {
-                        Console.WriteLine("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):");
+                        Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):", ConsoleColor.DarkRed));
                     }
                 }
                 else
