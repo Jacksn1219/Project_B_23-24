@@ -407,7 +407,7 @@ namespace Project_B
             }
             movieMenu.UseMenu();
 
-            List<RoomModel> roomList = new List <RoomModel>();
+            List<RoomModel> roomList = new List<RoomModel>();
             try
             {
                 int i = 1;
@@ -429,12 +429,26 @@ namespace Project_B
             }
             roomMenu.UseMenu();
 
-
             Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
             DateTime startDate;
-            while (!DateTime.TryParse(Console.ReadLine(), out startDate))
+            DateTime now = DateTime.Now;
+            while (true)
             {
-                Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+                if (DateTime.TryParse(Console.ReadLine(), out startDate))
+                {
+                    if (startDate.Date > now.Date)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("The start date cannot be today or in the past. Please enter a valid date (yyyy-MM-dd HH:mm):");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+                }
             }
 
             DateTime endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
@@ -442,11 +456,12 @@ namespace Project_B
             TimeTableModel newTimeTable = new TimeTableModel(selectedRoom, selectedMovie, startDate, endDate);
             _ttf.CreateItem(newTimeTable);
             if(newTimeTable.ID != null){
-                System.Console.WriteLine("added movie to timetable.");
+                System.Console.WriteLine("Added movie to timetable.");
             }
-            else System.Console.WriteLine("failed to add movie to timetable");
+            else System.Console.WriteLine("Failed to add movie to timetable");
             Console.ReadLine();
         }
+
 
         public void EditTimeTable()
         {
