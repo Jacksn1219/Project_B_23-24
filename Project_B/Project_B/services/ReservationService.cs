@@ -70,8 +70,11 @@ public class ReservationService
     public void SelectSeat(RoomFactory roomFactory)
     {
 
-        RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
-        var user = UserInfoInput.GetUserInfo();
+        var seat = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
+        if (seat != null) 
+        {
+            var user = UserInfoInput.GetUserInfo();
+        }
 
 
     }
@@ -129,7 +132,7 @@ public class ReservationService
     }
     public void GetReservationById(int id)
     {
-        ReservationModel? reservation = _rf.GetItemFromId(id, 3);
+        ReservationModel? reservation = _rf.GetItemFromId(id, 4);
         if (reservation == null)
         {
             Console.Clear();
@@ -143,9 +146,17 @@ public class ReservationService
         Console.WriteLine($"E-mail: {reservation.Customer.Email}");
         Console.WriteLine($"Phone number: {reservation.Customer.PhoneNumber}");
         Console.WriteLine($"Movie: {reservation.TimeTable.Movie.Name}");
-        Console.WriteLine($"Movie duration: {reservation.TimeTable.Movie.DurationInMin} minutes");
+        Console.WriteLine($"Starts at: {reservation.TimeTable.StartDate.Split(" ")[1]} - {reservation.TimeTable.EndDate.Split(" ")[1]}");
         Console.WriteLine($"Room: {reservation.TimeTable.Room.Name}");
-        Console.WriteLine($"Seats: {reservation.ReservedSeats}");
+        if (reservation.ReservedSeats != null && reservation.ReservedSeats.Count > 0)
+        {
+            string seats = string.Join(", ", reservation.ReservedSeats.Select(seat => seat.Name));
+            Console.WriteLine($"Seats: {seats}");
+        }
+        else
+        {
+            Console.WriteLine("No seats reserved.");
+        }
     }
 
     private TimeTableModel? SelectTimeTableInDay(DateOnly weekday)

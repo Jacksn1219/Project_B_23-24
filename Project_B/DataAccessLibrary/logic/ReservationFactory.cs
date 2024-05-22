@@ -302,6 +302,7 @@ namespace DataAccessLibrary.logic
                     item.TimeTable = _tf.GetItemFromId(item.TimeTableID ?? 0, deepcopyLv);
                 }
                 item.ReservedSeats.AddRange(GetReservedSeatsFromDb(item));
+                item.Customer = _cf.GetItemFromId(item.CustomerID ?? 0, deepcopyLv);
                 return;
             }
             catch (Exception ex)

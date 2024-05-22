@@ -1,4 +1,5 @@
 using System;
+using System.Data.SQLite;
 
 namespace Project_B.services
 {
@@ -26,7 +27,7 @@ namespace Project_B.services
             return (fullName, age, email, phoneNumber, userinput);
         }
 
-        private static (string fullName, int age, string email, string phoneNumber, string userinput) InitialUserInfo()
+        public static (string fullName, int age, string email, string phoneNumber, string userinput) InitialUserInfo()
         {
             string fullName;
             while (true)
@@ -52,6 +53,10 @@ namespace Project_B.services
                 {
                     email = input ?? "";
                     break;
+                }
+                else
+                {
+                    System.Console.WriteLine("Please enter a valid email.");
                 }
             }
 
@@ -105,10 +110,10 @@ namespace Project_B.services
             return phoneNumber.StartsWith("0") && phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
         }
 
-        private static void DisplayUserInfo(string fullName, int age, string email, string phoneNumber, string userinput)
+        public static void DisplayUserInfo(string fullName, int age, string email, string phoneNumber, string userinput)
         {
             Console.Clear();
-            Console.WriteLine("Your entered information:");
+            Console.WriteLine("Your entered information:\n");
             Console.WriteLine($"Full Name: {fullName}");
             Console.WriteLine($"Age: {age}");
             Console.WriteLine($"Email: {email}");

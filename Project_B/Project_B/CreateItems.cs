@@ -438,18 +438,23 @@ namespace Project_B
 
             Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
             DateTime startDate;
+            DateTime endDate;
             DateTime now = DateTime.Now;
+
             while (true)
             {
                 if (DateTime.TryParse(Console.ReadLine(), out startDate))
                 {
-                    if (startDate.Date > now.Date)
+                    endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
+                    if (startDate.Date > now.Date &&
+                        startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
+                        endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
                     {
                         break;
                     }
                     else
                     {
-                        Console.WriteLine("The start date cannot be today or in the past. Please enter a valid date (yyyy-MM-dd HH:mm):");
+                        Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):", ConsoleColor.DarkRed));
                     }
                 }
                 else
@@ -457,8 +462,6 @@ namespace Project_B
                     Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
                 }
             }
-
-            DateTime endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
 
             TimeTableModel newTimeTable = new TimeTableModel(selectedRoom, selectedMovie, startDate, endDate);
             _ttf.CreateItem(newTimeTable);
