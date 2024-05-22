@@ -93,7 +93,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                     {"$1", id},
                 }
             ).First();
-            RelatedItemsToDb(toReturn, deepcopyLv - 1);
+            getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
             return toReturn;
         }
         catch (Exception ex)
