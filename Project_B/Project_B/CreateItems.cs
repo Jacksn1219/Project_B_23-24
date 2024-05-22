@@ -399,7 +399,7 @@ namespace Project_B
             }
             catch { }
 
-            MovieModel selectedMovie = new ();
+            MovieModel selectedMovie = new();
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
             foreach (MovieModel movie in movieList)
             {
@@ -421,7 +421,7 @@ namespace Project_B
             }
             catch { }
 
-            RoomModel selectedRoom = new ();
+            RoomModel selectedRoom = new();
             InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a room: (Room1, Room2, Room3)"), null);
             foreach (RoomModel room in roomList)
             {
@@ -431,18 +431,23 @@ namespace Project_B
 
             Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
             DateTime startDate;
+            DateTime endDate;
             DateTime now = DateTime.Now;
+
             while (true)
             {
                 if (DateTime.TryParse(Console.ReadLine(), out startDate))
                 {
-                    if (startDate.Date > now.Date)
+                    endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
+                    if (startDate.Date > now.Date &&
+                        startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
+                        endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
                     {
                         break;
                     }
                     else
                     {
-                        Console.WriteLine("The start date cannot be today or in the past. Please enter a valid date (yyyy-MM-dd HH:mm):");
+                        Console.WriteLine("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):");
                     }
                 }
                 else
@@ -451,16 +456,19 @@ namespace Project_B
                 }
             }
 
-            DateTime endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
-
             TimeTableModel newTimeTable = new TimeTableModel(selectedRoom, selectedMovie, startDate, endDate);
             _ttf.CreateItem(newTimeTable);
-            if(newTimeTable.ID != null){
-                System.Console.WriteLine("Added movie to timetable.");
+            if (newTimeTable.ID != null)
+            {
+                Console.WriteLine("Added movie to timetable.");
             }
-            else System.Console.WriteLine("Failed to add movie to timetable");
+            else
+            {
+                Console.WriteLine("Failed to add movie to timetable");
+            }
             Console.ReadLine();
         }
+
 
 
         public void EditTimeTable()
