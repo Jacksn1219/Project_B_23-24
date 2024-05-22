@@ -239,7 +239,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     if (_db.ReadData<ActorModel>
                     (
                         @"SELECT ID FROM ActorInMovie
-                        WHERE MovieID = $1, ActorID = $2",
+                        WHERE MovieID = $1 AND ActorID = $2",
                         new(){
                             {"$1", item.ID},
                             {"$2", actor.ID}
