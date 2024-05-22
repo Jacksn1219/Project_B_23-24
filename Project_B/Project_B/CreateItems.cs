@@ -443,7 +443,7 @@ namespace Project_B
 
             while (true)
             {
-                if (DateTime.TryParse(Console.ReadLine(), out startDate))
+                if (DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate))
                 {
                     endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
                     if (startDate.Date > now.Date &&

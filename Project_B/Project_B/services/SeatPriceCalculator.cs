@@ -31,32 +31,32 @@ namespace Project_B.services
                 while (changing)
                 {
                     System.Console.WriteLine("type price to change: (Q to quit)");
-                    string response = Console.ReadLine() ?? "";
+                    string response = Universal.takeUserInput("Type...") ?? "";
                     switch (response.ToLower())
                     {
                         case "price tier i" or "tier i" or "i" or "1":
                             Console.WriteLine("type new price:");
-                            response = Console.ReadLine() ?? "";
+                            response = Universal.takeUserInput("Type...") ?? "";
                             prices.PriceTierI = decimal.Parse(response);
                             break;
                         case "price tier ii" or "tier ii" or "ii" or "2":
                             Console.WriteLine("type new price:");
-                            response = Console.ReadLine() ?? "";
+                            response = Universal.takeUserInput("Type...") ?? "";
                             prices.PriceTierII = decimal.Parse(response);
                             break;
                         case "price tier iii" or "tier iii" or "iii" or "3":
                             Console.WriteLine("type new price:");
-                            response = Console.ReadLine() ?? "";
+                            response = Universal.takeUserInput("Type...") ?? "";
                             prices.PriceTierIII = decimal.Parse(response);
                             break;
                         case "extra space" or "extra" or "space":
                             Console.WriteLine("type new price:");
-                            response = Console.ReadLine() ?? "";
+                            response = Universal.takeUserInput("Type...") ?? "";
                             prices.ExtraSpace = decimal.Parse(response);
                             break;
                         case "loveseat" or "love" or "love seat":
                             Console.WriteLine("type new price:");
-                            response = Console.ReadLine() ?? "";
+                            response = Universal.takeUserInput("Type...") ?? "";
                             prices.LoveSeat = decimal.Parse(response);
                             break;
                         case "q":

@@ -24,7 +24,7 @@ namespace Project_B.services
                 while (true)
                 {
                     Console.Write("Enter your full name: ");
-                    fullName = Console.ReadLine() ?? "";
+                    fullName = Universal.takeUserInput("Type...") ?? "";
                     if (IsValidFullName(fullName))
                     {
                         break;  // Exit the loop if a valid full name is entered
@@ -36,13 +36,13 @@ namespace Project_B.services
                 }
 
                 Console.Write("Enter your email: ");
-                string email = Console.ReadLine();
+                string email = Universal.takeUserInput("Type...");
 
                 string phoneNumber;
                 while (true)
                 {
                     Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                    phoneNumber = Console.ReadLine() ?? "";
+                    phoneNumber = Universal.takeUserInput("Type...") ?? "";
                     if (IsValidPhoneNumber(phoneNumber))
                     {
                         break;  // Exit the loop if a valid phone number is entered

@@ -1168,7 +1168,12 @@ public class SQLite_setup
             catch (Exception ex)
             {
                 Console.WriteLine("X Layout database setup : Something went wrong!\n" + ex);
-                Console.ReadLine();
+                
+                
+                
+                
+                
+                ;
             }
         }
 

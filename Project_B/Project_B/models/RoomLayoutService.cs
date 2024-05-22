@@ -62,9 +62,6 @@ class RoomLayoutService : LayoutModel
                 SeatModel selectedSeatModel = SeatModel;
                 selectedOption = selectedSeatModel;
                 Console.Clear();
-                //ShowSeatModelInfo(selectedSeatModel); - Jelle
-                //Console.WriteLine("Not yet implemented - ShowSeatModelInfo");
-                //Console.ReadLine();
             }, SeatModel.IsReserved);
         }
         SeatModelSelectionMenu.UseMenu();
@@ -73,8 +70,6 @@ class RoomLayoutService : LayoutModel
     public void editLayout(SeatFactory _sf, RoomFactory _rf)
     {
         List<RoomModel> roomList = new List<RoomModel>();
-        //SeatModelFactory seatModelFactory = new SeatModelFactory(Universal.Db);
-        //RoomFactory roomFactory = new RoomFactory(Universal.Db, seatModelFactory);
         try
         {
             int i = 1;
@@ -477,7 +472,7 @@ class RoomLayoutService : LayoutModel
                 while (true)
                 {
                     Console.Write("Enter your full name: ");
-                    fullName = Console.ReadLine() ?? "";
+                    fullName = Universal.takeUserInput("Type...") ?? "";
                     if (IsValidFullName(fullName))
                     {
                         break;  // Exit the loop if a valid full name is entered
@@ -488,13 +483,13 @@ class RoomLayoutService : LayoutModel
                     }
                 }
                 Console.Write("Enter your email: ");
-                string email = Console.ReadLine();
+                string email = Universal.takeUserInput("Type...");
 
                 string phoneNumber;
                 while (true)
                 {
                     Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                    phoneNumber = Console.ReadLine() ?? "";
+                    phoneNumber = Universal.takeUserInput("Type...") ?? "";
                     if (IsValidPhoneNumber(phoneNumber))
                     {
                         break;  // Exit the loop if a valid phone number is entered

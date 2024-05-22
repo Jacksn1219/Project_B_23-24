@@ -90,7 +90,7 @@ public class ReservationService
         while (true)
         {
             Console.Write("Please enter your confirmation number: ");
-            string result = Console.ReadLine();
+            string result = Universal.takeUserInput("Type...");
             if (result != null && int.TryParse(result, out int reservationId))
             {
                 GetReservationById(reservationId);
@@ -103,7 +103,15 @@ public class ReservationService
             }
             System.Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + Universal.ChangeColour(ConsoleColor.Black));
         }
-        Console.ReadLine();
+        
+        
+        
+        
+        
+        
+        
+        
+        ;
     }
 
     public DateOnly? GetWeekDay()

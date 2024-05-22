@@ -24,7 +24,7 @@ namespace Project_B.services
                 while (true)
                 {
                     Console.Write("Enter your full name: ");
-                    fullName = Console.ReadLine() ?? "";
+                    fullName = Universal.takeUserInput("Type...") ?? "";
                     if (IsValidFullName(fullName))
                     {
                         break;  // Exit the loop if a valid full name is entered
@@ -40,7 +40,7 @@ namespace Project_B.services
                 while (true)
                 {
                     Console.Write("Enter your email: ");
-                    string? input = Console.ReadLine();
+                    string? input = Universal.takeUserInput("Type...");
                     if (input.IsValidEmail())
                     {
                         email = input ?? "";
@@ -58,7 +58,7 @@ namespace Project_B.services
                 while (true)
                 {
                     Console.Write("Enter your age: ");
-                    if (!int.TryParse(Console.ReadLine(), out age) || age < 0 || age >= 100)
+                    if (!int.TryParse(Universal.takeUserInput("Type..."), out age) || age < 0 || age >= 100)
                     {
                         Console.WriteLine("Please enter a valid age.");
                     }
@@ -74,7 +74,7 @@ namespace Project_B.services
                 while (true)
                 {
                     Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                    phoneNumber = Console.ReadLine() ?? "";
+                    phoneNumber = Universal.takeUserInput("Type...") ?? "";
                     if (IsValidPhoneNumber(phoneNumber))
                     {
                         break;  // Exit the loop if a valid phone number is entered
@@ -89,7 +89,7 @@ namespace Project_B.services
             editMenu.Add("Additional Info", _ => {
                 Console.WriteLine("In case of allergies or special needs that the cinema needs to know about");
                 Console.WriteLine("Please write them here:");
-                string userinput = Console.ReadLine() ?? "";
+                string userinput = Universal.takeUserInput("Type...") ?? "";
                 Console.Clear();
                 Console.WriteLine("Thank you, YourEyes will do their utmost best to accompany your needs. Here is what you entered: ");
                 Console.WriteLine(userinput);
