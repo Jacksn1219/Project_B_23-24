@@ -256,9 +256,16 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             return null;
         }
     }
-
-    public RoomModel getRelatedItemsFromDb(int roomNumber)
+    public TimeTableModel[] GetTimeTablesFromDate(DateOnly date)
     {
-        throw new NotImplementedException();
+        return _db.ReadData<TimeTableModel>
+        (
+            @"SELECT * FROM TimeTable
+            WHERE StartDate >= $1 AND StartDate <= $2",
+            new Dictionary<string, dynamic?>(){
+                {"$1", date.ToString("MM/dd/yyyy")},
+                {"$2", date.AddDays(1).ToString("MM/dd/yyyy")}
+            }
+        );
     }
 }

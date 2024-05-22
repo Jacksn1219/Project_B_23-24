@@ -20,15 +20,19 @@ public class ReservationService
     public void CreateReservation(RoomFactory roomFactory)
     {
         //select timetable day
-        string? day = GetWeekDay();
+        DateOnly? day = GetWeekDay();
         if (day == null) return;
+
 
         //select timetable
         TimeTableModel? tt = null;
         while (tt == null)
         {
-            tt = SelectTimeTableInDay(day);
-            if (tt == null) System.Console.WriteLine("failed to get timetable");
+            tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
+            if (tt == null)
+            {
+                return;
+            }
         }
         //get reserved seats,
 
@@ -76,45 +80,27 @@ public class ReservationService
         if (res == null) System.Console.WriteLine("reservation not found.");
         else System.Console.WriteLine(res.ToString());
     }
-    public string? GetWeekDay()
+    public DateOnly? GetWeekDay()
     {
-        string? toReturn = null;
-        InputMenu selectDay = new InputMenu("| Selecteer een dag |", null);
-        selectDay.Add($"Maandag", (x) =>
+        //get current day
+        DateTime today = DateTime.Today;
+        DayOfWeek currentDay = today.DayOfWeek;
+        //get amount of weekdays left
+        int weekdayInt = (int)currentDay;
+        if (weekdayInt < 1) weekdayInt = 1;
+        DateOnly? toReturn = null;
+        //create inputmenu
+        InputMenu selectDay = new InputMenu("| Select a day |", null);
+        //add days of week left.
+        for (int i = weekdayInt; i < 7; i++)
         {
-            toReturn = "Maandag";
-            Console.ReadLine();
-        });
-        selectDay.Add($"Dinsdag", (x) =>
-        {
-            toReturn = "Dinsdag";
-            Console.ReadLine();
-        });
-        selectDay.Add($"Woensdag", (x) =>
-        {
-            toReturn = "Woensdag";
-            Console.ReadLine();
-        });
-        selectDay.Add($"Donderdag", (x) =>
-        {
-            toReturn = "Donderdag";
-            Console.ReadLine();
-        });
-        selectDay.Add($"Vrijdag", (x) =>
-        {
-            toReturn = "Vrijdag";
-            Console.ReadLine();
-        });
-        selectDay.Add($"Zaterdag", (x) =>
-        {
-            toReturn = "Zaterdag";
-            Console.ReadLine();
-        });
-        selectDay.Add($"Zondag", (x) =>
-        {
-            toReturn = "Zondag";
-            Console.ReadLine();
-        });
+            selectDay.Add($"{(DayOfWeek)i}", (x) =>
+            {
+                var date = today.AddDays(i - weekdayInt);
+                toReturn = DateOnly.FromDateTime(date);
+                //Console.ReadLine();
+            });
+        }
         selectDay.UseMenu();
         return toReturn;
     }
@@ -147,10 +133,11 @@ public class ReservationService
         }
     }
 
-    private TimeTableModel? SelectTimeTableInDay(string weekday)
+    private TimeTableModel? SelectTimeTableInDay(DateOnly weekday)
     {
         TimeTableModel? mov = null;
         InputMenu movieSelecter = new InputMenu("| Selecteer een film |", null);
+        var resp = _tf.GetTimeTablesFromDate(weekday);
         TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
         foreach (TimeTableModel timeTable in timetables)
         {

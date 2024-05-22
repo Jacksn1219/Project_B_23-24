@@ -115,7 +115,8 @@ class RoomLayoutService : LayoutModel
         InputMenu selectRoom = new InputMenu("useLambda", null);
         foreach (RoomModel room in roomList)
         {
-            selectRoom.Add($"{room.Name}", (x) => {
+            selectRoom.Add($"{room.Name}", (x) =>
+            {
                 room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
                 editLayout(room);
                 //selectedOption = RoomLayoutService.selectSeatModel(room.Seats, room);
@@ -300,7 +301,8 @@ class RoomLayoutService : LayoutModel
         InputMenu selectRoom = new InputMenu("useLambda");
         foreach (RoomModel room in roomList)
         {
-            selectRoom.Add($"{room.Name}", (x) => {
+            selectRoom.Add($"{room.Name}", (x) =>
+            {
                 room.AddSeatModels(layouts[(room.ID ?? 2) - 1].ToArray());
                 RoomLayoutService rls = new RoomLayoutService(room, room.Seats);
                 rls.editLayout();
