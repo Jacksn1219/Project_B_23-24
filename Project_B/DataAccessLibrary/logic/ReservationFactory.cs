@@ -49,7 +49,7 @@ namespace DataAccessLibrary.logic
                 result = RelatedItemsDependingOnItemToDb(item, deepcopyLv - 1);
                 return item.ID > 0 && result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Warning(ex, "failed to add reservation");
                 return false;
@@ -86,7 +86,8 @@ namespace DataAccessLibrary.logic
                     )"
                 );
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 _logger.Fatal(ex, "failed to create database tables Reservation and ReservedSeat");
                 throw;
             }
@@ -98,8 +99,9 @@ namespace DataAccessLibrary.logic
 
         public ReservationModel? GetItemFromId(int id, int deepcopyLv = 0)
         {
-            if(deepcopyLv < 0) return null;
-            try{
+            if (deepcopyLv < 0) return null;
+            try
+            {
                 var toReturn = _db.ReadData<ReservationModel>(
                     @"SELECT * FROM Reservation
                     WHERE ID = $1",
@@ -110,7 +112,8 @@ namespace DataAccessLibrary.logic
                 getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
                 return toReturn;
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 _logger.Warning(ex, $"failed to get Reservation with ID {id} ");
                 return null;
             }
@@ -118,7 +121,7 @@ namespace DataAccessLibrary.logic
 
         public bool ItemToDb(ReservationModel item, int deepcopyLv = 99)
         {
-            if(deepcopyLv < 0) return true;
+            if (deepcopyLv < 0) return true;
             bool customerChanged = item.Customer != null && item.Customer.IsChanged;
             bool SeatModelsChanged = false;
             foreach (var SeatModel in item.ReservedSeats)
@@ -143,7 +146,7 @@ namespace DataAccessLibrary.logic
 
         public bool UpdateItem(ReservationModel item, int deepcopyLv = 99)
         {
-            if(deepcopyLv < 0) return true;
+            if (deepcopyLv < 0) return true;
             if (item.ID == null) throw new InvalidDataException("the Reservation does not have a value and cannot be updated.");
             if (!item.IsChanged) return true;
             bool dontClose = _db.IsOpen;
@@ -172,7 +175,8 @@ namespace DataAccessLibrary.logic
                 }
                 return result;
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 _logger.Warning(ex, $"failed to update reservation with ID {item.ID}");
                 return false;
             }
@@ -193,7 +197,7 @@ namespace DataAccessLibrary.logic
         }
         private bool RelatedItemsDependingOnItemToDb(ReservationModel item, int deepcopyLv)
         {
-            if(deepcopyLv < 0) return true;
+            if (deepcopyLv < 0) return true;
             foreach (SeatModel SeatModel in item.ReservedSeats)
             {
                 //try add seat
@@ -201,10 +205,10 @@ namespace DataAccessLibrary.logic
                 //check if seat is already reserved in this reservation.
                 try
                 {
-                    if(_db.ReadData<SeatModel>
+                    if (_db.ReadData<SeatModel>
                     (
                         @"SELECT ID FROM ReservedSeat
-                        WHERE SeatID = $1, ReservationID = $2",
+                        WHERE SeatID = $1 AND ReservationID = $2",
                         new Dictionary<string, dynamic?>(){
                             {"$1", SeatModel.ID},
                             {"$2", item.ID}
@@ -222,7 +226,8 @@ namespace DataAccessLibrary.logic
                         }
                     );
                 }
-                catch(Exception ex){
+                catch (Exception ex)
+                {
                     _logger.Warning(ex, $"failed to add (some) reserved seats of reservation with ID {item.ID}");
                     return false;
                 }
@@ -247,7 +252,8 @@ namespace DataAccessLibrary.logic
                 }
                 return result;
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 _logger.Warning(ex, "failed to get Reservations");
                 return Array.Empty<ReservationModel>();
             }
@@ -274,7 +280,7 @@ namespace DataAccessLibrary.logic
                 }
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Warning(ex, $"failed to get Reservations from date {date.ToString(CultureInfo.InvariantCulture)}");
                 return Array.Empty<ReservationModel>();
@@ -298,7 +304,8 @@ namespace DataAccessLibrary.logic
                 item.ReservedSeats.AddRange(GetReservedSeatsFromDb(item));
                 return;
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 _logger.Warning(ex, $"failed to get related items of reservation with ID {item.ID}");
             }
             finally
@@ -321,7 +328,7 @@ namespace DataAccessLibrary.logic
                 }
             );
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Warning(ex, $"failed to get reserved seats from reservation with ID {item.ID}");
                 return Array.Empty<SeatModel>();
@@ -330,7 +337,7 @@ namespace DataAccessLibrary.logic
 
         public bool ItemsToDb(List<ReservationModel> items, int deepcopyLv = 99)
         {
-            if(deepcopyLv < 0) return true;
+            if (deepcopyLv < 0) return true;
             foreach (var item in items)
             {
                 ItemToDb(item, deepcopyLv);

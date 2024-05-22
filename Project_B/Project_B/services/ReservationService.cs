@@ -1,10 +1,6 @@
-using System.ComponentModel.Design;
-using System.Formats.Tar;
-using System.Security.Cryptography;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
-using Microsoft.Extensions.Logging;
 using Models;
 using Project_B;
 using Project_B.services;
@@ -41,22 +37,23 @@ public class ReservationService
         //select seats to reserve
         //ook in layout -> select Seatperroom of selectseatmodel
 
-        var seats = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1,3));
+        var seats = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
         //fill in user data
         var user = UserInfoInput.GetUserInfo();
         CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
         // create reservation
-        ReservationModel res = new ReservationModel(cust, tt, new List<SeatModel>(){ seats}, user.userinput);
+        ReservationModel res = new ReservationModel(cust, tt, new List<SeatModel>() { seats }, user.userinput);
         _rf.ItemToDb(res);
         //print number
-        System.Console.WriteLine(res.ID);
+        System.Console.WriteLine("Reservation is created!\nYour reservation number is: " + res.ID + "\n have a great day.");
 
-
+        Console.ReadLine();
     }
 
-    public void SelectSeat(RoomFactory roomFactory){
+    public void SelectSeat(RoomFactory roomFactory)
+    {
 
-        RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1,3));
+        RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
         var user = UserInfoInput.GetUserInfo();
 
 

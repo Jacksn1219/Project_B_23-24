@@ -19,7 +19,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
     }
     public bool CreateItem(TimeTableModel item, int deepcopyLv = 99)
     {
-        if(deepcopyLv < 0) return true;
+        if (deepcopyLv < 0) return true;
         if (item.ID != null) throw new InvalidDataException("the timetable is already in the db.");
         if (!item.IsChanged) return true;
         bool dontClose = _db.IsOpen;
@@ -47,7 +47,8 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
-        catch(Exception ex){
+        catch (Exception ex)
+        {
             _logger.Warning(ex, "failed to create a timetable");
             return false;
         }
@@ -75,14 +76,14 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         }
         catch (Exception ex)
         {
-            _logger.Fatal(ex,"failed to create table timetable");
+            _logger.Fatal(ex, "failed to create table timetable");
             throw;
         }
     }
 
     public TimeTableModel? GetItemFromId(int id, int deepcopyLv = 0)
     {
-        if(deepcopyLv < 0) return null;
+        if (deepcopyLv < 0) return null;
         try
         {
             var toReturn = _db.ReadData<TimeTableModel>(
@@ -95,7 +96,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             RelatedItemsToDb(toReturn, deepcopyLv - 1);
             return toReturn;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.Warning(ex, $"failed to get timetable with ID {id}");
             return null;
@@ -119,7 +120,8 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             }
             return tts;
         }
-        catch (Exception ex){
+        catch (Exception ex)
+        {
             _logger.Warning(ex, "failed to get timetables");
             return Array.Empty<TimeTableModel>();
         }
@@ -131,14 +133,14 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 
     public bool ItemToDb(TimeTableModel item, int deepcopyLv = 99)
     {
-        if(deepcopyLv < 0) return true;
+        if (deepcopyLv < 0) return true;
         if (!item.IsChanged) return true;
         if (!item.Exists) return CreateItem(item, deepcopyLv);
         return UpdateItem(item, deepcopyLv);
     }
     public bool UpdateItem(TimeTableModel item, int deepcopyLv = 99)
     {
-        if(deepcopyLv < 0) return true;
+        if (deepcopyLv < 0) return true;
         if (item.ID == null) throw new InvalidDataException("timetable is not in the db.");
         if (!item.IsChanged) return true;
         bool dontClose = _db.IsOpen;
@@ -164,7 +166,8 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             item.IsChanged = !result;
             return result;
         }
-        catch(Exception ex){
+        catch (Exception ex)
+        {
             _logger.Warning(ex, $"failed to update timetable with ID {item.ID}");
             return false;
         }
@@ -211,7 +214,8 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             item.Movie = _mf.GetItemFromId(item.MovieID ?? 0, deepcopyLv);
             item.Room = _rf.GetItemFromId(item.RoomID ?? 0, deepcopyLv);
         }
-        catch(Exception ex){
+        catch (Exception ex)
+        {
             _logger.Warning(ex, $"failed to get room and/or movie of timetable with ID {item.ID}");
         }
         finally
@@ -223,7 +227,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 
     public bool ItemsToDb(List<TimeTableModel> items, int deepcopyLv = 99)
     {
-        if(deepcopyLv < 0) return true;
+        if (deepcopyLv < 0) return true;
         foreach (var item in items)
         {
             ItemToDb(item, deepcopyLv);
@@ -239,7 +243,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 INNER JOIN Reservation ON Reservation.ID = ReservedSeat.ReservationID
                 INNER JOIN TimeTable ON Reservation.TimeTableID = TimeTable.ID
                 INNER JOIN Room ON Room.ID = Seat.RoomID
-                WHERE Room.ID = $1, Reservation.TimeTableID = $2",
+                WHERE Room.ID = $1 AND Reservation.TimeTableID = $2",
                 new Dictionary<string, dynamic?>(){
                     {"$1", tt.RoomID},
                     {"$2", tt.ID}
