@@ -40,7 +40,18 @@ public class ReservationService
 
         //select seats to reserve
         //ook in layout -> select Seatperroom of selectseatmodel
-        if (tt.Room == null || tt.Room.Seats.Count < 1) roomFactory.getRelatedItemsFromDb(tt.Room, 2343);
+        if (tt != null)
+        {
+            if (tt.Room == null || tt.Room.Seats == null || tt.Room.Seats.Count < 1)
+            {
+                _tf.getRelatedItemsFromDb(tt, 89);
+            }
+        }
+        else
+        {
+            // Handle the case when tt is null, if needed
+            throw new ArgumentNullException(nameof(tt), "The tt object is null.");
+        }
         if (tt.Room == null) { return; }
         var seats = RoomLayoutService.selectSeatModel(tt.Room);
         //fill in user data

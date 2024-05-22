@@ -432,9 +432,24 @@ namespace Project_B
 
             Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
             DateTime startDate;
-            while (!DateTime.TryParse(Console.ReadLine(), out startDate))
+            DateTime now = DateTime.Now;
+            while (true)
             {
-                Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+                if (DateTime.TryParse(Console.ReadLine(), out startDate))
+                {
+                    if (startDate.Date > now.Date)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("The start date cannot be today or in the past. Please enter a valid date (yyyy-MM-dd HH:mm):");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+                }
             }
 
             DateTime endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
