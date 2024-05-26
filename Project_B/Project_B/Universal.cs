@@ -113,8 +113,8 @@ public static class Universal
     }
     public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf, ReservationService rs, TimeTableFactory _ttf)
     {
-        ReservationModel[] reservationList = _rf.GetItems(100, 1, 99);
-        //ReservationModel[] reservationList = _rf.GetReservationsAfterDate(100, DateOnly.FromDateTime(DateTime.Now), 1, 99);
+        //ReservationModel[] reservationList = _rf.GetItems(100, 1, 99);
+        ReservationModel[] reservationList = _rf.GetReservationsAfterDate(100, DateTime.Now, 1, 99);
         List<(int, SeatModel)> reservesSeatList = new();
         foreach (ReservationModel reservation in reservationList)
         {
