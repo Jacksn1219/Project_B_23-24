@@ -39,6 +39,33 @@ public static class Universal
         if (fullName == null) return false;
         return !string.IsNullOrWhiteSpace(fullName) && fullName.Replace(" ", "").All(char.IsLetter);
     }
+
+
+    public static bool IsStartDate(this string? date, int mins, out DateTime? toReturn)
+    {
+        toReturn = null;
+        if (DateTime.TryParse(date, out DateTime startDate))
+        {
+            var endDate = startDate.AddMinutes(mins);
+            if (startDate.Date > DateTime.Now.Date &&
+                startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
+                endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
+            {
+                toReturn = startDate;
+                return true;
+            }
+            else
+            {
+                Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):", ConsoleColor.Red));
+            }
+        }
+        else
+        {
+            Console.WriteLine(Universal.WriteColor("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):", ConsoleColor.Red));
+        }
+        return false;
+    }
+
     /// <summary>
     /// checks if the phonenumber is valid
     /// </summary>

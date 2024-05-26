@@ -116,6 +116,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             foreach (TimeTableModel tt in tts)
             {
                 tt.Movie = _mf.GetItemFromId(tt.MovieID ?? 0, deepcopyLv - 1);
+                tt.Room = _rf.GetItemFromId(tt.RoomID ?? 0, deepcopyLv - 1);
             }
             return tts;
         }

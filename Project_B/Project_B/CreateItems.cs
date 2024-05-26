@@ -436,23 +436,13 @@ namespace Project_B
 
             while (true)
             {
-                if (DateTime.TryParse(Console.ReadLine(), out startDate))
+                string startdatestr = Console.ReadLine();
+                bool result = startdatestr.IsStartDate(selectedMovie.DurationInMin, out var x);
+                if(result && x != null)
                 {
+                    startDate = x ?? DateTime.Now;
                     endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
-                    if (startDate.Date > now.Date &&
-                        startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
-                        endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+                    break;
                 }
             }
 
@@ -460,7 +450,8 @@ namespace Project_B
             _ttf.CreateItem(newTimeTable);
             if (newTimeTable.ID != null)
             {
-                Console.WriteLine("Added movie to timetable.");
+                Console.WriteLine("Added to timetable.");
+                Console.WriteLine("Press 'Enter' to go back in the menu.");
             }
             else
             {
@@ -473,6 +464,7 @@ namespace Project_B
 
         public void EditTimeTable()
         {
+
             List<TimeTableModel> timeTableList = new List<TimeTableModel>();
             try
             {
@@ -492,37 +484,11 @@ namespace Project_B
             InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Select a timetable to edit:"), null);
             foreach (TimeTableModel timeTable in timeTableList)
             {
-                timeTableMenu.Add($"{timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate}", (x) => { selectedTimeTable = timeTable; });
+                timeTableMenu.Add($"{timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
             }
             timeTableMenu.UseMenu();
 
             InputMenu editMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
-            editMenu.Add("Room", (x) =>
-            {
-                List<RoomModel> roomList = new List<RoomModel>();
-                try
-                {
-                    int i = 1;
-                    while (true)
-                    {
-                        var rooms = _rf.GetItems(100, i, 6);
-                        roomList.AddRange(rooms);
-                        i++;
-                        if (rooms.Length < 100) break;
-                    }
-                }
-                catch { }
-            });
-            editMenu.Add("Start Date", (x) =>
-            {
-                Console.WriteLine($"Current Start Date = {selectedTimeTable.StartDate}" + "\n" + "Enter the new start date (yyyy-MM-dd HH:mm):");
-                DateTime startDate;
-                while (!DateTime.TryParse(Console.ReadLine(), out startDate))
-                {
-                    Universal.WriteColor("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):", ConsoleColor.Red);
-                }
-                DateTime endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-            });
             editMenu.Add("Movie", (x) =>
             {
                 List<MovieModel> movieList = new List<MovieModel>();
@@ -539,16 +505,74 @@ namespace Project_B
                 }
                 catch { }
 
-                MovieModel selectedMovie = new MovieModel("", "", 4, 120, "");
+                MovieModel selectedMovie = new();
                 InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a new movie:"), null);
                 foreach (MovieModel movie in movieList)
                 {
                     movieMenu.Add(movie.Name ?? "", (x) => { selectedMovie = movie; });
                 }
                 movieMenu.UseMenu();
+
+                selectedTimeTable.Movie = selectedMovie;
+                Console.WriteLine("Movie updated.");
+            });
+            editMenu.Add("Room", (x) =>
+            {
+                List<RoomModel> roomList = new List<RoomModel>();
+                try
+                {
+                    int i = 1;
+                    while (true)
+                    {
+                        var rooms = _rf.GetItems(100, i, 6);
+                        roomList.AddRange(rooms);
+                        i++;
+                        if (rooms.Length < 100) break;
+                    }
+                }
+                catch { }
+                RoomModel selectedRoom = new();
+                InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a new room:"), null);
+                foreach (RoomModel room in roomList)
+                {
+                    roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
+                }
+                roomMenu.UseMenu();
+
+                selectedTimeTable.Room = selectedRoom;
+                Console.WriteLine("Room updated.");
+            });
+            editMenu.Add("Start Date", (x) =>
+            {
+                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("yyyy-MM-dd HH:mm")}" + "\n" + "Enter the new start date (yyyy-MM-dd HH:mm):");
+                DateTime startDate;
+                DateTime endDate;
+                DateTime now = DateTime.Now;
+                while (true)
+                {
+                    string startdatestr = Console.ReadLine();
+                    bool result = startdatestr.IsStartDate(selectedTimeTable.Movie.DurationInMin, out var y);
+                    if (result && y != null)
+                    {
+                        startDate = y ?? DateTime.Now;
+                        endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
+                        selectedTimeTable.StartDate = startDate.ToString("yyyy-MM-dd HH:mm");;
+                        selectedTimeTable.EndDate = endDate.ToString("yyyy-MM-dd HH:mm");;
+                        break;
+                    }
+                }
             });
             editMenu.UseMenu();
-            _ttf.ItemToDb(selectedTimeTable);
+            
+            if (_ttf.UpdateItem(selectedTimeTable))
+            {
+                Console.WriteLine("Updated timetable successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to update timetable.");
+            }
+            Console.ReadLine();
         }
     }
 }
