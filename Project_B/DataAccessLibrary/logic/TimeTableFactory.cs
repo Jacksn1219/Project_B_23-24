@@ -1,3 +1,4 @@
+using System.Globalization;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
@@ -265,6 +266,19 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             new Dictionary<string, dynamic?>(){
                 {"$1", date.ToString("MM/dd/yyyy")},
                 {"$2", date.AddDays(1).ToString("MM/dd/yyyy")}
+            }
+        );
+    }
+    public TimeTableModel[] GetTimeTablesInRoomBetweenDates(int roomID, DateTime startDate, DateTime endDate)
+    {
+        return _db.ReadData<TimeTableModel>
+        (
+            @"SELECT * FROM TimeTable
+            WHERE EndDate >= $1",// AND StartDate <= $2 AND RoomID = $3",
+            new Dictionary<string, dynamic?>(){
+                {"$1", startDate.ToString(CultureInfo.InvariantCulture)},
+                {"$2", endDate.ToString(CultureInfo.InvariantCulture)},
+                {"$3", roomID}
             }
         );
     }

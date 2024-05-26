@@ -1,14 +1,8 @@
 ﻿using DataAccessLibrary.logic;
 using DataAccessLibrary;
 using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Xml.Linq;
 using DataAccessLibrary.models;
+using System.Data.SqlClient;
 
 namespace Project_B
 {
@@ -81,7 +75,7 @@ namespace Project_B
             // Test directors
             _df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
             _df.CreateItem(new DirectorModel("David Fincher", "", 61));
-            
+
             // Get directors from database
             try
             {
@@ -264,7 +258,8 @@ namespace Project_B
 
                 // Menu to chose director
                 string title = "No director yet";
-                if(movieToEdit.Director != null){
+                if (movieToEdit.Director != null)
+                {
                     title = $"Current director = {movieToEdit.Director.Name}";
                 }
 
@@ -346,13 +341,14 @@ namespace Project_B
                 {
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
                     //_mf.AddRelatedActors(movieToEdit);
-                    if(movieToEdit.Actors.Count < 1) _mf.getRelatedItemsFromDb(movieToEdit, 1);
-                    
+                    if (movieToEdit.Actors.Count < 1) _mf.getRelatedItemsFromDb(movieToEdit, 1);
+
                     // Menu to chose director
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
                     foreach (ActorModel actor in movieToEdit.Actors)
                     {
-                        actorMenu.Add(actor.Name, (x) => {
+                        actorMenu.Add(actor.Name, (x) =>
+                        {
                             movieToEdit.removeActor(actor);
                             actorMenu.Remove(actor.Name);
                         });
@@ -360,7 +356,7 @@ namespace Project_B
                     actorMenu.UseMenu();
 
                     // Deleting chosen actor
-                    
+
                     addOrRemoveTitle = Universal.centerToScreen($"Current actors are: ");
                     foreach (ActorModel actor in movieToEdit.Actors) { addOrRemoveTitle += "\n" + actor.Name; }
                     addOrRemove.editIntro(addOrRemoveTitle + "\n" + Universal.centerToScreen("What would you like to do?"));
@@ -405,7 +401,7 @@ namespace Project_B
             }
             catch { }
 
-            MovieModel selectedMovie = new ();
+            MovieModel selectedMovie = new();
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
             foreach (MovieModel movie in movieList)
             {
@@ -413,7 +409,7 @@ namespace Project_B
             }
             movieMenu.UseMenu();
 
-            List<RoomModel> roomList = new List <RoomModel>();
+            List<RoomModel> roomList = new List<RoomModel>();
             try
             {
                 int i = 1;
@@ -427,7 +423,7 @@ namespace Project_B
             }
             catch { }
 
-            RoomModel selectedRoom = new ();
+            RoomModel selectedRoom = new();
             InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a room: (Room1, Room2, Room3)"), null);
             foreach (RoomModel room in roomList)
             {
@@ -450,6 +446,28 @@ namespace Project_B
                         startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
                         endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
                     {
+                        if (selectedRoom.ID == null)
+                        {
+                            _rf.ItemToDb(selectedRoom);
+                            if (selectedRoom.ID == null)
+                            {
+                                System.Console.WriteLine("this room is invalid");
+                                System.Console.ReadKey();
+                                return;
+                            }
+
+                        }                                                   //selected room id cant be null after checks, but for some reason it is still nullable
+                        var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, startDate, endDate);
+                        if (collisions.Length > 0)
+                        {
+                            System.Console.WriteLine("this timetable item is coliding with these timetables:");
+                            foreach (var tt in collisions)
+                            {
+                                System.Console.WriteLine(tt.ToString());
+                            }
+                            System.Console.WriteLine("please fill in another date:");
+                            continue;
+                        }
                         break;
                     }
                     else
@@ -465,7 +483,8 @@ namespace Project_B
 
             TimeTableModel newTimeTable = new TimeTableModel(selectedRoom, selectedMovie, startDate, endDate);
             _ttf.CreateItem(newTimeTable);
-            if(newTimeTable.ID != null){
+            if (newTimeTable.ID != null)
+            {
                 System.Console.WriteLine("added movie to timetable.");
             }
             else System.Console.WriteLine("failed to add movie to timetable");
@@ -489,7 +508,7 @@ namespace Project_B
         //     catch { }
 
         //     TimeTableModel selectedTimeTable = new TimeTableModel(0, 0, DateTime.Now, DateTime.Now);
-            
+
         //     InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Select a timetable to edit:"), null);
         //     foreach (TimeTableModel timeTable in timeTableList)
         //     {
