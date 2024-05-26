@@ -269,6 +269,14 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             }
         );
     }
+    /// <summary>
+    /// gets all TimeTables that play in the room with ID: <para>roomID</para>,
+    /// and between <paramref name="startDate"/> & <paramref name="endDate"/>
+    /// </summary>
+    /// <param name="roomID">the ID of the room the timetable will be playing in</param>
+    /// <param name="startDate">the movie has to play after this date</param>
+    /// <param name="endDate">the movie has to have started before this date</param>
+    /// <returns></returns>
     public TimeTableModel[] GetTimeTablesInRoomBetweenDates(int roomID, DateTime startDate, DateTime endDate)
     {
         return _db.ReadData<TimeTableModel>
