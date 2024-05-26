@@ -111,7 +111,7 @@ public static class Universal
             return System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\DataSource"));
         }
     }
-    public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf, ReservationService rs)
+    public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf, ReservationService rs, TimeTableFactory _ttf)
     {
 
         ReservationModel[] reservationList = _rf.GetItems(100, 1, 99);
@@ -124,7 +124,10 @@ public static class Universal
         InputMenu showReservedSeatMenu = new InputMenu("useLambda");
         foreach ((int, SeatModel) seat in reservesSeatList)
         {
-            showReservedSeatMenu.Add($"| {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
+            TimeTableModel? timetable = _ttf.GetItemFromId(_rf.GetItemFromId(seat.Item1, 99).TimeTableID ?? 1);
+            if (timetable != null)
+                showReservedSeatMenu.Add($"{timetable.DateTimeStartDate} | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
+            //else showReservedSeatMenu.Add($" | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
         }
         showReservedSeatMenu.UseMenu(() => printAsTitle("Select a seat to show"));
     }

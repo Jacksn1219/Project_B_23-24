@@ -55,7 +55,7 @@ namespace Project_B
                 //admin options
                 new Dictionary<string, Action<string>>(){
                     {"Schedule", (x) => { rs.showReservedSeatsPerTimetable(rf, sf, cf, reservationFactory, rs); }},
-                    {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory, rs); }},
+                    {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory, rs, ttf); }},
                     {"\n" + Universal.centerToScreen("Create/Edit"), (x) => {
                         InputMenu CreateMenu = new InputMenu("useLambda");
                         CreateMenu.Add(new Dictionary<string, Action<string>>()
