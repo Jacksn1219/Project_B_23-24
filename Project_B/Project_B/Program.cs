@@ -15,6 +15,7 @@ namespace Project_B
         public static void Main()
         {
             Console.Title = "YourEyes";
+            Console.ResetColor();
             // setup logger and db
             using Serilog.Core.Logger logger = new LoggerConfiguration()
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)

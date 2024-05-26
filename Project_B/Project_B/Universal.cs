@@ -89,17 +89,25 @@ public static class Universal
     }
     public static string takeUserInput(string question)
     {
+        // Setting colors
         Console.BackgroundColor = ConsoleColor.DarkGray;
         Console.ForegroundColor = ConsoleColor.White;
+
+        // Writing the hovering message
         Console.Write(" " + question);
         for (int i = question.Length; i < 29; i++) Console.Write(" ");
         Console.SetCursorPosition(Console.CursorLeft - 29, Console.CursorTop);
-        string userInput = Console.ReadKey().KeyChar.ToString() ?? "";
-        Console.Write("                            ");
-        Console.SetCursorPosition(Console.CursorLeft - 28, Console.CursorTop);
-        userInput += Console.ReadLine() ?? "";
+
+        // Waiting for the user input and if receifed redraw an empty input field
+        while (!Console.KeyAvailable) { }
+        Console.Write("                             ");
+        Console.SetCursorPosition(Console.CursorLeft - 29, Console.CursorTop);
+        
+        // Userinput
+        string userInput = Console.ReadLine() ?? "";
+
+        // Reseting the color
         Console.BackgroundColor = ConsoleColor.Black;
-        Console.WriteLine("");
         return userInput;
     }
     private static void setupFolder(string folderName) => System.IO.Directory.CreateDirectory(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\" + folderName)));
@@ -113,8 +121,8 @@ public static class Universal
     }
     public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf, ReservationService rs, TimeTableFactory _ttf)
     {
-        //ReservationModel[] reservationList = _rf.GetItems(100, 1, 99);
-        ReservationModel[] reservationList = _rf.GetReservationsAfterDate(100, DateTime.Now, 1, 99);
+        ReservationModel[] reservationList = _rf.GetItems(100, 1, 99);
+        //ReservationModel[] reservationList = _rf.GetReservationsAfterDate(100, DateTime.Now, 1, 99);
         List<(int, SeatModel)> reservesSeatList = new();
         foreach (ReservationModel reservation in reservationList)
         {

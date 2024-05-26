@@ -17,6 +17,7 @@ namespace Project_B.menu_s
                 medewerkerMenu.Add(menuItems);
                 medewerkerMenu.UseMenu(() => Universal.printAsTitle("Admin menu"));
             }
+            IsLogedIn = false;
             // medewerkerMenu.Add("Create/Edit", (x) =>
             // {
             //     //Aanmaken nieuwe room, movie, actor, director.
