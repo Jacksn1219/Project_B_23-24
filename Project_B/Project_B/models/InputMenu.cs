@@ -80,6 +80,7 @@ namespace Models
                 {
                     try
                     {
+                        
                         if (this.menuoptions[i].isTaken == true) { this.menuoptions[i].Name = "X"; }
                     }
                     catch { }
@@ -96,7 +97,7 @@ namespace Models
                     }
                     catch { }
                     try { if (this.menuoptions[i].isTaken == true) Console.ForegroundColor = ConsoleColor.DarkGray; } catch { Console.ForegroundColor = ConsoleColor.Gray; }
-                    Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
+                    Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "X", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 Console.ResetColor();
             };
@@ -110,6 +111,7 @@ namespace Models
         {
             Console.CursorVisible = false;
             int cursor = 0;
+            if (cursor == 0) while ((this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].Name == "X" || this.menuoptions[cursor].isTaken == true) && cursor < this.menuoptions.Count) cursor++;
             ConsoleKey userInput = ConsoleKey.Delete;
             Console.Clear();
             //Main loop

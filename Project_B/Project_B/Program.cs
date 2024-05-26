@@ -50,12 +50,12 @@ namespace Project_B
                     {"# Browse movies #", (x) => { /*not yet*/ }},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation(rf);}},
                     {"Select seat", (x) => {rs.SelectSeat(rf);}},
-                    {"\n" + Universal.centerToScreen("Search reservation"), (x) => { rs.GetReservation();}}
+                    {"\n" + Universal.centerToScreen("Search reservation"), (x) => { rs.GetReservation(); Console.ReadLine(); }}
                 },
                 //admin options
                 new Dictionary<string, Action<string>>(){
-                    {"# Schedule #", (x) => {/*not yet*/}},
-                    {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory);}},
+                    {"Schedule", (x) => { rs.showReservedSeatsPerTimetable(rf, sf, cf, reservationFactory, rs); }},
+                    {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory, rs); }},
                     {"\n" + Universal.centerToScreen("Create/Edit"), (x) => {
                         InputMenu CreateMenu = new InputMenu("useLambda");
                         CreateMenu.Add(new Dictionary<string, Action<string>>()
@@ -76,3 +76,9 @@ namespace Project_B
         }
     }
 }
+
+/*
+ * 18 - Als administratie wil ik graag zien hoe vol een zaal is, zodat ik kan zien of de desbetreffende film een grotere zaal nodig heeft of niet zo populair is.
+ * 14 - Als administratie wil ik de gereserveerde stoelen terugzien, zodat ik de klanten naar hun stoel kan begeleiden.
+ * 10 - Als klant wil ik zien welke stoelen al bezet zijn zodat ik niet per ongeluk een al gereserveerde stoel pak.
+ */

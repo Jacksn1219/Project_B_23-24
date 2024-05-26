@@ -55,6 +55,7 @@ public class ReservationService
         }
         if (tt.Room == null) { return; }
         var seats = RoomLayoutService.selectSeatModel(tt.Room);
+        if (seats == null) return;
         //fill in user data
         var user = UserInfoInput.GetUserInfo();
         CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
@@ -102,16 +103,7 @@ public class ReservationService
                 break;
             }
             System.Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + Universal.ChangeColour(ConsoleColor.Black));
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        ;
+        };
     }
 
     public DateOnly? GetWeekDay()
@@ -167,7 +159,7 @@ public class ReservationService
         }
     }
 
-    private TimeTableModel? SelectTimeTableInDay(DateOnly weekday)
+    public TimeTableModel? SelectTimeTableInDay(DateOnly weekday)
     {
         TimeTableModel? mov = null;
         InputMenu movieSelecter = new InputMenu("| Selecteer een film |", null);
@@ -190,5 +182,52 @@ public class ReservationService
         }
         movieSelecter.UseMenu();
         return mov;
+    }
+    public void showReservedSeatsPerTimetable(RoomFactory _rf, SeatFactory sf, CustomerFactory cf, ReservationFactory reservationFactory, ReservationService rs)
+    {
+        //select timetable day
+        DateOnly? day = GetWeekDay();
+        if (day == null) return;
+
+
+        //select timetable
+        TimeTableModel? tt = null;
+
+        tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
+        if (tt == null)
+        {
+            System.Console.WriteLine("failed to get timetable");
+            Console.ReadLine();
+            return;
+        }
+        else if (tt != null)
+        {
+            if (tt.Room == null || tt.Room.Seats == null || tt.Room.Seats.Count < 1)
+            {
+                _tf.getRelatedItemsFromDb(tt, 89);
+            }
+        }
+        else
+        {
+            // Handle the case when tt is null, if needed
+            throw new ArgumentNullException(nameof(tt), "The tt object is null.");
+        }
+        if (tt.Room == null) { return; }
+        
+        
+        // Select a reserved seat to show the info of
+        SeatModel seat = RoomLayoutService.selectReservedSeatModel(tt.Room) ?? new();
+
+        ReservationModel[] reservationList = reservationFactory.GetItems(100, 1, 99);
+        List<(int, SeatModel)> reservesSeatList = new();
+        foreach (ReservationModel reservation in reservationList)
+        {
+            foreach (SeatModel seatItem in reservation.ReservedSeats)
+                if (seatItem.ID == seat.ID && reservation.TimeTableID == tt.ID) { reservesSeatList.Add((reservation.ID ?? 0, seatItem)); }
+        }
+
+        (int, SeatModel) seatInRes = reservesSeatList[0];
+        rs.GetReservationById(seatInRes.Item1);
+        Console.ReadLine();
     }
 }

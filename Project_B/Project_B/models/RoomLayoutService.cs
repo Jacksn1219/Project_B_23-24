@@ -57,6 +57,31 @@ class RoomLayoutService : LayoutModel
         foreach (SeatModel SeatModel in layout)
         {
             string SeatModelName = SeatModel.Type == " " ? "   " : $" []";
+            if (SeatModel.IsReserved)
+                Console.Write("");
+            SeatModelSelectionMenu.Add($"{SeatModel.Type[0]}", (x) =>
+            {
+                SeatModel selectedSeatModel = SeatModel;
+                selectedOption = selectedSeatModel;
+                Console.Clear();
+            }, SeatModel.IsReserved);
+        }
+        SeatModelSelectionMenu.UseMenu();
+        return selectedOption;
+    }
+    public static SeatModel? selectReservedSeatModel(RoomModel room)
+    {
+        List<SeatModel> layout = room.Seats;
+        //drawLayout(layout, room);
+
+        SeatModel? selectedOption = null;
+        SeatPricesModel spm = SeatPriceCalculator.GetCurrentPrices();
+        InputMenu SeatModelSelectionMenu = new InputMenu($"Soort Stoel:                  Betaal niveau (1 = laag)\n(N) = Normaal                 Blauw = {spm.PriceTierI}\n(E) = Extra beenruimte        Geel = {spm.PriceTierII}\n(L) = Love seat               Rood = {spm.PriceTierIII}\n\n [   Screen   ]", null, room.RowWidth ?? 0);
+        foreach (SeatModel SeatModel in layout)
+        {
+            string SeatModelName = SeatModel.Type == " " ? "   " : $" []";
+            if (SeatModel.IsReserved) { SeatModel.IsReserved = false; }
+            else if (!SeatModel.IsReserved && SeatModel.Type != " ") { SeatModel.IsReserved = true; }
             SeatModelSelectionMenu.Add($"{SeatModel.Type[0]}", (x) =>
             {
                 SeatModel selectedSeatModel = SeatModel;

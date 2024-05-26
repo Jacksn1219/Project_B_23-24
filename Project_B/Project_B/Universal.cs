@@ -1,5 +1,6 @@
 ﻿using DataAccessLibrary;
 using DataAccessLibrary.logic;
+using DataAccessLibrary.models;
 using Models;
 
 namespace Project_B;
@@ -110,41 +111,20 @@ public static class Universal
             return System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\DataSource"));
         }
     }
-    public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf)
+    public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf, ReservationService rs)
     {
 
-        List<ReservationModel> reservationList = new List<ReservationModel>();
-        try
+        ReservationModel[] reservationList = _rf.GetItems(100, 1, 99);
+        List<(int, SeatModel)> reservesSeatList = new();
+        foreach (ReservationModel reservation in reservationList)
         {
-            int i = 1;
-            ReservationModel? reservation = new ReservationModel();
-            while (reservation != null)
-            {
-                reservation = _rf.GetItemFromId(i);
-                if (reservation != null) reservationList.Add(reservation);
-                i++;
-            }
+            foreach (SeatModel seat in reservation.ReservedSeats)
+                reservesSeatList.Add((reservation.ID ?? 0, seat));
         }
-        catch { }
-
-        List<SeatModel> reservesSeatList = new List<SeatModel>();
-        try
-        {
-            int i = 1;
-            SeatModel? seat = new SeatModel();
-            while (seat != null)
-            {
-                seat = _sf.GetItemFromId(reservationList[i].ID ?? 1, 1);
-                if (seat != null) reservesSeatList.Add(seat);
-                i++;
-            }
-        }
-        catch { }
-
         InputMenu showReservedSeatMenu = new InputMenu("useLambda");
-        foreach (SeatModel seat in reservesSeatList)
+        foreach ((int, SeatModel) seat in reservesSeatList)
         {
-            showReservedSeatMenu.Add($"| {seat.Room} | {seat.Name}", (x) => { Console.WriteLine(seat.ToString()); });
+            showReservedSeatMenu.Add($"| {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
         }
         showReservedSeatMenu.UseMenu(() => printAsTitle("Select a seat to show"));
     }

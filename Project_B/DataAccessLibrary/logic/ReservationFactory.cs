@@ -320,7 +320,7 @@ namespace DataAccessLibrary.logic
             try
             {
                 return _db.ReadData<SeatModel>(
-                @"SELECT Seat.ID, Seat.Name, Seat.Rank, Seat.Type FROM Seat
+                @"SELECT Seat.ID, Seat.RoomID, Seat.Name, Seat.Rank, Seat.Type FROM Seat
                 INNER JOIN ReservedSeat ON ReservedSeat.SeatID = Seat.ID
                 INNER JOIN Reservation ON Reservation.ID = ReservedSeat.ReservationID
                 WHERE Reservation.ID = $1",
