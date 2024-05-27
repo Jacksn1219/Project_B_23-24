@@ -1,4 +1,5 @@
 using DataAccessLibrary;
+using DataAccessLibrary.models;
 
 
 namespace DataAccessLibrary.logic

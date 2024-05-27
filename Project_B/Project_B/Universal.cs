@@ -1,5 +1,6 @@
 ﻿using DataAccessLibrary;
 using DataAccessLibrary.logic;
+using DataAccessLibrary.models;
 using Models;
 
 namespace Project_B;
@@ -115,17 +116,25 @@ public static class Universal
     }
     public static string takeUserInput(string question)
     {
+        // Setting colors
         Console.BackgroundColor = ConsoleColor.DarkGray;
         Console.ForegroundColor = ConsoleColor.White;
+
+        // Writing the hovering message
         Console.Write(" " + question);
         for (int i = question.Length; i < 29; i++) Console.Write(" ");
         Console.SetCursorPosition(Console.CursorLeft - 29, Console.CursorTop);
-        string userInput = Console.ReadKey().KeyChar.ToString() ?? "";
-        Console.Write("                            ");
-        Console.SetCursorPosition(Console.CursorLeft - 28, Console.CursorTop);
-        userInput += Console.ReadLine() ?? "";
+
+        // Waiting for the user input and if receifed redraw an empty input field
+        while (!Console.KeyAvailable) { }
+        Console.Write("                             ");
+        Console.SetCursorPosition(Console.CursorLeft - 29, Console.CursorTop);
+        
+        // Userinput
+        string userInput = Console.ReadLine() ?? "";
+
+        // Reseting the color
         Console.BackgroundColor = ConsoleColor.Black;
-        Console.WriteLine("");
         return userInput;
     }
     private static void setupFolder(string folderName) => System.IO.Directory.CreateDirectory(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\" + folderName)));
@@ -137,41 +146,23 @@ public static class Universal
             return System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\DataSource"));
         }
     }
-    public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf)
+    public static void showReservedSeats(SeatFactory _sf, CustomerFactory _cf, ReservationFactory _rf, ReservationService rs, TimeTableFactory _ttf)
     {
-
-        List<ReservationModel> reservationList = new List<ReservationModel>();
-        try
+        ReservationModel[] reservationList = _rf.GetItems(100, 1, 99);
+        //ReservationModel[] reservationList = _rf.GetReservationsAfterDate(100, DateTime.Now, 1, 99);
+        List<(int, SeatModel)> reservesSeatList = new();
+        foreach (ReservationModel reservation in reservationList)
         {
-            int i = 1;
-            ReservationModel? reservation = new ReservationModel();
-            while (reservation != null)
-            {
-                reservation = _rf.GetItemFromId(i);
-                if (reservation != null) reservationList.Add(reservation);
-                i++;
-            }
+            foreach (SeatModel seat in reservation.ReservedSeats)
+                reservesSeatList.Add((reservation.ID ?? 0, seat));
         }
-        catch { }
-
-        List<SeatModel> reservesSeatList = new List<SeatModel>();
-        try
-        {
-            int i = 1;
-            SeatModel? seat = new SeatModel();
-            while (seat != null)
-            {
-                seat = _sf.GetItemFromId(reservationList[i].ID ?? 1, 1);
-                if (seat != null) reservesSeatList.Add(seat);
-                i++;
-            }
-        }
-        catch { }
-
         InputMenu showReservedSeatMenu = new InputMenu("useLambda");
-        foreach (SeatModel seat in reservesSeatList)
+        foreach ((int, SeatModel) seat in reservesSeatList)
         {
-            showReservedSeatMenu.Add($"| {seat.Room} | {seat.Name}", (x) => { Console.WriteLine(seat.ToString()); });
+            TimeTableModel? timetable = _ttf.GetItemFromId(_rf.GetItemFromId(seat.Item1, 99).TimeTableID ?? 1);
+            if (timetable != null)
+                showReservedSeatMenu.Add($"{timetable.DateTimeStartDate} | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
+            //else showReservedSeatMenu.Add($" | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
         }
         showReservedSeatMenu.UseMenu(() => printAsTitle("Select a seat to show"));
     }

@@ -107,7 +107,8 @@ namespace DataAccessLibrary
             {
                 SQLiteCommand command = dbAccess.CreateCommand();
                 command.CommandText = sqlStatement;
-                return ConvertToObject<T>(command.ExecuteReader()) ?? new T[0];
+                var temp = ConvertToObject<T>(command.ExecuteReader()) ?? new T[0];
+                return temp;
             }
             finally
             {

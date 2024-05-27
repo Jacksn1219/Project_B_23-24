@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Net.Http.Headers;
+using System.Xml;
 using DataAccessLibrary;
+using Serilog;
 
 namespace DataAccessLibrary.logic
 {
@@ -263,7 +265,7 @@ namespace DataAccessLibrary.logic
             }
         }
 
-        public ReservationModel[] GetReservationsAfterDate(int count, DateOnly date, int page = 1, int deepcopyLv = 0)
+        public ReservationModel[] GetReservationsAfterDate(int count, DateTime date, int page = 1, int deepcopyLv = 0)
         {
             if (deepcopyLv < 0) return Array.Empty<ReservationModel>();
             bool dontClose = _db.IsOpen;
@@ -271,8 +273,18 @@ namespace DataAccessLibrary.logic
             {
                 _db.OpenConnection();
                 ReservationModel[] result = _db.ReadData<ReservationModel>(
-                    $"SELECT * FROM Reservation LIMIT {count} OFFSET {count * page - count} WHERE Reservation.StartDate >= {date.ToString(CultureInfo.InvariantCulture)}"
+                    @$"SELECT * FROM Reservation
+                    INNER JOIN TimeTable ON TimeTable.ID = Reservation.TimeTableID
+                    LIMIT {count} OFFSET {count * page - count}
+                    WHERE TimeTable.StartDate >= {date.ToString(CultureInfo.InvariantCulture)}"
                 );
+                //WHERE Reservation.StartDate >= {date.ToString(CultureInfo.InvariantCulture)}"
+                //$"WHERE TimeTable.StartDate >= {DateTime.Now.ToString(CultureInfo.InvariantCulture)}"
+                //(als je de timetable nog niet heb, kan je die INNER JOINen)
+                /*
+                @"SELECT Seat.ID, Seat.RoomID, Seat.Name, Seat.Rank, Seat.Type FROM Seat
+                INNER JOIN ReservedSeat ON ReservedSeat.SeatID = Seat.ID
+                */
                 if (deepcopyLv < 1) return result;
                 foreach (ReservationModel item in result)
                 {
@@ -320,7 +332,7 @@ namespace DataAccessLibrary.logic
             try
             {
                 return _db.ReadData<SeatModel>(
-                @"SELECT Seat.ID, Seat.Name, Seat.Rank, Seat.Type FROM Seat
+                @"SELECT Seat.ID, Seat.RoomID, Seat.Name, Seat.Rank, Seat.Type FROM Seat
                 INNER JOIN ReservedSeat ON ReservedSeat.SeatID = Seat.ID
                 INNER JOIN Reservation ON Reservation.ID = ReservedSeat.ReservationID
                 WHERE Reservation.ID = $1",

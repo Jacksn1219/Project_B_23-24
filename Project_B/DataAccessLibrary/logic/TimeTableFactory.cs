@@ -215,6 +215,11 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             _db.OpenConnection();
             item.Movie = _mf.GetItemFromId(item.MovieID ?? 0, deepcopyLv);
             item.Room = _rf.GetItemFromId(item.RoomID ?? 0, deepcopyLv);
+            SeatModel[] reservedSeat = GetReservedSeats(item);
+            foreach (SeatModel seat in reservedSeat)
+            {
+                item.Room.Seats[Convert.ToInt16(seat.Name)].IsReserved = true;
+            }
         }
         catch (Exception ex)
         {
