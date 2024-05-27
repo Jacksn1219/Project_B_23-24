@@ -440,7 +440,7 @@ namespace Project_B
             {
                 if (DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate))
                 {
-                    endDate = startDate.AddMinutes(selectedMovie.DurationInMin);
+                    endDate = startDate.AddMinutes(selectedMovie.DurationInMin + 15); //15 min delay between movies
                     if (startDate.Date > now.Date &&
                         startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
                         endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
