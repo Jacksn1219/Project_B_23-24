@@ -226,8 +226,13 @@ public class ReservationService
                 if (seatItem.ID == seat.ID && reservation.TimeTableID == tt.ID) { reservesSeatList.Add((reservation.ID ?? 0, seatItem)); }
         }
 
-        (int, SeatModel) seatInRes = reservesSeatList[0];
-        rs.GetReservationById(seatInRes.Item1);
-        Console.ReadLine();
+        if (reservationList.Length == 0) return;
+        try
+        {
+            (int, SeatModel) seatInRes = reservesSeatList[0];
+            rs.GetReservationById(seatInRes.Item1);
+            Console.ReadLine();
+        }
+        catch (Exception ex) { }
     }
 }
