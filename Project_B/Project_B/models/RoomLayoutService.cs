@@ -53,7 +53,7 @@ class RoomLayoutService : LayoutModel
 
         SeatModel? selectedOption = null;
         SeatPricesModel spm = SeatPriceCalculator.GetCurrentPrices();
-        InputMenu SeatModelSelectionMenu = new InputMenu($"Soort Stoel:                  Betaal niveau (1 = laag)\n(N) = Normaal                 Blauw = {spm.PriceTierI}\n(E) = Extra beenruimte        Geel = {spm.PriceTierII}\n(L) = Love seat               Rood = {spm.PriceTierIII}\n\n [   Screen   ]", null, room.RowWidth ?? 0);
+        InputMenu SeatModelSelectionMenu = new InputMenu($"Soort Stoel:                  Betaal niveau (1 = laag)\n(N) = Normaal + €0,00                Blauw = €{spm.PriceTierI}\n(E) = Extra beenruimte + €{spm.ExtraSpace}        Geel = €{spm.PriceTierII}\n(L) = Love seat + €{spm.LoveSeat}              Rood = €{spm.PriceTierIII}\n\n [   Screen   ]", null, room.RowWidth ?? 0);
         foreach (SeatModel SeatModel in layout)
         {
             string SeatModelName = SeatModel.Type == " " ? "   " : $" []";

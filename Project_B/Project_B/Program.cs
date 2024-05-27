@@ -15,6 +15,8 @@ namespace Project_B
         public static void Main()
         {
             Console.Title = "YourEyes";
+            //fixes ? euro to € euro
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
             // setup logger and db
             using Serilog.Core.Logger logger = new LoggerConfiguration()
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
@@ -41,7 +43,7 @@ namespace Project_B
                 //loaddata
                 SQLite_setup.SetupProjectB(rf, mf, Universal.datafolderPath);
             });
-            
+
             //----- main screen -----//
             MainMenu.UseMenu(
                 //user options

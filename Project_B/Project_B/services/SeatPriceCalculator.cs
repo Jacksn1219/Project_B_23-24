@@ -113,6 +113,11 @@ namespace Project_B.services
                 JsonSerializer.Serialize(_prices)
             );
         }
+        public static decimal CalculatePrices(List<SeatModel> seats)
+        {
+            return seats.Sum(CalculatePrice);
+        }
+
         public static decimal CalculatePrice(SeatModel seat)
         {
             decimal price = 0;
@@ -139,19 +144,49 @@ namespace Project_B.services
             }
             return price;
         }
+        public static string ShowCalculation(List<SeatModel> seats)
+        {
+            string toReturn = "Price:\n";
+            foreach (var seat in seats)
+            {
+                switch (seat.Rank.ToLower())
+                {
+                    case "ii":
+                        toReturn += $"{seat.Rank} € {_prices.PriceTierII}";
+                        break;
+                    case "iii":
+                        toReturn += $"{seat.Rank} € {_prices.PriceTierIII}";
+                        break;
+                    default:
+                        toReturn += $"{seat.Rank} € {_prices.PriceTierI}";
+                        break;
+                }
+                switch (seat.Type.ToLower())
+                {
+                    case "extra beenruimte":
+                        toReturn += $"\n+ {seat.Type} € {_prices.ExtraSpace}";
+                        break;
+                    case "loveseat":
+                        toReturn += $"\n+ {seat.Type} € {_prices.ExtraSpace}";
+                        break;
+                }
+            }
+            toReturn += $"\nTotal price: € {CalculatePrices(seats)}";
+            return toReturn;
+        }
         public static string ShowCalculation(SeatModel seat)
         {
             string toReturn = "Price:\n";
             switch (seat.Rank.ToLower())
             {
-                case "ii":
-                    toReturn += $"{seat.Rank} € {_prices.PriceTierII}";
+                case "2":
+                    toReturn += $"Seat II: € {_prices.PriceTierII}";
                     break;
-                case "iii":
-                    toReturn += $"{seat.Rank} € {_prices.PriceTierIII}";
+                case "3":
+                    toReturn += $"Seat III: € {_prices.PriceTierIII}";
                     break;
                 default:
-                    toReturn += $"{seat.Rank} € {_prices.PriceTierI}";
+                    toReturn += $"Seat I: € {_prices.PriceTierI}";
                     break;
             }
             switch (seat.Type.ToLower())

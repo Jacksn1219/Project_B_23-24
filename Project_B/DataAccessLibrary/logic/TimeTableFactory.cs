@@ -282,7 +282,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         return _db.ReadData<TimeTableModel>
         (
             @"SELECT * FROM TimeTable
-            WHERE EndDate >= $1",// AND StartDate <= $2 AND RoomID = $3",
+            WHERE EndDate >= $1 AND StartDate <= $2 AND RoomID = $3",
             new Dictionary<string, dynamic?>(){
                 {"$1", startDate.ToString(CultureInfo.InvariantCulture)},
                 {"$2", endDate.ToString(CultureInfo.InvariantCulture)},

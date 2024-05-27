@@ -26,7 +26,7 @@ public class ReservationService
 
         //select timetable
         TimeTableModel? tt = null;
-        
+
         tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
         if (tt == null)
         {
@@ -55,15 +55,23 @@ public class ReservationService
         }
         if (tt.Room == null) { return; }
         var seats = RoomLayoutService.selectSeatModel(tt.Room);
+        if (seats == null /*||seats.Length < 1*/) return;
         //fill in user data
         var user = UserInfoInput.GetUserInfo();
         CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
-        // create reservation
-        ReservationModel res = new ReservationModel(cust, tt, new List<SeatModel>() { seats }, user.userinput);
-        _rf.ItemToDb(res);
-        //print number
-        System.Console.WriteLine("Reservation is created!\nYour reservation number is: " + res.ID + "\n have a great day.");
 
+        System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(seats));
+        System.Console.WriteLine($"\nCreate reservation? \n {Universal.WriteColor("Once created, the reservation canNOT be cancelled!", ConsoleColor.Red)}(Y/N)");
+        ConsoleKeyInfo key = System.Console.ReadKey();
+        if (key.KeyChar == 'y' || key.KeyChar == 'Y')
+        {
+            // create reservation
+            ReservationModel res = new ReservationModel(cust, tt, new List<SeatModel>() { seats }, user.userinput);
+            _rf.ItemToDb(res);
+            //print number
+            System.Console.WriteLine("Reservation is created!\nYour reservation number is: " + res.ID + "\n have a great day.");
+        }
+        else System.Console.WriteLine("Canceled reservation!");
         Console.ReadLine();
     }
 
@@ -71,7 +79,7 @@ public class ReservationService
     {
 
         var seat = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
-        if (seat != null) 
+        if (seat != null)
         {
             var user = UserInfoInput.GetUserInfo();
         }
@@ -103,14 +111,14 @@ public class ReservationService
             }
             System.Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + Universal.ChangeColour(ConsoleColor.Black));
         }
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
         ;
     }
 
@@ -128,9 +136,10 @@ public class ReservationService
         //add days of week left.
         for (int i = weekdayInt; i < 7; i++)
         {
-            selectDay.Add($"{(DayOfWeek)i}", (x) =>
+            DayOfWeek temp = (DayOfWeek)i; //temp DayOfWeekValue. (if you use i it will always be 7)
+            selectDay.Add($"{temp}", (x) =>
             {
-                var date = today.AddDays(i - weekdayInt);
+                var date = today.AddDays((int)temp - weekdayInt);
                 toReturn = DateOnly.FromDateTime(date);
                 //Console.ReadLine();
             });
