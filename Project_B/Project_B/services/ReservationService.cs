@@ -92,28 +92,6 @@ public class ReservationService
         if (res == null) System.Console.WriteLine("reservation not found.");
         else System.Console.WriteLine(res.ToString());
     }
-
-    public void GetReservation()
-    {
-        while (true)
-        {
-            Console.Write("Please enter your confirmation number: ");
-            string result = Universal.takeUserInput("Type...");
-            if (result != null && int.TryParse(result, out int reservationId))
-            {
-                GetReservationById();
-                break;
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please try again");
-                break;
-            }
-            System.Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + Universal.ChangeColour(ConsoleColor.Black));
-        }
-        ;
-    }
-
     public DateOnly? GetWeekDay()
     {
         //get current day
