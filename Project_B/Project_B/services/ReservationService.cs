@@ -172,7 +172,11 @@ public class ReservationService
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
-        ReservationModel? reservation = _rf.GetItemFromId(confirmationNumber, 4);
+        GetReservationById(confirmationNumber);
+    }
+    public void GetReservationById(int id)
+    {
+        ReservationModel? reservation = _rf.GetItemFromId(id, 4);
         if (reservation == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
