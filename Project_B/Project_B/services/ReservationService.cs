@@ -137,7 +137,7 @@ public class ReservationService
             string result = Universal.takeUserInput("Type...");
             if (result != null && int.TryParse(result, out int reservationId))
             {
-                GetReservationById(reservationId);
+                GetReservationById();
                 break;
             }
             else
@@ -147,14 +147,6 @@ public class ReservationService
             }
             System.Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "invalid input, please fill in a number higher than 0" + Universal.ChangeColour(ConsoleColor.Black));
         }
-
-
-
-
-
-
-
-
         ;
     }
 
@@ -183,14 +175,49 @@ public class ReservationService
         selectDay.UseMenu();
         return toReturn;
     }
-    public void GetReservationById(int id)
+    public void GetReservationById()
     {
-        ReservationModel? reservation = _rf.GetItemFromId(id, 4);
+        bool validInput = false;
+        int confirmationNumber = 0;
+        while (!validInput)
+        {
+            Console.Write("Please enter your confirmation number: ");
+            string userInput = Universal.takeUserInput("Type...");
+            if (int.TryParse(userInput, out confirmationNumber))
+            {
+                validInput = true;
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Please enter a valid confirmation number.\n");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+        ReservationModel? reservation = _rf.GetItemFromId(confirmationNumber, 4);
         if (reservation == null)
         {
-            Console.Clear();
-            Console.WriteLine("No reservation found with this confirmation number");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nNo reservation found with this confirmation number");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.ReadKey();
             return;
+        }
+        bool validEmail = false;
+        while (!validEmail)
+        {
+            Console.Write("Please enter the E-mail associated with this reservation: ");
+            string emaily = Universal.takeUserInput("Type...");
+            if (emaily.ToLower() != reservation.Customer.Email.ToLower())
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Sorry this is not the correct E-mail. Please try again\n");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                validEmail = true;
+            }
         }
         Console.Clear();
         Console.WriteLine($"These are the details of your reservation:\n");
@@ -210,6 +237,7 @@ public class ReservationService
         {
             Console.WriteLine("No seats reserved.");
         }
+        Console.ReadKey();
     }
 
     private TimeTableModel? SelectTimeTableInDay(DateOnly weekday)

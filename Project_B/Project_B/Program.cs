@@ -52,7 +52,7 @@ namespace Project_B
                     {"# Browse movies #", (x) => { /*not yet*/ }},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation(rf);}},
                     {"Select seat", (x) => {rs.SelectSeat(rf);}},
-                    {"\n" + Universal.centerToScreen("Search reservation"), (x) => { rs.GetReservation();}}
+                    {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
                 },
                 //admin options
                 new Dictionary<string, Action<string>>(){
@@ -65,8 +65,7 @@ namespace Project_B
                             {"Add movie", (x) => {createItems.CreateNewMovie();}},
                             {"Edit movie", (x) => {createItems.ChangeMovie();}},
                             {"\n" + centerToScreen("Add timetable"), (x) => {createItems.CreateTimeTable();}},
-                            {"# Edit timetable #", (x) => {/*not yet*/}},
-                            {"# Add movie to timetable #", (x) => {/*not yet*/}},
+                            {"Edit timetable", (x) => {createItems.EditTimeTable();}},
                             {"\n" + centerToScreen("Edit seat prices"), (x) => {SeatPriceCalculator.UpdatePrices();}},
                             {"Change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                         });
