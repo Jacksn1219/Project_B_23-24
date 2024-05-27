@@ -172,9 +172,9 @@ public class ReservationService
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
-        GetReservationById(confirmationNumber);
+        GetReservationById(confirmationNumber, true);
     }
-    public void GetReservationById(int id)
+    public void GetReservationById(int id, bool checkMail = false)
     {
         ReservationModel? reservation = _rf.GetItemFromId(id, 4);
         if (reservation == null)
@@ -185,20 +185,23 @@ public class ReservationService
             Console.ReadKey();
             return;
         }
-        bool validEmail = false;
-        while (!validEmail)
+        if (checkMail)
         {
-            Console.Write("Please enter the E-mail associated with this reservation: ");
-            string emaily = Universal.takeUserInput("Type...");
-            if (emaily.ToLower() != reservation.Customer.Email.ToLower())
+            bool validEmail = false;
+            while (!validEmail)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Sorry this is not the correct E-mail. Please try again\n");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            else
-            {
-                validEmail = true;
+                Console.Write("Please enter the E-mail associated with this reservation: ");
+                string emaily = Universal.takeUserInput("Type...");
+                if (emaily.ToLower() != reservation.Customer.Email.ToLower())
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Sorry this is not the correct E-mail. Please try again\n");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    validEmail = true;
+                }
             }
         }
         Console.Clear();
