@@ -79,6 +79,7 @@ namespace Project_B
                     {"edit movie", (x) => {createItems.ChangeMovie();}},
                     {"add timetable", (x) => {createItems.CreateTimeTable();}},
                     {"edit timetable", (x) => {createItems.EditTimeTable();}},
+                    {"show timetable", (x) => {/* not yet */}},
                     {"change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}},
                     {"show reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory);}}
                 }

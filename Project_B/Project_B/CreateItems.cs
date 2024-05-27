@@ -484,7 +484,7 @@ namespace Project_B
             InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Select a timetable to edit:"), null);
             foreach (TimeTableModel timeTable in timeTableList)
             {
-                timeTableMenu.Add($"{timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
+                timeTableMenu.Add($"Movie: {timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
             }
             timeTableMenu.UseMenu();
 
@@ -564,13 +564,15 @@ namespace Project_B
             });
             editMenu.UseMenu();
             
-            if (_ttf.UpdateItem(selectedTimeTable))
+            if (_ttf.ItemToDb(selectedTimeTable))
             {
                 Console.WriteLine("Updated timetable successfully.");
+                Console.WriteLine("Press 'Enter' to go back in the menu.");
             }
             else
             {
                 Console.WriteLine("Failed to update timetable.");
+                Console.WriteLine("Press 'Enter' to go back in the menu.");
             }
             Console.ReadLine();
         }
