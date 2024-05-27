@@ -36,7 +36,44 @@ public class ReservationService
         }
 
         //get reserved seats,
+        
+        // Loop until the user is done selecting seats
+        List<SeatModel> selectedSeats = new List<SeatModel>();
+        while (true)
+        {
+            // Select a seat
+            var seat = RoomLayoutService.selectSeatModel(tt.Room);
+            if (seat == null)
+            {
+                // No more seats available
+                break;
+            }
 
+            // Add the selected seat to the list of selected seats
+            selectedSeats.Add(seat);
+
+            // Prompt the user if they want to select another seat
+            System.Console.WriteLine("Select another seat? (Y/N)");
+            ConsoleKeyInfo keyInfo = System.Console.ReadKey();
+            if (keyInfo.KeyChar == 'y' || keyInfo.KeyChar == 'Y')
+            {
+                // User wants to select another seat
+                continue;
+            }
+            else if (keyInfo.KeyChar == 'n' || keyInfo.KeyChar == 'N')
+            {
+                // User is done selecting seats
+                break;
+            }
+            else
+            {
+                // Invalid input, ask again
+                System.Console.WriteLine("\nInvalid input. Please enter 'Y' or 'N'.");
+                continue;
+            }
+        }
+    
+        
         //get seats
 
         //select seats to reserve
@@ -54,19 +91,18 @@ public class ReservationService
             throw new ArgumentNullException(nameof(tt), "The tt object is null.");
         }
         if (tt.Room == null) { return; }
-        var seats = RoomLayoutService.selectSeatModel(tt.Room);
-        if (seats == null /*||seats.Length < 1*/) return;
+
         //fill in user data
         var user = UserInfoInput.GetUserInfo();
         CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
 
-        System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(seats));
+        System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(selectedSeats));
         System.Console.WriteLine($"\nCreate reservation? \n {Universal.WriteColor("Once created, the reservation canNOT be cancelled!", ConsoleColor.Red)}(Y/N)");
         ConsoleKeyInfo key = System.Console.ReadKey();
         if (key.KeyChar == 'y' || key.KeyChar == 'Y')
         {
             // create reservation
-            ReservationModel res = new ReservationModel(cust, tt, new List<SeatModel>() { seats }, user.userinput);
+            ReservationModel res = new ReservationModel(cust, tt, selectedSeats, user.userinput);
             _rf.ItemToDb(res);
             //print number
             System.Console.WriteLine("Reservation is created!\nYour reservation number is: " + res.ID + "\n have a great day.");
