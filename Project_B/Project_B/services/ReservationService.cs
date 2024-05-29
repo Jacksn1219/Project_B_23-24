@@ -105,7 +105,9 @@ public class ReservationService
             ReservationModel res = new ReservationModel(cust, tt, selectedSeats, user.userinput);
             _rf.ItemToDb(res);
             //print number
-            System.Console.WriteLine("Reservation is created!\nYour reservation number is: " + res.ID + "\n have a great day.");
+            MailService.SendEmail(res.Customer.Email, res.TimeTable.Movie.Name, res.Customer.Name, res.ID, res.TimeTable.StartDate, res.TimeTable.EndDate, res.ReservedSeats);
+            Console.Clear();
+            System.Console.WriteLine($"Reservation is created!\nYour reservation number is: {res.ID}\nAn E-mail has been sent with your confirmation details!");
         }
         else System.Console.WriteLine("Canceled reservation!");
         Console.ReadLine();
