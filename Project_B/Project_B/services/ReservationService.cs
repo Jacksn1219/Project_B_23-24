@@ -93,11 +93,11 @@ public class ReservationService
         if (tt.Room == null) { return; }
 
         //fill in user data
-        var user = UserInfoInput.GetUserInfo();
+        var user = UserInfoInput.GetUserInfo(tt);
         CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
 
         System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(selectedSeats));
-        System.Console.WriteLine($"\nCreate reservation? \n {Universal.WriteColor("Once created, the reservation canNOT be cancelled!", ConsoleColor.Red)}(Y/N)");
+        System.Console.WriteLine($"\nCreate reservation? \n {Universal.WriteColor("Once created, the reservation can NOT be cancelled!", ConsoleColor.Red)}(Y/N)");
         ConsoleKeyInfo key = System.Console.ReadKey();
         if (key.KeyChar == 'y' || key.KeyChar == 'Y')
         {
@@ -105,23 +105,12 @@ public class ReservationService
             ReservationModel res = new ReservationModel(cust, tt, selectedSeats, user.userinput);
             _rf.ItemToDb(res);
             //print number
-            System.Console.WriteLine("Reservation is created!\nYour reservation number is: " + res.ID + "\n have a great day.");
+            System.Console.WriteLine("\nReservation is created!\nYour reservation number is: " + res.ID + "\n have a great day.");
         }
-        else System.Console.WriteLine("Canceled reservation!");
+        else System.Console.WriteLine("\nCanceled reservation!"); //if else for no
         Console.ReadLine();
     }
 
-    public void SelectSeat(RoomFactory roomFactory)
-    {
-
-        var seat = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
-        if (seat != null)
-        {
-            var user = UserInfoInput.GetUserInfo();
-        }
-
-
-    }
     public void GetReservationByNumber(int nr)
     {
         ReservationModel? res = _rf.GetItemFromId(nr);
