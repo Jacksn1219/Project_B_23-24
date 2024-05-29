@@ -93,11 +93,11 @@ public class ReservationService
         if (tt.Room == null) { return; }
 
         //fill in user data
-        var user = UserInfoInput.GetUserInfo();
+        var user = UserInfoInput.GetUserInfo(tt);
         CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
 
         System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(selectedSeats));
-        System.Console.WriteLine($"\nCreate reservation? \n {Universal.WriteColor("Once created, the reservation canNOT be cancelled!", ConsoleColor.Red)}(Y/N)");
+        System.Console.WriteLine($"\nCreate reservation? \n {Universal.WriteColor("Once created, the reservation can NOT be cancelled!", ConsoleColor.Red)}(Y/N)");
         ConsoleKeyInfo key = System.Console.ReadKey();
         if (key.KeyChar == 'y' || key.KeyChar == 'Y')
         {
@@ -107,23 +107,12 @@ public class ReservationService
             //print number
             MailService.SendEmail(res.Customer.Email, res.TimeTable.Movie.Name, res.Customer.Name, res.ID, res.TimeTable.StartDate, res.TimeTable.EndDate, res.ReservedSeats);
             Console.Clear();
-            System.Console.WriteLine($"Reservation is created!\nYour reservation number is: {res.ID}\nAn E-mail has been sent with your confirmation details!");
+            System.Console.WriteLine($"\nReservation is created!\nYour reservation number is: {res.ID}\nAn E-mail has been sent with your confirmation details!");
         }
-        else System.Console.WriteLine("Canceled reservation!");
+        else System.Console.WriteLine("\nCanceled reservation!"); //if else for no
         Console.ReadLine();
     }
 
-    public void SelectSeat(RoomFactory roomFactory)
-    {
-
-        var seat = RoomLayoutService.selectSeatModel(roomFactory.GetItemFromId(1, 3));
-        if (seat != null)
-        {
-            var user = UserInfoInput.GetUserInfo();
-        }
-
-
-    }
     public void GetReservationByNumber(int nr)
     {
         ReservationModel? res = _rf.GetItemFromId(nr);

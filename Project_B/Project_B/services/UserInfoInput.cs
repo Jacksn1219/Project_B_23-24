@@ -1,14 +1,22 @@
 using System;
 using System.Data.SQLite;
+using DataAccessLibrary.models;
+using DataAccessLibrary;
+using Models;
+
 
 namespace Project_B.services
 {
+    
     public static class UserInfoInput
     {
-        public static (string fullName, int age, string email, string phoneNumber, string userinput) GetUserInfo()
+        public static (string fullName, int age, string email, string phoneNumber, string userinput) GetUserInfo(TimeTableModel tt)
         {
             // Get initial user info
-            var (fullName, age, email, phoneNumber, userinput) = InitialUserInfo();
+            // Call the InitialUserInfo method and pass the movie instance as an argument
+
+            // var userInfo = UserInfoInput.InitialUserInfo(movie);
+            var (fullName, age, email, phoneNumber, userinput) = InitialUserInfo(tt.Movie);
 
             // Display initial info
             DisplayUserInfo(fullName, age, email, phoneNumber, userinput);
@@ -27,7 +35,7 @@ namespace Project_B.services
             return (fullName, age, email, phoneNumber, userinput);
         }
 
-        public static (string fullName, int age, string email, string phoneNumber, string userinput) InitialUserInfo()
+        public static (string fullName, int age, string email, string phoneNumber, string userinput) InitialUserInfo(MovieModel movie)
         {
             string fullName;
             while (true)
@@ -64,15 +72,40 @@ namespace Project_B.services
             while (true)
             {
                 Console.Write("Enter your age: ");
-                if (!int.TryParse(Universal.takeUserInput("Type..."), out age) || age < 0 || age >= 100)
+                string input = Universal.takeUserInput("Type...");
+
+                if (int.TryParse(input, out age) && age > 0 && age < 100)
                 {
-                    Console.WriteLine("Please enter a valid age.");
+
+                    
+
+                    if ( (int)movie.PegiAge > age)
+                    {
+                        Universal.WriteColor($"\nWarning: This movie is not suitable for a {age}-year-old. Do you want to continue? (Y/N)", ConsoleColor.Red);
+                        string choice = Universal.takeUserInput("Type...")?.ToLower() ?? "";
+                        if (choice == "y" || choice == "yes")
+                        {
+                            // User wants to continue
+                            System.Console.WriteLine("\nContinuing reservation\n");
+                            break;
+                        }
+                        else if (choice == "n" || choice == "no")
+                        {
+                            System.Console.WriteLine("\nRservation canceled");
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
                 {
-                    break;
+                    Console.WriteLine("Please enter a valid age.");
                 }
             }
+
 
             string phoneNumber;
             while (true)
