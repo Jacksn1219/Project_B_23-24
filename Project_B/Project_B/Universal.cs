@@ -79,6 +79,15 @@ public static class Universal
         return phoneNumber.StartsWith("0") && phoneNumber.Length == 10 && phoneNumber.All(char.IsDigit);
     }
 
+    // public static void IsValidPegiAge(MovieModel pegiage)
+    // {
+    //     int convertToInt = (int)PEGIAge.PEGI18;
+    //     int convertToInt2 = (int)PEGIAge.PEGI16;
+    //     int convertToInt3 = (int)PEGIAge.PEGI12;
+    //     int convertToInt4 = (int)PEGIAge.PEGI7;
+    //     int convertToInt5 = (int)PEGIAge.PEGI3;
+    // }
+
     public static string printAsTitle(string input)
     {
         input = input.Trim();

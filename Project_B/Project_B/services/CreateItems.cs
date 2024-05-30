@@ -401,13 +401,17 @@ namespace Project_B
             }
             catch { }
 
-            MovieModel selectedMovie = new();
+            MovieModel ? selectedMovie = null;
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
             foreach (MovieModel movie in movieList)
             {
                 movieMenu.Add(movie.Name ?? "", (x) => { selectedMovie = movie; });
             }
             movieMenu.UseMenu();
+            if (selectedMovie == null)
+            {
+                return;
+            }
 
             List<RoomModel> roomList = new List<RoomModel>();
             try
@@ -423,13 +427,15 @@ namespace Project_B
             }
             catch { }
 
-            RoomModel selectedRoom = new();
+            RoomModel ? selectedRoom = null;
             InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a room: (Room1, Room2, Room3)"), null);
             foreach (RoomModel room in roomList)
             {
                 roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
             }
             roomMenu.UseMenu();
+            if (selectedRoom == null)
+            { return; }
 
             Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
             DateTime startDate;
@@ -513,7 +519,7 @@ namespace Project_B
             }
             catch { }
 
-            TimeTableModel selectedTimeTable = new ();
+            TimeTableModel ? selectedTimeTable = null;
             
             InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Select a timetable to edit:"), null);
             foreach (TimeTableModel timeTable in timeTableList)
@@ -521,6 +527,10 @@ namespace Project_B
                 timeTableMenu.Add($"Movie: {timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
             }
             timeTableMenu.UseMenu();
+            if (selectedTimeTable == null)
+            {
+                return;
+            }
 
             InputMenu editMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
             editMenu.Add("Movie", (x) =>
@@ -539,13 +549,15 @@ namespace Project_B
                 }
                 catch { }
 
-                MovieModel selectedMovie = new();
+                MovieModel ? selectedMovie = null;
                 InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a new movie:"), null);
                 foreach (MovieModel movie in movieList)
                 {
                     movieMenu.Add(movie.Name ?? "", (x) => { selectedMovie = movie; });
                 }
                 movieMenu.UseMenu();
+                if (selectedMovie == null)
+                { return; }
 
                 selectedTimeTable.Movie = selectedMovie;
                 Console.WriteLine("Movie updated.");
@@ -565,13 +577,17 @@ namespace Project_B
                     }
                 }
                 catch { }
-                RoomModel selectedRoom = new();
+                RoomModel ? selectedRoom = null;
                 InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a new room:"), null);
                 foreach (RoomModel room in roomList)
                 {
                     roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
                 }
                 roomMenu.UseMenu();
+                if (selectedRoom == null)
+                {
+                    return;
+                }
 
                 selectedTimeTable.Room = selectedRoom;
                 Console.WriteLine("Room updated.");

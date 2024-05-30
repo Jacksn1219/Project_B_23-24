@@ -52,7 +52,6 @@ namespace Project_B
                     {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
                     {"# Browse movies #", (x) => { /*not yet*/ }},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation(rf);}},
-                    {"Select seat", (x) => {rs.SelectSeat(rf);}},
                     {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
                 },
                 //admin options
