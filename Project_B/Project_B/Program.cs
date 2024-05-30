@@ -36,6 +36,7 @@ namespace Project_B
             CreateItems createItems = new CreateItems(af, df, mf, rf, ttf);
             RoomService roomservice = new(rf);
             ReservationService rs = new(reservationFactory, mf, ttf);
+            HistoryService hs = new HistoryService(rf, sf, cf, reservationFactory, rs, ttf);
 
             //----- Welkom scherm -----//
             StartupMenu.UseMenu(() =>
@@ -48,7 +49,7 @@ namespace Project_B
             MainMenu.UseMenu(
                 //user options
                 new Dictionary<string, Action<string>>(){
-                    {"# Show schedule #", (x) => { takeUserInput("Movie title");/*not yet*/ }},
+                    {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
                     {"# Browse movies #", (x) => { /*not yet*/ }},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation(rf);}},
                     {"Select seat", (x) => {rs.SelectSeat(rf);}},
@@ -71,7 +72,7 @@ namespace Project_B
                         });
                         CreateMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
                     }},
-                    {"# History #", (x) => {/*not yet*/}}
+                    {"History", (x) => { hs.UseMenu(); }}
                 }
             );
         }

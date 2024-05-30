@@ -146,8 +146,39 @@ namespace Project_B.services
         }
         public static string ShowCalculation(List<SeatModel> seats)
         {
-            string toReturn = "Price:\n";
-            foreach (var seat in seats)
+            string toReturn = "\n";
+            int[] priceCounter = new int[9];
+
+            priceCounter[0] = seats.Where(x => x.Rank == "1" && x.Type[0] == 'N').Count();
+            toReturn += ("\nNormal           | Rank 1 | € " + priceCounter[0] * _prices.PriceTierI);
+
+            priceCounter[1] = seats.Where(x => x.Rank == "1" && x.Type[0] == 'E').Count();
+            toReturn += ("\nExtra Beenruimte | Rank 1 | € " + priceCounter[1] * _prices.PriceTierII + priceCounter[1] * _prices.ExtraSpace);
+
+            priceCounter[2] = seats.Where(x => x.Rank == "1" && x.Type[0] == 'L').Count();
+            toReturn += ("\nLove seat        | Rank 1 | € " + priceCounter[2] * _prices.PriceTierIII + priceCounter[2] * _prices.LoveSeat);
+
+            priceCounter[3] = seats.Where(x => x.Rank == "2" && x.Type[0] == 'N').Count();
+            toReturn += ("\nNormal           | Rank 2 | € " + priceCounter[3] * _prices.PriceTierI);
+
+            priceCounter[4] = seats.Where(x => x.Rank == "2" && x.Type[0] == 'E').Count();
+            toReturn += ("\nExtra Beenruimte | Rank 2 | € " + priceCounter[4] * _prices.PriceTierII + priceCounter[4] * _prices.ExtraSpace);
+
+            priceCounter[5] = seats.Where(x => x.Rank == "2" && x.Type[0] == 'L').Count();
+            toReturn += ("\nLove seat        | Rank 2 | € " + priceCounter[5] * _prices.PriceTierIII + priceCounter[5] * _prices.LoveSeat);
+
+            priceCounter[6] = seats.Where(x => x.Rank == "3" && x.Type[0] == 'N').Count();
+            toReturn += ("\nNormal           | Rank 3 | € " + priceCounter[6] * _prices.PriceTierI);
+
+            priceCounter[7] = seats.Where(x => x.Rank == "3" && x.Type[0] == 'E').Count();
+            toReturn += ("\nExtra Beenruimte | Rank 3 | € " + priceCounter[7] * _prices.PriceTierII + priceCounter[7] * _prices.ExtraSpace);
+
+            priceCounter[8] = seats.Where(x => x.Rank == "3" && x.Type[0] == 'L').Count();
+            toReturn += ("\nLove seat        | Rank 3 | € " + priceCounter[8] * _prices.PriceTierIII + priceCounter[8] * _prices.LoveSeat);
+
+            toReturn += $"\n\nTotal                     | € {priceCounter.Sum()}";
+
+            /*foreach (var seat in seats)
             {
                 switch (seat.Rank.ToLower())
                 {
@@ -171,7 +202,7 @@ namespace Project_B.services
                         break;
                 }
             }
-            toReturn += $"\nTotal price: € {CalculatePrices(seats)}";
+            toReturn += $"\nTotal price: € {CalculatePrices(seats)}";*/
             return toReturn;
         }
         public static string ShowCalculation(SeatModel seat)

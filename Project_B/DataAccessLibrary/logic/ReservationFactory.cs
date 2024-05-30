@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Xml;
 using DataAccessLibrary;
 using Serilog;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataAccessLibrary.logic
 {
@@ -264,7 +266,41 @@ namespace DataAccessLibrary.logic
                 if (!dontClose) _db.CloseConnection();
             }
         }
-
+        public ReservationModel[] GetReservationsBetweenDates(int count, DateTime startDate, DateTime endDate, int page = 1, int deepcopyLv = 0)
+        {
+            if (deepcopyLv < 0) return Array.Empty<ReservationModel>();
+            bool dontClose = _db.IsOpen;
+            try
+            {
+                ReservationModel[] result = _db.ReadData<ReservationModel>(
+                    @$"SELECT * FROM Reservation
+                    INNER JOIN TimeTable ON TimeTable.ID = Reservation.TimeTableID
+                    WHERE TimeTable.StartDate >= $1 AND TimeTable.StartDate <= $2
+                    LIMIT $3 OFFSET { count* page - count}",
+                    new()
+                    {
+                        { "$1", startDate.ToString(CultureInfo.InvariantCulture) },
+                        { "$2", endDate.ToString(CultureInfo.InvariantCulture) },
+                        { "$3", count }
+                    }
+                );
+                if (deepcopyLv < 1) return result;
+                foreach (ReservationModel item in result)
+                {
+                    getRelatedItemsFromDb(item, deepcopyLv - 1);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning(ex, $"failed to get Reservations from date {startDate.ToString(CultureInfo.InvariantCulture)} to {endDate.ToString(CultureInfo.InvariantCulture)}");
+                return Array.Empty<ReservationModel>();
+            }
+            finally
+            {
+                if (!dontClose) _db.CloseConnection();
+            }
+        }
         public ReservationModel[] GetReservationsAfterDate(int count, DateTime date, int page = 1, int deepcopyLv = 0)
         {
             if (deepcopyLv < 0) return Array.Empty<ReservationModel>();
@@ -275,8 +311,13 @@ namespace DataAccessLibrary.logic
                 ReservationModel[] result = _db.ReadData<ReservationModel>(
                     @$"SELECT * FROM Reservation
                     INNER JOIN TimeTable ON TimeTable.ID = Reservation.TimeTableID
-                    LIMIT {count} OFFSET {count * page - count}
-                    WHERE TimeTable.StartDate >= {date.ToString(CultureInfo.InvariantCulture)}"
+                    WHERE TimeTable.StartDate >= $1
+                    LIMIT $2 OFFSET {count * page - count}",
+                    new()
+                    {
+                        { "$1", date.ToString(CultureInfo.InvariantCulture) },
+                        { "$2", count }
+                    }
                 );
                 //WHERE Reservation.StartDate >= {date.ToString(CultureInfo.InvariantCulture)}"
                 //$"WHERE TimeTable.StartDate >= {DateTime.Now.ToString(CultureInfo.InvariantCulture)}"
