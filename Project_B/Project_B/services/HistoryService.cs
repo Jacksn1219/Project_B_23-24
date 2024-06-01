@@ -42,23 +42,7 @@ public class HistoryService
                 GetProfitsBetweenDates(startDate, endDate);
             }},
             {"Schedule", (x) => {
-                TimeTableModel[] timeTables = _ttf.GetTimeTablesBetweenDates(startDate, endDate);
-                InputMenu timeTableMenu = new InputMenu($"Movies played between {startDate.ToString("dd/MM/yyyy")} and {endDate.ToString("dd/MM/yyyy")}");
-                foreach (TimeTableModel timeTable in timeTables)
-                {
-                    if (timeTable.Movie == null) _ttf.getRelatedItemsFromDb(timeTable, 69);
-                    timeTableMenu.Add(timeTable.Movie.Name, (x) =>
-                    {
-                        Console.WriteLine(timeTable.Room.Name + "\n");
-
-                        ReservationModel[] reservedSeats = GetReservationHistory(startDate, endDate).Where(x => x.TimeTableID == timeTable.ID).ToArray();
-                        Console.Write($"amount of (reserved)seats:\n{timeTable.Room.Capacity} / {reservedSeats.Count()}");
-
-                        Console.WriteLine(timeTable.Movie.SeeDescription());
-                        Console.ReadLine();
-                    });
-                }
-                timeTableMenu.UseMenu();
+                GetScheduleBetweenDates(startDate, endDate);
             }}
         });
 
@@ -103,5 +87,68 @@ public class HistoryService
         key = Console.ReadKey(true).Key;
         
         return Convert.ToInt32(total);
+    }
+    public void GetScheduleBetweenDates(DateTime startDate, DateTime endDate)
+    {
+        TimeTableModel[] timeTables = _ttf.GetTimeTablesBetweenDates(startDate, endDate);
+        InputMenu timeTableMenu = new InputMenu($"Movies played between {startDate.ToString("dd/MM/yyyy")} and {endDate.ToString("dd/MM/yyyy")}");
+        foreach (TimeTableModel timeTable in timeTables)
+        {
+            if (timeTable.Movie == null) _ttf.getRelatedItemsFromDb(timeTable, 69);
+            timeTableMenu.Add(timeTable.Movie.Name, (x) =>
+            {
+                Universal.WriteColor($"{timeTable.Movie.Name}\n", ConsoleColor.Blue);
+                Console.WriteLine($"\nDate: {timeTable.DateTimeStartDate.ToString("dd/MM/yyyy")}");
+                Console.WriteLine($"Time: {timeTable.DateTimeStartDate.ToString("HH:mm")}\n");
+                //Console.WriteLine(timeTable.Movie.SeeDescription() + "\n");
+                Console.WriteLine($"Room: {timeTable.Room.Name}");
+
+                //ReservationModel[] reservations = _reservationFactory.GetReservationsBetweenDates(100, timeTable.DateTimeStartDate, timeTable.DateTimeEndDate).Where(x => x.TimeTableID == timeTable.ID).ToArray();
+                ReservationModel[] reservations = GetReservationHistory(startDate, endDate).Where(x => x.TimeTableID == timeTable.ID).ToArray();
+                List<SeatModel> reservedSeats = new();
+                foreach (ReservationModel reservation in reservations)
+                {
+                    reservedSeats.AddRange(reservation.ReservedSeats);
+                }
+                Console.WriteLine($"Reserved seats: {reservedSeats.Count()} / {timeTable.Room.Capacity}\n");
+                Console.WriteLine($"Profit: €{SeatPriceCalculator.CalculatePrices(reservedSeats)}\n");
+
+
+                ConsoleKey key;
+                do
+                {
+                    Console.Write("Press <Any> key to continue...");
+                    Thread.Sleep(700);
+                    Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+                    if (Console.KeyAvailable) break;
+                    Console.Write("                              ");
+                    Thread.Sleep(700);
+                    Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+                } while (!Console.KeyAvailable);
+                key = Console.ReadKey(true).Key;
+            });
+        }
+        if (timeTableMenu.GetMenuOptionsCount() > 0) timeTableMenu.UseMenu();
+        else
+        {
+            Console.Write("There were no planned movies between ");
+            Universal.WriteColor(startDate.ToString("dd/MM/yyyy"), ConsoleColor.Blue);
+            Console.Write(" and ");
+            Universal.WriteColor(endDate.ToString("dd/MM/yyyy"), ConsoleColor.Blue);
+            Console.Write(" time period.\n");
+
+            ConsoleKey key;
+            do
+            {
+                Console.Write("Press <Any> key to continue...");
+                Thread.Sleep(700);
+                Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+                if (Console.KeyAvailable) break;
+                Console.Write("                              ");
+                Thread.Sleep(700);
+                Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+            } while (!Console.KeyAvailable);
+            key = Console.ReadKey(true).Key;
+        }
     }
 }
