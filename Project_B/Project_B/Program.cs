@@ -33,7 +33,7 @@ namespace Project_B
             ReservationFactory reservationFactory = new ReservationFactory(db, cf, sf, ttf, logger);
 
             //set up services
-            CreateItems createItems = new CreateItems(af, df, mf, rf, ttf);
+            CreateItems createItems = new CreateItems(af, df, mf, rf, ttf, reservationFactory);
             RoomService roomservice = new(rf);
             ReservationService rs = new(reservationFactory, mf, ttf);
             HistoryService hs = new HistoryService(rf, sf, cf, reservationFactory, rs, ttf);
@@ -58,12 +58,13 @@ namespace Project_B
                 new Dictionary<string, Action<string>>(){
                     {"Schedule", (x) => { rs.showReservedSeatsPerTimetable(rf, sf, cf, reservationFactory, rs); }},
                     {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory, rs, ttf); }},
-                    {"\n" + Universal.centerToScreen("Create/Edit"), (x) => {
+                    {"\n" + centerToScreen("Create/Edit"), (x) => {
                         InputMenu CreateMenu = new InputMenu("useLambda");
                         CreateMenu.Add(new Dictionary<string, Action<string>>()
                         {
                             {"Add Movie", (x) => {createItems.CreateNewMovie();}},
                             {"Edit Movie", (x) => {createItems.EditMovie();}},
+                            {"Remove Movie", (x) => {createItems.DeleteMovie();}},
                             {"\n" + centerToScreen("Add Timetable"), (x) => {createItems.CreateTimeTable();}},
                             {"Edit Timetable", (x) => {createItems.EditTimeTable();}},
                             {"\n" + centerToScreen("Add Director"), (x) => {createItems.CreateDirector();}},

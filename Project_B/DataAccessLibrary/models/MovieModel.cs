@@ -81,6 +81,7 @@ public class MovieModel : DbItem
         }
     }
     public List<ActorModel> Actors = new();
+    public bool IsRemoved { get; set; }
     internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int? directorId, string genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }
     internal MovieModel(int? id, string name, string description, PEGIAge pegiAge, int durationInMin, int? directorId, string genre)
@@ -92,6 +93,7 @@ public class MovieModel : DbItem
         DurationInMin = durationInMin;
         DirectorID = directorId;
         Genre = genre;
+        IsRemoved = false;
     }
     /// <summary>
     /// parameterless ctor to please the JsonSerializer gods

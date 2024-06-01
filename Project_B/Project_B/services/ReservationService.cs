@@ -73,6 +73,7 @@ public class ReservationService
                 continue;
             }
         }
+        if (selectedSeats.Count() == 0) return;
     
         
         //get seats

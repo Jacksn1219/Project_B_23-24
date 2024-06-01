@@ -3,6 +3,7 @@ using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Newtonsoft.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 {
@@ -89,9 +90,10 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         {
             var toReturn = _db.ReadData<TimeTableModel>(
                 @"SELECT * FROM TimeTable
-                WHERE ID = $1",
+                WHERE ID = $1 AND StartDate > $2",
                 new Dictionary<string, dynamic?>(){
                     {"$1", id},
+                    {"$2", DateTime.MinValue.ToString(CultureInfo.InvariantCulture)},
                 }
             ).First();
             getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
@@ -112,7 +114,11 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         {
             _db.OpenConnection();
             TimeTableModel[] tts = _db.ReadData<TimeTableModel>(
-                $"SELECT * FROM TimeTable LIMIT {count} OFFSET {count * page - count}"
+                $"SELECT * FROM TimeTable WHERE StartDate > $1 LIMIT {count} OFFSET {count * page - count}",
+                new Dictionary<string, dynamic?>()
+                {
+                    {"$1", DateTime.MinValue.ToString(CultureInfo.InvariantCulture)},
+                }
             );
             if (deepcopyLv < 1) return tts;
             foreach (TimeTableModel tt in tts)
@@ -321,5 +327,21 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 {"$3", roomID}
             }
         );
+    }
+    public void RemoveFromDB(int id)
+    {
+        RemoveFromDB(GetItemFromId(id));
+    }
+    public void RemoveFromDB(TimeTableModel timetable)
+    {
+        try {
+            timetable.StartDate = DateTime.MinValue.ToString(CultureInfo.InvariantCulture);
+            timetable.EndDate = DateTime.MinValue.ToString(CultureInfo.InvariantCulture);
+            this.ItemToDb(timetable);
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, $"failed to remove the timetable with ID: {timetable.ID}");
+        }
     }
 }

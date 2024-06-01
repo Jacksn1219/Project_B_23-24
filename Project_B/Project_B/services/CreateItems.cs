@@ -5,6 +5,7 @@ using DataAccessLibrary.models;
 using System.Data.SqlClient;
 using System.Xml.Linq;
 using System.IO;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Project_B
 {
@@ -15,13 +16,15 @@ namespace Project_B
         private readonly MovieFactory _mf;
         private readonly RoomFactory _rf;
         private readonly TimeTableFactory _ttf;
-        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf, RoomFactory rf, TimeTableFactory ttf)
+        private readonly ReservationFactory _rvf;
+        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf, RoomFactory rf, TimeTableFactory ttf, ReservationFactory rvf)
         {
             _af = af;
             _df = df;
             _mf = mf;
             _rf = rf;
             _ttf = ttf;
+            _rvf = rvf;
         }
         public void CreateNewMovie()
         {
@@ -187,6 +190,13 @@ namespace Project_B
                 }
             }
             catch { }
+
+            if (movieList.Count == 0)
+            {
+                Console.WriteLine("There are no movies in the system");
+                Console.ReadLine();
+                return;
+            }
 
             //movie to edit
             MovieModel? movieToEdit = null;
@@ -408,16 +418,95 @@ namespace Project_B
                 movieMenu.Add(movie.Name ?? "", (x) => {
                     movieToEdit = movie;
                     whatToEditMenu.UseMenu();
+
+                    _mf.ItemToDb(movieToEdit);
+
+                    Console.WriteLine($"The changes to {movieToEdit.Name} have been saved.\nPress <any> key to continue...");
+                    Console.ReadLine();
                 });
             }
             movieMenu.UseMenu();
             if (movieToEdit == null) return;
 
             //whatToEditMenu.UseMenu();
-            _mf.ItemToDb(movieToEdit);
+        }
+        public void DeleteMovie()
+        {
+            // Getting all movies //
+            List<MovieModel> movieList = new List<MovieModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    MovieModel[] movies = _mf.GetItems(100, page, 6);
+                    movieList.AddRange(movies);
+                    page++;
+                    if (movies.Length < 100) break;
+                }
+            }
+            catch { }
 
-            Console.WriteLine($"The changes to {movieToEdit.Name} have been saved.\nPress <any> key to continue...");
-            Console.ReadLine();
+            MovieModel? selectedMovie = null;
+            InputMenu movieMenu = new InputMenu("Select a movie to remove", null);
+            foreach (var movie in movieList) { movieMenu.Add(movie.Name, (x) => { selectedMovie = movie; }); }
+            movieMenu.UseMenu();
+            if (selectedMovie == null) return;
+            DeleteMovie(selectedMovie);
+        }
+        /// <summary>
+        /// Sets IsRemoved = true |
+        /// Every planned timetable without booked seats gets a .MinValue startdate
+        /// </summary>
+        /// <param name="movieToRemove"></param>
+        public void DeleteMovie(MovieModel movieToRemove)
+        {
+            //Get every timetable & change to not be able to select a deactive movie.
+            //Every planned timetable without selected seats has to be removed.
+
+            // Getting all reservations //
+            List<ReservationModel> reservationList = new List<ReservationModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var reservations = _rvf.GetItems(100, page, 6);
+                    reservationList.AddRange(reservations);
+                    page++;
+                    if (reservations.Length < 100) break;
+                }
+            }
+            catch { }
+
+            // Getting all timetables //
+            List<TimeTableModel> timetableList = new List<TimeTableModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var timetables = _ttf.GetItems(100, page, 6);
+                    timetableList.AddRange(timetables);
+                    page++;
+                    if (timetables.Length < 100) break;
+                }
+            }
+            catch { }
+
+            ReservationModel[] ReservationsToKeep = reservationList.Where(x => x.TimeTable.MovieID == movieToRemove.ID).ToArray();
+            TimeTableModel[] timetablesToKeep = ReservationsToKeep.Select(x => x.TimeTable).ToArray();
+            int?[] timetalbesToKeepIDs = timetablesToKeep.Select(x => x.ID).ToArray();
+
+            TimeTableModel[] timetablesToRemove = timetableList.Where(x => x.MovieID == movieToRemove.ID).ToList().ToArray();
+            int?[] timetablesToRemoveIDs = timetablesToRemove.Select(x => x.ID).Except(timetalbesToKeepIDs).ToArray();
+            foreach (int id in timetablesToRemoveIDs) { _ttf.RemoveFromDB(id); }
+
+            //Set the movie as deactive
+            movieToRemove.IsRemoved = true;
+            _mf.ItemToDb(movieToRemove);
+
+            Console.WriteLine($"The movie {movieToRemove.Name} has been removed.");
         }
 
         public void CreateTimeTable()
@@ -546,7 +635,7 @@ namespace Project_B
                 int page = 1;
                 while (true)
                 {
-                    var tts = _ttf.GetItems(100, page, 6);
+                    var tts = _ttf.GetItems(100, page, 10);
                     timeTableList.AddRange(tts);
                     page++;
                     if (tts.Length < 100) break;
