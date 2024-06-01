@@ -51,6 +51,7 @@ public class ReservationService
 
             // Add the selected seat to the list of selected seats
             selectedSeats.Add(seat);
+            tt.Room.Seats[seat.ID-1 ?? 0].IsReserved = true;
 
             // Prompt the user if they want to select another seat
             System.Console.WriteLine("Select another seat? (Y/N)");

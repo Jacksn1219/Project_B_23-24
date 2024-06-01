@@ -2,12 +2,6 @@
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Models;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project_B.services;
 public class HistoryService
@@ -34,30 +28,37 @@ public class HistoryService
     {
         InputMenu HistoryMenu = new InputMenu("useLambda");
 
+        DateTime startDate;
+        Console.WriteLine("Enter the start date (yyyy-MM-dd):");
+        DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate);
+
+        DateTime endDate;
+        Console.WriteLine("\nEnter the end date (yyyy-MM-dd):");
+        DateTime.TryParse(Universal.takeUserInput("Type..."), out endDate);
+
         HistoryMenu.Add(new Dictionary<string, Action<string>>{
-            {"Show profits between dates", (x) => {
-                DateTime startDate;
-                Console.WriteLine("Enter the start date (yyyy-MM-dd):");
-                DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate);
-
-                DateTime endDate;
-                Console.WriteLine("\nEnter the start date (yyyy-MM-dd):");
-                DateTime.TryParse(Universal.takeUserInput("Type..."), out endDate);
-
+            {"Profits", (x) => {
                 Console.Clear();
                 GetProfitsBetweenDates(startDate, endDate);
             }},
-            {"# Show schedule between dates #", (x) => {
-                DateTime startDate;
-                Console.WriteLine("Enter the start date (yyyy-MM-dd):");
-                DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate);
+            {"Schedule", (x) => {
+                TimeTableModel[] timeTables = _ttf.GetTimeTablesBetweenDates(startDate, endDate);
+                InputMenu timeTableMenu = new InputMenu($"Movies played between {startDate.ToString("dd/MM/yyyy")} and {endDate.ToString("dd/MM/yyyy")}");
+                foreach (TimeTableModel timeTable in timeTables)
+                {
+                    if (timeTable.Movie == null) _ttf.getRelatedItemsFromDb(timeTable, 69);
+                    timeTableMenu.Add(timeTable.Movie.Name, (x) =>
+                    {
+                        Console.WriteLine(timeTable.Room.Name + "\n");
 
-                DateTime endDate;
-                Console.WriteLine("\nEnter the start date (yyyy-MM-dd):");
-                DateTime.TryParse(Universal.takeUserInput("Type..."), out endDate);
+                        ReservationModel[] reservedSeats = GetReservationHistory(startDate, endDate).Where(x => x.TimeTableID == timeTable.ID).ToArray();
+                        Console.Write($"amount of (reserved)seats:\n{timeTable.Room.Capacity} / {reservedSeats.Count()}");
 
-                _ttf.GetTimeTablesBetweenDates(startDate, endDate);
-                Console.ReadLine();
+                        Console.WriteLine(timeTable.Movie.SeeDescription());
+                        Console.ReadLine();
+                    });
+                }
+                timeTableMenu.UseMenu();
             }}
         });
 
@@ -86,10 +87,11 @@ public class HistoryService
         Universal.WriteColor(endDate.ToString("dd/MM/yyyy"), ConsoleColor.Blue);
         Console.Write(" is:");
         Console.WriteLine(SeatPriceCalculator.ShowCalculation(seats));
-        
+
+        ConsoleKey key;
         do
         {
-            Console.Write("Press <Any> key to go back...");
+            Console.Write("Press <Any> key to continue...");
             Thread.Sleep(700);
             Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
             if (Console.KeyAvailable) break;
@@ -98,6 +100,8 @@ public class HistoryService
             Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
         } while (!Console.KeyAvailable);
 
+        key = Console.ReadKey(true).Key;
+        
         return Convert.ToInt32(total);
     }
 }

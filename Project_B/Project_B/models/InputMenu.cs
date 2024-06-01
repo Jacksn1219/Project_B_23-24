@@ -74,7 +74,7 @@ namespace Models
                 {
                     //Console.BackgroundColor = ConsoleColor.Gray;
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $">{this.menuoptions[i].Name}<" : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
+                    Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "\n", " ", "_" }.Contains($"{this.menuoptions[i].Name}") ? $">{this.menuoptions[i].Name}<" : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 else
                 {
@@ -91,13 +91,14 @@ namespace Models
                             "N" => ConsoleColor.Blue,
                             "E" => ConsoleColor.DarkYellow,
                             "L" => ConsoleColor.Magenta,
+                            "_" => ConsoleColor.DarkGray,
                             "X" => ConsoleColor.DarkGray,
                             _ => ConsoleColor.Gray
                         };
                     }
                     catch { }
                     try { if (this.menuoptions[i].isTaken == true) Console.ForegroundColor = ConsoleColor.DarkGray; } catch { Console.ForegroundColor = ConsoleColor.Gray; }
-                    Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "X", "\n", " " }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
+                    Console.Write((i == this.menuoptions.Count) ? (this.exit ?? false) ? "\n" + Universal.centerToScreen("Exit") : "\n" + Universal.centerToScreen("Back") : new List<string> { "N", "E", "L", "X", "\n", " ", "_" }.Contains($"{this.menuoptions[i].Name}") ? $" {this.menuoptions[i].Name} " : Universal.centerToScreen($"{this.menuoptions[i].Name}"));
                 }
                 Console.ResetColor();
             };

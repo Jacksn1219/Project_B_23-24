@@ -159,14 +159,15 @@ class RoomLayoutService : LayoutModel
 
         string getType;
         string getRank;
-        foreach (SeatModel SeatModel in room.Seats)
+        foreach (SeatModel seatModel in room.Seats)
         {
             //SeatModelName = SeatModel.Type == "" ? "   " : $" []";
-            SeatModelSelectionMenu.Add($"{SeatModel.Type[0]}", (x) =>
+            if (seatModel.Type == " ") seatModel.Type = "_";
+            SeatModelSelectionMenu.Add($"{seatModel.Type[0]}", (x) =>
             {
-                getType = SeatModel.Type;
-                getRank = SeatModel.Rank;
-                SeatModel selectedSeatModel = SeatModel;
+                getType = seatModel.Type;
+                getRank = seatModel.Rank;
+                SeatModel selectedSeatModel = seatModel;
                 Console.Clear();
 
                 ConsoleKey userInput = ConsoleKey.Delete;
@@ -228,7 +229,7 @@ class RoomLayoutService : LayoutModel
                     Universal.WriteColor("E", ConsoleColor.DarkYellow);
                     Console.Write(") = Extra beenruimte       (2) = Betaal niveau 2        (Enter) = goedkeuren aanpassing\n  (");
                     Universal.WriteColor("L", ConsoleColor.Magenta);
-                    Console.Write(") = Love SeatModel              (3) = Betaal niveau 3");
+                    Console.Write(") = Love SeatModel         (3) = Betaal niveau 3");
 
                     //Getting User choice
                     userInput = Console.ReadKey().Key;
@@ -239,7 +240,7 @@ class RoomLayoutService : LayoutModel
                         {
                             getType = userInput switch
                             {
-                                ConsoleKey.Spacebar => " ",
+                                ConsoleKey.Spacebar => "_",
                                 ConsoleKey.N => "Normaal",
                                 ConsoleKey.E => "Extra Beenruimte",
                                 ConsoleKey.L => "Love SeatModel",
@@ -265,14 +266,14 @@ class RoomLayoutService : LayoutModel
                         if (getType == "0" || getRank == "0") Console.WriteLine("Not all required fields are filled in...");
                         else
                         {
-                            SeatModelSelectionMenu.Edit(Int32.Parse(SeatModel.Name), $"{getType[0]}");
+                            SeatModelSelectionMenu.Edit(Int32.Parse(seatModel.Name), $"{getType[0]}");
                             room.Seats[Int32.Parse(selectedSeatModel.Name)].Type = getType;
                             room.Seats[Int32.Parse(selectedSeatModel.Name)].Rank = getRank;
                             userInput = ConsoleKey.Q;
                         }
                     }
                 };
-            }, false, Convert.ToInt16(SeatModel.Name));
+            }, false, Convert.ToInt16(seatModel.Name));
         }
         SeatModelSelectionMenu.UseMenu();
     }

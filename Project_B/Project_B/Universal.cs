@@ -142,6 +142,12 @@ public static class Universal
         // Userinput
         string userInput = Console.ReadLine() ?? "";
 
+        if (userInput == "")
+        {
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
+            userInput = takeUserInput("You have to type something...");
+        }
+
         // Reseting the color
         Console.BackgroundColor = ConsoleColor.Black;
         return userInput;

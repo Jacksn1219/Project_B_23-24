@@ -51,6 +51,7 @@ namespace DataAccessLibrary
                 SQLiteCommand command = dbAccess.CreateCommand();
                 command.CommandText = sqlStatement;
                 //check if lines affected are greater than 0
+                
                 return command.ExecuteNonQuery() > 0;
             }
             finally

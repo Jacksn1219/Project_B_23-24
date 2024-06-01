@@ -62,10 +62,14 @@ namespace Project_B
                         InputMenu CreateMenu = new InputMenu("useLambda");
                         CreateMenu.Add(new Dictionary<string, Action<string>>()
                         {
-                            {"Add movie", (x) => {createItems.CreateNewMovie();}},
-                            {"Edit movie", (x) => {createItems.ChangeMovie();}},
-                            {"\n" + centerToScreen("Add timetable"), (x) => {createItems.CreateTimeTable();}},
-                            {"Edit timetable", (x) => {createItems.EditTimeTable();}},
+                            {"Add Movie", (x) => {createItems.CreateNewMovie();}},
+                            {"Edit Movie", (x) => {createItems.EditMovie();}},
+                            {"\n" + centerToScreen("Add Timetable"), (x) => {createItems.CreateTimeTable();}},
+                            {"Edit Timetable", (x) => {createItems.EditTimeTable();}},
+                            {"\n" + centerToScreen("Add Director"), (x) => {createItems.CreateDirector();}},
+                            {"Edit Director", (x) => {createItems.EditDirector();}},
+                            {"\n" + centerToScreen("Add Actor"), (x) => {createItems.CreateActor();}},
+                            {"Edit Actor", (x) => {createItems.EditActor();}},
                             {"\n" + centerToScreen("Edit seat prices"), (x) => {SeatPriceCalculator.UpdatePrices();}},
                             {"Change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                         });
