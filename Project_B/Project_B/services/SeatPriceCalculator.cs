@@ -1,11 +1,14 @@
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using DataAccessLibrary;
+using Models;
+using static Project_B.Universal;
 
 namespace Project_B.services
 {
     public static class SeatPriceCalculator
     {
-        private static string _filePath { get { return Universal.datafolderPath + "\\SeatPrices.json"; } }
+        private static string _filePath { get { return datafolderPath + "\\SeatPrices.json"; } }
         private static SeatPricesModel _prices;
         static SeatPriceCalculator()
         {
@@ -21,54 +24,119 @@ namespace Project_B.services
         }
         public static void UpdatePrices()
         {
-            var prices = SeatPriceCalculator.GetCurrentPrices();
-            SeatPriceCalculator.WritePrices();
-            System.Console.WriteLine("\nChange Prices? (Y/N)");
-            char input = Console.ReadKey().KeyChar;
-            if (input.Equals('Y') || input.Equals('y'))
+
+            WritePrices();
+            InputMenu PricesMenu = new("Change prices:");
+            SeatPricesModel prices = GetCurrentPrices();
+            PricesMenu.Add(new Dictionary<string, Action<string>>()
             {
-                bool changing = true;
-                while (changing)
-                {
-                    System.Console.WriteLine("type price to change: (Q to quit)");
-                    string response = Universal.takeUserInput("Type...") ?? "";
-                    switch (response.ToLower())
+                { 
+                    "Price tier I", (x) => 
                     {
-                        case "price tier i" or "tier i" or "i" or "1":
-                            Console.WriteLine("type new price:");
-                            response = Universal.takeUserInput("Type...") ?? "";
-                            prices.PriceTierI = decimal.Parse(response);
-                            break;
-                        case "price tier ii" or "tier ii" or "ii" or "2":
-                            Console.WriteLine("type new price:");
-                            response = Universal.takeUserInput("Type...") ?? "";
-                            prices.PriceTierII = decimal.Parse(response);
-                            break;
-                        case "price tier iii" or "tier iii" or "iii" or "3":
-                            Console.WriteLine("type new price:");
-                            response = Universal.takeUserInput("Type...") ?? "";
-                            prices.PriceTierIII = decimal.Parse(response);
-                            break;
-                        case "extra space" or "extra" or "space":
-                            Console.WriteLine("type new price:");
-                            response = Universal.takeUserInput("Type...") ?? "";
-                            prices.ExtraSpace = decimal.Parse(response);
-                            break;
-                        case "loveseat" or "love" or "love seat":
-                            Console.WriteLine("type new price:");
-                            response = Universal.takeUserInput("Type...") ?? "";
-                            prices.LoveSeat = decimal.Parse(response);
-                            break;
-                        case "q":
-                            changing = false;
-                            break;
+                        while(true){
+                            var resp = takeUserInput("Fill in New price:");
+                            if(decimal.TryParse(resp, out var price))
+                            {
+                                prices.PriceTierI = price;
+                                UpdatePrice(prices);
+                                WritePrices();
+                                Console.ReadKey();
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine(ChangeColour(ConsoleColor.DarkRed) + "Invalid input. \n Please fill in a (floating point) number." + ChangeColour(ConsoleColor.White));
+                            }
+                        }
+                        
+                    }
+                },
+                {
+                    "Price tier II", (x) => 
+                    {
+                        
+                        while(true){
+                            var resp = takeUserInput("Fill in New price:");
+                            if(decimal.TryParse(resp, out var price))
+                            {
+                                prices.PriceTierII = price;
+                                UpdatePrice(prices);
+                                WritePrices();
+                                Console.ReadKey();
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine(ChangeColour(ConsoleColor.DarkRed) + "Invalid input. \n Please fill in a (floating point) number." + ChangeColour(ConsoleColor.White));
+                            }
+                        }
+                    } 
+                },
+                {
+                    "Price tier III", (x) => 
+                    {
+                        
+                        while(true){
+                            var resp = takeUserInput("Fill in New price:");
+                            if(decimal.TryParse(resp, out var price))
+                            {
+                                prices.PriceTierIII = price;
+                                UpdatePrice(prices);
+                                WritePrices();
+                                Console.ReadKey();
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine(ChangeColour(ConsoleColor.DarkRed) + "Invalid input. \n Please fill in a (floating point) number." + ChangeColour(ConsoleColor.White));
+                            }
+                        }
+                    }
+                },
+                {
+                    "Extra space", (x) =>
+                    {
+                        while(true){
+                            var resp = takeUserInput("Fill in New price:");
+                            if(decimal.TryParse(resp, out var price))
+                            {
+                                prices.ExtraSpace = price;
+                                UpdatePrice(prices);
+                                WritePrices();
+                                Console.ReadKey();
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine(ChangeColour(ConsoleColor.DarkRed) + "Invalid input. \n Please fill in a (floating point) number." + ChangeColour(ConsoleColor.White));
+                            }
+                        }
+                    }
+                },
+                {
+                    "LoveSeat", (x) =>
+                    {
+                        while(true){
+                            var resp = takeUserInput("Fill in New price:");
+                            if(decimal.TryParse(resp, out var price))
+                            {
+                                prices.LoveSeat = price;
+                                UpdatePrice(prices);
+                                WritePrices();
+                                Console.ReadKey();
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine(ChangeColour(ConsoleColor.DarkRed) + "Invalid input. \n Please fill in a (floating point) number." + ChangeColour(ConsoleColor.White));
+                            }
+                        }
                     }
                 }
-
-            }
+            });
+            PricesMenu.UseMenu();
             UpdatePrice(prices);
-            WritePrices();
-            Console.ReadLine();
+            
         }
         public static void ReadPrices()
         {
