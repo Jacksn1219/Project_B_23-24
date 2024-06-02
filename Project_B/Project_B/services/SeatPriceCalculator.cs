@@ -147,7 +147,7 @@ namespace Project_B.services
         public static string ShowCalculation(List<SeatModel> seats)
         {
             string toReturn = "\n";
-            decimal[] priceCounter = new decimal[9];
+            /*decimal[] priceCounter = new decimal[9];
 
             int temp = seats.Where(x => x.Rank == "1" && x.Type[0] == 'N').Count();
             priceCounter[0] = temp * _prices.PriceTierI;
@@ -184,9 +184,9 @@ namespace Project_B.services
             priceCounter[8] = temp * _prices.PriceTierIII + temp * _prices.LoveSeat;
             if (priceCounter[8] > 0) toReturn += ($"\n{temp} x Love seat        | Rank 3 | € " + priceCounter[8]);
 
-            toReturn += $"\n\nTotal                     | € {priceCounter.Sum()}";
+            toReturn += $"\n\nTotal                     | € {priceCounter.Sum()}";*/
 
-            /*foreach (var seat in seats)
+            foreach (var seat in seats)
             {
                 switch (seat.Rank.ToLower())
                 {
@@ -210,7 +210,7 @@ namespace Project_B.services
                         break;
                 }
             }
-            toReturn += $"\nTotal price: € {CalculatePrices(seats)}";*/
+            toReturn += $"\nTotal price: € {CalculatePrices(seats)}";
             return toReturn;
         }
         public static string ShowCalculation(SeatModel seat)
