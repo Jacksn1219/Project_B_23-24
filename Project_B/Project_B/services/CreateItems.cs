@@ -402,6 +402,8 @@ namespace Project_B
             }
             catch { }
 
+            movieList = movieList.OrderBy(m => m.Name).ToList();
+
             MovieModel ? selectedMovie = null;
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
             foreach (MovieModel movie in movieList)
@@ -549,6 +551,8 @@ namespace Project_B
                 }
                 catch { }
 
+                movieList = movieList.OrderBy(m => m.Name).ToList();
+
                 MovieModel ? selectedMovie = null;
                 InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a new movie:"), null);
                 foreach (MovieModel movie in movieList)
@@ -625,6 +629,46 @@ namespace Project_B
                 Console.WriteLine("Press 'Enter' to go back in the menu.");
             }
             Console.ReadLine();
+        }
+
+        public void browseMovies()
+        {
+            List<MovieModel> movieList = new List<MovieModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var movies = _mf.GetItems(100, page, 6);
+                    movieList.AddRange(movies);
+                    page++;
+                    if (movies.Length < 100) break;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error fetching movies from database.");
+                return;
+            }
+
+            if (movieList.Count == 0)
+            {
+                Console.WriteLine("No movies found.");
+                return;
+            }
+
+            movieList = movieList.OrderBy(m => m.Name).ToList();
+
+            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Browse Movies:"), null);
+            foreach (MovieModel movie in movieList)
+            {
+                movieMenu.Add(movie.Name ?? "", (x) =>
+                {
+                    Console.WriteLine($"Movie: {movie.Name}\nDescription: {movie.Description}\nGenre: {movie.Genre}\nDirector of the movie: {movie.Director}\nActors in the movie: {movie.Actors}\nFilm duration:{movie.DurationInMin} min\nPegiAge: {movie.PegiAge}");
+                    Console.ReadLine();
+                });
+            }
+            movieMenu.UseMenu();
         }
     }
 }

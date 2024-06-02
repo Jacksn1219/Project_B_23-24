@@ -49,7 +49,7 @@ namespace Project_B
                 //user options
                 new Dictionary<string, Action<string>>(){
                     {"# Show schedule #", (x) => { takeUserInput("Movie title");/*not yet*/ }},
-                    {"# Browse movies #", (x) => { /*not yet*/ }},
+                    {"Browse movies", (x) => {createItems.browseMovies();}},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation(rf);}},
                     {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
                 },
