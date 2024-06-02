@@ -1,4 +1,5 @@
-﻿using DataAccessLibrary;
+﻿using System.Globalization;
+using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Models;
@@ -45,7 +46,8 @@ public static class Universal
     public static bool IsStartDate(this string? date, int mins, out DateTime? toReturn)
     {
         toReturn = null;
-        if (DateTime.TryParse(date, out DateTime startDate))
+        string format = "dd-MM-yyyy HH:mm";
+        if (DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startDate))
         {
             var endDate = startDate.AddMinutes(mins);
             if (startDate.Date > DateTime.Now.Date &&
@@ -57,12 +59,12 @@ public static class Universal
             }
             else
             {
-                Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):", ConsoleColor.Red));
+                Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (dd-MM-yyyy HH:mm):", ConsoleColor.Red));
             }
         }
         else
         {
-            Console.WriteLine(Universal.WriteColor("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):", ConsoleColor.Red));
+            Console.WriteLine(Universal.WriteColor("Invalid date format. Please enter the start date (dd-MM-yyyy HH:mm):", ConsoleColor.Red));
         }
         return false;
     }

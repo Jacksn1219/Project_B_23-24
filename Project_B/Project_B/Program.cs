@@ -63,7 +63,7 @@ namespace Project_B
                         {
                             {"Add movie", (x) => {createItems.CreateNewMovie();}},
                             {"Edit movie", (x) => {createItems.ChangeMovie();}},
-                            {"\n" + centerToScreen("Add timetable"), (x) => {createItems.CreateTimeTable();}},
+                            {"\n" + centerToScreen("Plan a movie"), (x) => {createItems.CreateTimeTable();}},
                             {"Edit timetable", (x) => {createItems.EditTimeTable();}},
                             {"\n" + centerToScreen("Edit seat prices"), (x) => {SeatPriceCalculator.UpdatePrices();}},
                             {"Change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}

@@ -3,6 +3,7 @@ using DataAccessLibrary;
 using Models;
 using DataAccessLibrary.models;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace Project_B
 {
@@ -437,14 +438,15 @@ namespace Project_B
             if (selectedRoom == null)
             { return; }
 
-            Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
+            Console.WriteLine("Enter the start date (dd-MM-yyyy HH:mm):");
             DateTime startDate;
             DateTime endDate;
             DateTime now = DateTime.Now;
 
             while (true)
             {
-                if (DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate))
+            string userInput = Universal.takeUserInput("Type...");
+            if (DateTime.TryParseExact(userInput, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
                 {
                     endDate = startDate.AddMinutes(selectedMovie.DurationInMin + 15); //15 min delay between movies
                     if (startDate.Date > now.Date &&
@@ -477,12 +479,12 @@ namespace Project_B
                     }
                     else
                     {
-                        Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):", ConsoleColor.DarkRed));
+                        Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (dd-MM-yyyy HH:mm):", ConsoleColor.DarkRed));
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+                    Console.WriteLine("Invalid date format. Please enter the start date (dd-MM-yyyy HH:mm):");
                 }
             }
 
@@ -499,8 +501,6 @@ namespace Project_B
             }
             Console.ReadLine();
         }
-
-
 
         public void EditTimeTable()
         {
@@ -594,7 +594,7 @@ namespace Project_B
             });
             editMenu.Add("Start Date", (x) =>
             {
-                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("yyyy-MM-dd HH:mm")}" + "\n" + "Enter the new start date (yyyy-MM-dd HH:mm):");
+                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("dd-MM-yyyy HH:mm")}" + "\n" + "Enter the new start date (dd-MM-yyyy HH:mm):");
                 DateTime startDate;
                 DateTime endDate;
                 DateTime now = DateTime.Now;
@@ -606,8 +606,8 @@ namespace Project_B
                     {
                         startDate = y ?? DateTime.Now;
                         endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-                        selectedTimeTable.StartDate = startDate.ToString("yyyy-MM-dd HH:mm");;
-                        selectedTimeTable.EndDate = endDate.ToString("yyyy-MM-dd HH:mm");;
+                        selectedTimeTable.StartDate = startDate.ToString("dd-MM-yyyy HH:mm");;
+                        selectedTimeTable.EndDate = endDate.ToString("dd-MM-yyyy HH:mm");;
                         break;
                     }
                 }
