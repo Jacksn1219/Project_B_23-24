@@ -181,4 +181,19 @@ public static class Universal
         }
         showReservedSeatMenu.UseMenu(() => printAsTitle("Select a seat to show"));
     }
+    public static void PressAnyKeyWaiter()
+    {
+        ConsoleKey key;
+        do
+        {
+            Console.Write("Press <Any> key to continue...");
+            Thread.Sleep(700);
+            Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+            if (Console.KeyAvailable) break;
+            Console.Write("                              ");
+            Thread.Sleep(700);
+            Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+        } while (!Console.KeyAvailable);
+        key = Console.ReadKey(true).Key;
+    }
 }

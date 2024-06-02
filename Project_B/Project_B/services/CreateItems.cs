@@ -172,7 +172,8 @@ namespace Project_B
             MovieModel newMovie = new MovieModel(Name, Discription, pegiAge, Duration, Genre, Director, Actors);
             _mf.CreateItem(newMovie);
 
-            Console.WriteLine($"The new movie {Name} has been created.\nPress <any> key to continue...");
+            Console.WriteLine($"The new movie {Name} has been created.");
+            Universal.PressAnyKeyWaiter();
             Console.ReadLine();
         }
         public void EditMovie()
@@ -411,18 +412,41 @@ namespace Project_B
                 addOrRemove.UseMenu();
             });
 
+            // Getting all Reservations to check if its planned
+            List<ReservationModel> reservationList = new List<ReservationModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    ReservationModel[] reservations = _rvf.GetItems(100, page, 6);
+                    reservationList.AddRange(reservations);
+                    page++;
+                    if (reservations.Length < 100) break;
+                }
+            }
+            catch { }
+
             // Menu to chose Movie
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select movie to edit:"));
             foreach (MovieModel movie in movieList)
             {
                 movieMenu.Add(movie.Name ?? "", (x) => {
+                    ReservationModel[] ReservationsToKeep = reservationList.Where(x => x.TimeTable.MovieID == movie.ID).ToArray();
+                    if (ReservationsToKeep.Count() > 0)
+                    {
+                        Console.WriteLine("This movie has been planned and thus cannot be altered.");
+                        Universal.PressAnyKeyWaiter();
+                        return;
+                    }
+
                     movieToEdit = movie;
                     whatToEditMenu.UseMenu();
 
                     _mf.ItemToDb(movieToEdit);
 
-                    Console.WriteLine($"The changes to {movieToEdit.Name} have been saved.\nPress <any> key to continue...");
-                    Console.ReadLine();
+                    Console.WriteLine($"The changes to {movieToEdit.Name} have been saved.");
+                    Universal.PressAnyKeyWaiter();
                 });
             }
             movieMenu.UseMenu();
@@ -846,7 +870,8 @@ namespace Project_B
             //Saving the new item to the database
             _df.ItemToDb(directorToEdit);
 
-            Console.WriteLine($"The changes to {directorToEdit.Name} have been saved.\nPress <any> key to continue...");
+            Console.WriteLine($"The changes to {directorToEdit.Name} have been saved.");
+            Universal.PressAnyKeyWaiter();
             Console.ReadLine();
         }
         public ActorModel CreateActor()
@@ -944,7 +969,8 @@ namespace Project_B
             //Saving the new item to the database
             _af.ItemToDb(actorToEdit);
 
-            Console.WriteLine($"The changes to {actorToEdit.Name} have been saved.\nPress <any> key to continue...");
+            Console.WriteLine($"The changes to {actorToEdit.Name} have been saved.");
+            Universal.PressAnyKeyWaiter();
             Console.ReadLine();
         }
     }

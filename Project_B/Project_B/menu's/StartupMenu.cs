@@ -13,19 +13,8 @@ public static class StartupMenu
         //----- Setup starting data -----//
         dataToLoad.Invoke();
 
-        ConsoleKey key;
-        do
-        {
-            Console.Write("Press <Any> key to continue...");
-            Thread.Sleep(700);
-            Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-            if (Console.KeyAvailable) break;
-            Console.Write("                              ");
-            Thread.Sleep(700);
-            Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-        } while (!Console.KeyAvailable);
+        Universal.PressAnyKeyWaiter();
 
-        key = Console.ReadKey(true).Key;
         Console.CursorVisible = true;
     }
     private static void ShowWelcomeMessage()

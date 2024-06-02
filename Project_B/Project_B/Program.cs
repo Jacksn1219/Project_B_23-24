@@ -35,7 +35,7 @@ namespace Project_B
             //set up services
             CreateItems createItems = new CreateItems(af, df, mf, rf, ttf, reservationFactory);
             RoomService roomservice = new(rf);
-            ReservationService rs = new(reservationFactory, mf, ttf);
+            ReservationService rs = new(reservationFactory, mf, ttf, rf);
             HistoryService hs = new HistoryService(rf, sf, cf, reservationFactory, rs, ttf);
 
             //----- Welkom scherm -----//

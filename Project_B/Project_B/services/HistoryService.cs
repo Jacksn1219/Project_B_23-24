@@ -72,19 +72,7 @@ public class HistoryService
         Console.Write(" is:");
         Console.WriteLine(SeatPriceCalculator.ShowCalculation(seats));
 
-        ConsoleKey key;
-        do
-        {
-            Console.Write("Press <Any> key to continue...");
-            Thread.Sleep(700);
-            Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-            if (Console.KeyAvailable) break;
-            Console.Write("                              ");
-            Thread.Sleep(700);
-            Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-        } while (!Console.KeyAvailable);
-
-        key = Console.ReadKey(true).Key;
+        Universal.PressAnyKeyWaiter();
         
         return Convert.ToInt32(total);
     }
@@ -113,19 +101,7 @@ public class HistoryService
                 Console.WriteLine($"Reserved seats: {reservedSeats.Count()} / {timeTable.Room.Capacity}\n");
                 Console.WriteLine($"Profit: €{SeatPriceCalculator.CalculatePrices(reservedSeats)}\n");
 
-
-                ConsoleKey key;
-                do
-                {
-                    Console.Write("Press <Any> key to continue...");
-                    Thread.Sleep(700);
-                    Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-                    if (Console.KeyAvailable) break;
-                    Console.Write("                              ");
-                    Thread.Sleep(700);
-                    Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-                } while (!Console.KeyAvailable);
-                key = Console.ReadKey(true).Key;
+                Universal.PressAnyKeyWaiter();
             });
         }
         if (timeTableMenu.GetMenuOptionsCount() > 0) timeTableMenu.UseMenu();
@@ -137,18 +113,7 @@ public class HistoryService
             Universal.WriteColor(endDate.ToString("dd/MM/yyyy"), ConsoleColor.Blue);
             Console.Write(" time period.\n");
 
-            ConsoleKey key;
-            do
-            {
-                Console.Write("Press <Any> key to continue...");
-                Thread.Sleep(700);
-                Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-                if (Console.KeyAvailable) break;
-                Console.Write("                              ");
-                Thread.Sleep(700);
-                Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
-            } while (!Console.KeyAvailable);
-            key = Console.ReadKey(true).Key;
+            Universal.PressAnyKeyWaiter();
         }
     }
 }
