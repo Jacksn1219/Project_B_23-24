@@ -19,7 +19,7 @@ public class ReservationService
         _roomf = roomf;
     }
     //add methodes to get and add reservations
-    public void CreateReservation(RoomFactory roomFactory)
+    public void CreateReservation()
     {
         //select timetable day
         DateOnly? day = GetWeekDay();
@@ -240,8 +240,14 @@ public class ReservationService
     {
         TimeTableModel? mov = null;
         InputMenu movieSelecter = new InputMenu("| Selecteer een film |", null);
-        var resp = _tf.GetTimeTablesFromDate(weekday);
-        TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
+        TimeTableModel[]? timetables = _tf.GetTimeTablesFromDate(weekday);
+        //TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
+        if(timetables == null || timetables.Length == 0) 
+        {
+            System.Console.WriteLine("there are no movies planned today");
+            Console.ReadKey();
+            return null;
+        }
         foreach (TimeTableModel timeTable in timetables)
         {
             Console.Clear();
