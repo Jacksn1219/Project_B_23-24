@@ -73,7 +73,7 @@ public class ReservationService
             }
         }
     
-        
+
         //get seats
 
         //select seats to reserve
@@ -135,11 +135,11 @@ public class ReservationService
         {
             DayOfWeek temp = (DayOfWeek)i; //temp DayOfWeekValue. (if you use i it will always be 7)
             selectDay.Add($"{temp}", (x) =>
-            {
+        {
                 var date = today.AddDays((int)temp - weekdayInt);
                 toReturn = DateOnly.FromDateTime(date);
                 //Console.ReadLine();
-            });
+        });
         }
         selectDay.UseMenu();
         return toReturn;
@@ -149,7 +149,7 @@ public class ReservationService
         bool validInput = false;
         int confirmationNumber = 0;
         while (!validInput)
-        {
+    {
             Console.Write("Please enter your confirmation number: ");
             string userInput = Universal.takeUserInput("Type...");
             if (int.TryParse(userInput, out confirmationNumber))
@@ -208,7 +208,7 @@ public class ReservationService
         {
             string seats = string.Join(", ", reservation.ReservedSeats.Select(seat => seat.Name));
             Console.WriteLine($"Seats: {seats}");
-        }
+    }
         else
         {
             Console.WriteLine("No seats reserved.");
