@@ -142,6 +142,12 @@ public static class Universal
         // Userinput
         string userInput = Console.ReadLine() ?? "";
 
+        if (userInput == "")
+        {
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
+            userInput = takeUserInput("You have to type something...");
+        }
+
         // Reseting the color
         Console.BackgroundColor = ConsoleColor.Black;
         return userInput;
@@ -170,9 +176,24 @@ public static class Universal
         {
             TimeTableModel? timetable = _ttf.GetItemFromId(_rf.GetItemFromId(seat.Item1, 99).TimeTableID ?? 1);
             if (timetable != null)
-                showReservedSeatMenu.Add($"{timetable.DateTimeStartDate} | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
+                showReservedSeatMenu.Add($"{timetable.DateTimeStartDate} | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); });
             //else showReservedSeatMenu.Add($" | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
         }
         showReservedSeatMenu.UseMenu(() => printAsTitle("Select a seat to show"));
+    }
+    public static void PressAnyKeyWaiter()
+    {
+        ConsoleKey key;
+        do
+        {
+            Console.Write("Press <Any> key to continue...");
+            Thread.Sleep(700);
+            Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+            if (Console.KeyAvailable) break;
+            Console.Write("                              ");
+            Thread.Sleep(700);
+            Console.SetCursorPosition(Console.CursorLeft - 30, Console.CursorTop);
+        } while (!Console.KeyAvailable);
+        key = Console.ReadKey(true).Key;
     }
 }

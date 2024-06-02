@@ -33,9 +33,10 @@ namespace Project_B
             ReservationFactory reservationFactory = new ReservationFactory(db, cf, sf, ttf, logger);
 
             //set up services
-            CreateItems createItems = new CreateItems(af, df, mf, rf, ttf);
+            CreateItems createItems = new CreateItems(af, df, mf, rf, ttf, reservationFactory);
             RoomService roomservice = new(rf);
-            ReservationService rs = new(reservationFactory, mf, ttf);
+            ReservationService rs = new(reservationFactory, mf, ttf, rf);
+            HistoryService hs = new HistoryService(rf, sf, cf, reservationFactory, rs, ttf);
 
             //----- Welkom scherm -----//
             StartupMenu.UseMenu(() =>
@@ -48,7 +49,7 @@ namespace Project_B
             MainMenu.UseMenu(
                 //user options
                 new Dictionary<string, Action<string>>(){
-                    {"# Show schedule #", (x) => { takeUserInput("Movie title");/*not yet*/ }},
+                    {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
                     {"# Browse movies #", (x) => { /*not yet*/ }},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation(rf);}},
                     {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
@@ -57,20 +58,25 @@ namespace Project_B
                 new Dictionary<string, Action<string>>(){
                     {"Schedule", (x) => { rs.showReservedSeatsPerTimetable(rf, sf, cf, reservationFactory, rs); }},
                     {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory, rs, ttf); }},
-                    {"\n" + Universal.centerToScreen("Create/Edit"), (x) => {
+                    {"\n" + centerToScreen("Create/Edit"), (x) => {
                         InputMenu CreateMenu = new InputMenu("useLambda");
                         CreateMenu.Add(new Dictionary<string, Action<string>>()
                         {
-                            {"Add movie", (x) => {createItems.CreateNewMovie();}},
-                            {"Edit movie", (x) => {createItems.ChangeMovie();}},
-                            {"\n" + centerToScreen("Add timetable"), (x) => {createItems.CreateTimeTable();}},
-                            {"Edit timetable", (x) => {createItems.EditTimeTable();}},
+                            {"Add Movie", (x) => {createItems.CreateNewMovie();}},
+                            {"Edit Movie", (x) => {createItems.EditMovie();}},
+                            {"Remove Movie", (x) => {createItems.DeleteMovie();}},
+                            {"\n" + centerToScreen("Add Timetable"), (x) => {createItems.CreateTimeTable();}},
+                            {"Edit Timetable", (x) => {createItems.EditTimeTable();}},
+                            {"\n" + centerToScreen("Add Director"), (x) => {createItems.CreateDirector();}},
+                            {"Edit Director", (x) => {createItems.EditDirector();}},
+                            {"\n" + centerToScreen("Add Actor"), (x) => {createItems.CreateActor();}},
+                            {"Edit Actor", (x) => {createItems.EditActor();}},
                             {"\n" + centerToScreen("Edit seat prices"), (x) => {SeatPriceCalculator.UpdatePrices();}},
                             {"Change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                         });
                         CreateMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
                     }},
-                    {"# History #", (x) => {/*not yet*/}}
+                    {"History", (x) => { hs.UseMenu(); }}
                 }
             );
         }

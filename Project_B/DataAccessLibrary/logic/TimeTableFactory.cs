@@ -3,6 +3,7 @@ using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Newtonsoft.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class TimeTableFactory : IDbItemFactory<TimeTableModel>
 {
@@ -89,9 +90,10 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         {
             var toReturn = _db.ReadData<TimeTableModel>(
                 @"SELECT * FROM TimeTable
-                WHERE ID = $1",
+                WHERE ID = $1 AND StartDate > $2",
                 new Dictionary<string, dynamic?>(){
                     {"$1", id},
+                    {"$2", DateTime.MinValue.ToString(CultureInfo.InvariantCulture)},
                 }
             ).First();
             getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
@@ -112,7 +114,11 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
         {
             _db.OpenConnection();
             TimeTableModel[] tts = _db.ReadData<TimeTableModel>(
-                $"SELECT * FROM TimeTable LIMIT {count} OFFSET {count * page - count}"
+                $"SELECT * FROM TimeTable WHERE StartDate > $1 LIMIT {count} OFFSET {count * page - count}",
+                new Dictionary<string, dynamic?>()
+                {
+                    {"$1", DateTime.MinValue.ToString(CultureInfo.InvariantCulture)},
+                }
             );
             if (deepcopyLv < 1) return tts;
             foreach (TimeTableModel tt in tts)
@@ -263,15 +269,41 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
             return null;
         }
     }
-    public TimeTableModel[] GetTimeTablesFromDate(DateOnly date)
+    public TimeTableModel[]? GetTimeTablesFromDate(DateOnly date)
+    {
+        try
+        {
+            return _db.ReadData<TimeTableModel>
+            (
+                @"SELECT * FROM TimeTable
+                WHERE StartDate >= $1 AND StartDate <= $2",
+                new Dictionary<string, dynamic?>(){
+                    {"$1", date.ToString("MM/dd/yyyy")},
+                    {"$2", date.AddDays(1).ToString("MM/dd/yyyy")}
+                }
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, $"failed to get the timetables on date {date}");
+            return null;
+        }
+    }
+    /// <summary>
+    /// gets all TimeTables that play in between <paramref name="startDate"/> & <paramref name="endDate"/>
+    /// </summary>
+    /// <param name="startDate">the movie has to play after this date</param>
+    /// <param name="endDate">the movie has to have started before this date</param>
+    /// <returns></returns>
+    public TimeTableModel[] GetTimeTablesBetweenDates(DateTime startDate, DateTime endDate)
     {
         return _db.ReadData<TimeTableModel>
         (
             @"SELECT * FROM TimeTable
-            WHERE StartDate >= $1 AND StartDate <= $2",
+            WHERE EndDate >= $1 AND StartDate <= $2",
             new Dictionary<string, dynamic?>(){
-                {"$1", date.ToString("MM/dd/yyyy")},
-                {"$2", date.AddDays(1).ToString("MM/dd/yyyy")}
+                {"$1", startDate.ToString(CultureInfo.InvariantCulture)},
+                {"$2", endDate.ToString(CultureInfo.InvariantCulture)}
             }
         );
     }
@@ -295,5 +327,21 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 {"$3", roomID}
             }
         );
+    }
+    public void RemoveFromDB(int id)
+    {
+        RemoveFromDB(GetItemFromId(id));
+    }
+    public void RemoveFromDB(TimeTableModel timetable)
+    {
+        try {
+            timetable.StartDate = DateTime.MinValue.ToString(CultureInfo.InvariantCulture);
+            timetable.EndDate = DateTime.MinValue.ToString(CultureInfo.InvariantCulture);
+            this.ItemToDb(timetable);
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, $"failed to remove the timetable with ID: {timetable.ID}");
+        }
     }
 }

@@ -3,6 +3,9 @@ using DataAccessLibrary;
 using Models;
 using DataAccessLibrary.models;
 using System.Data.SqlClient;
+using System.Xml.Linq;
+using System.IO;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Project_B
 {
@@ -13,13 +16,15 @@ namespace Project_B
         private readonly MovieFactory _mf;
         private readonly RoomFactory _rf;
         private readonly TimeTableFactory _ttf;
-        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf, RoomFactory rf, TimeTableFactory ttf)
+        private readonly ReservationFactory _rvf;
+        public CreateItems(ActorFactory af, DirectorFactory df, MovieFactory mf, RoomFactory rf, TimeTableFactory ttf, ReservationFactory rvf)
         {
             _af = af;
             _df = df;
             _mf = mf;
             _rf = rf;
             _ttf = ttf;
+            _rvf = rvf;
         }
         public void CreateNewMovie()
         {
@@ -30,42 +35,42 @@ namespace Project_B
             string Name = Universal.takeUserInput("Type...") ?? "";
 
             // Discription //
-            Console.WriteLine("What is the description of the movie?");
+            Console.WriteLine("\nWhat is the description of the movie?");
             string Discription = Universal.takeUserInput("Type...") ?? "";
 
             // pegiAge //
             int pegiAge = 0;
-            Console.WriteLine("What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
+            Console.WriteLine("\nWhat is the PEGIage of the movie? (4, 7, 12, 16, 18)");
             int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
             List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
             while (!possiblePegiAges.Contains(pegiAge))
             {
-                Console.SetCursorPosition(0, Console.CursorTop - 4);
+                Console.SetCursorPosition(0, Console.CursorTop - 3);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                 Console.WriteLine("\nWhat is the PEGIage of the movie? (4, 7, 12, 16, 18)");
                 int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
             }
-            Console.SetCursorPosition(0, Console.CursorTop - 4);
+            Console.SetCursorPosition(0, Console.CursorTop - 3);
             Console.Write("                          ");
-            Console.SetCursorPosition(0, Console.CursorTop + 4);
+            Console.SetCursorPosition(0, Console.CursorTop + 3);
 
             // Duration in minutes //
             int Duration = 0;
-            Console.WriteLine("What is the duration of the movie? (more than 0)");
+            Console.WriteLine("\nWhat is the duration of the movie? (more than 0)");
             int.TryParse(Universal.takeUserInput("Type..."), out Duration);
             while (Duration == 0)
             {
-                Console.SetCursorPosition(0, Console.CursorTop - 4);
+                Console.SetCursorPosition(0, Console.CursorTop - 3);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                 Console.WriteLine("\nWhat is the duration of the movie? (more than 0)");
                 int.TryParse(Universal.takeUserInput("Type..."), out Duration);
             }
-            Console.SetCursorPosition(0, Console.CursorTop - 4);
+            Console.SetCursorPosition(0, Console.CursorTop - 3);
             Console.Write("                          ");
-            Console.SetCursorPosition(0, Console.CursorTop + 4);
+            Console.SetCursorPosition(0, Console.CursorTop + 3);
 
             // genre //
-            Console.WriteLine("What is the genre of the movie?");
+            Console.WriteLine("\nWhat is the genre of the movie?");
             string Genre = Universal.takeUserInput("Type...") ?? "";
 
             // Director //
@@ -73,8 +78,8 @@ namespace Project_B
 
             List<DirectorModel> directorList = new List<DirectorModel>();
             // Test directors
-            _df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
-            _df.CreateItem(new DirectorModel("David Fincher", "", 61));
+            //_df.CreateItem(new DirectorModel("Martin Scorsese", "", 81));
+            //_df.CreateItem(new DirectorModel("David Fincher", "", 61));
 
             // Get directors from database
             try
@@ -96,17 +101,23 @@ namespace Project_B
             {
                 directorMenu.Add(director.Name, (x) => { Director = director; });
             }
+            directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) => {
+                Director = CreateDirector();
+            });
             if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
+            
+            //Check for if escape has been pushed
+            if (Director.Name == null) return;
 
             // Actors //
             List<ActorModel> Actors = new List<ActorModel>();
 
             List<ActorModel> actorList = new List<ActorModel>();
             // Test actors
-            _af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
-            _af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
-            _af.CreateItem(new ActorModel("Levi", "Something", 33));
-            _af.CreateItem(new ActorModel("Someone", "Something else", 46));
+            //_af.CreateItem(new ActorModel("Dwayne Johnson", "The Rock", 51));
+            //_af.CreateItem(new ActorModel("Kevin Hart", "Side Rock", 44));
+            //_af.CreateItem(new ActorModel("Levi", "Something", 33));
+            //_af.CreateItem(new ActorModel("Someone", "Something else", 46));
 
             // Get directors from database
             try
@@ -128,7 +139,13 @@ namespace Project_B
             {
                 actorMenu.Add(actor.Name, (x) => { Actors.Add(actor); });
             }
+            actorMenu.Add("Create a new actor", (x) => {
+                ActorModel newActor = CreateActor();
+                Actors.Add(newActor);
+            });
             actorMenu.UseMenu();
+
+            if (Actors.Count() == 0) return;
 
             // Deleting chosen actor
             foreach (ActorModel actor in Actors) actorMenu.Remove(actor.Name);
@@ -150,10 +167,16 @@ namespace Project_B
             });
             anotherActorMenu.UseMenu();
 
+            if (Actors.Count() == 0) return;
+
             MovieModel newMovie = new MovieModel(Name, Discription, pegiAge, Duration, Genre, Director, Actors);
             _mf.CreateItem(newMovie);
+
+            Console.WriteLine($"The new movie {Name} has been created.");
+            Universal.PressAnyKeyWaiter();
+            Console.ReadLine();
         }
-        public void ChangeMovie()
+        public void EditMovie()
         {
             List<MovieModel> movieList = new List<MovieModel>();
             try
@@ -169,16 +192,15 @@ namespace Project_B
             }
             catch { }
 
-            //movie to edit
-            MovieModel movieToEdit = new MovieModel("", "", 4, 120, "");
-
-            // Menu to chose Movie
-            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select movie to edit:"), null);
-            foreach (MovieModel movie in movieList)
+            if (movieList.Count == 0)
             {
-                movieMenu.Add(movie.Name ?? "", (x) => { movieToEdit = movie; });
+                Console.WriteLine("There are no movies in the system");
+                Console.ReadLine();
+                return;
             }
-            movieMenu.UseMenu();
+
+            //movie to edit
+            MovieModel? movieToEdit = null;
 
             InputMenu whatToEditMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
             whatToEditMenu.Add("Name", (x) =>
@@ -202,10 +224,11 @@ namespace Project_B
                 List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
                 while (!possiblePegiAges.Contains(pegiAge))
                 {
+                    Console.Clear();
                     try
                     {
                         Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                        Console.WriteLine($"Current pegiAge = {movieToEdit.PegiAge}" + "\n" + "What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
+                        Console.WriteLine($"\nCurrent pegiAge = {movieToEdit.PegiAge}" + "\n" + "What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
                         int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
                     }
                     catch { }
@@ -219,8 +242,9 @@ namespace Project_B
                 int.TryParse(Universal.takeUserInput("Type..."), out Duration);
                 while (Duration == 0)
                 {
+                    Console.Clear();
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                    Console.WriteLine($"Current duration = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
+                    Console.WriteLine($"\nCurrent duration = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
                     int.TryParse(Universal.takeUserInput("Type..."), out Duration);
                 }
                 movieToEdit.editDuration(Duration);
@@ -269,6 +293,9 @@ namespace Project_B
                     if (movieToEdit.Director != null && movieToEdit.Director.Name == director.Name) continue;
                     directorMenu.Add(director.Name, (x) => { Director = director; });
                 }
+                directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) => {
+                    Director = CreateDirector();
+                });
                 if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
                 movieToEdit.editDirector(Director);
             });
@@ -300,13 +327,16 @@ namespace Project_B
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
                     //_mf.AddRelatedActors(movieToEdit); // this is built into _mf.ItemToDb() if  deepcopy greater than 0.
 
-                    // Menu to chose director
+                    // Menu to chose actor
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
                     foreach (ActorModel actor in actorList)
                     {
                         actorMenu.Add(actor.Name, (x) => { movieToEdit.addActor(actor); });
                     }
-
+                    actorMenu.Add("Create a new actor", (x) => {
+                        ActorModel newActor = CreateActor();
+                        movieToEdit.addActor(newActor);
+                    });
                     // Deleting chosen actor
                     foreach (ActorModel actor in movieToEdit.Actors) actorMenu.Remove(actor.Name);
 
@@ -343,7 +373,7 @@ namespace Project_B
                     //_mf.AddRelatedActors(movieToEdit);
                     if (movieToEdit.Actors.Count < 1) _mf.getRelatedItemsFromDb(movieToEdit, 1);
 
-                    // Menu to chose director
+                    // Menu to chose actor
                     InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
                     foreach (ActorModel actor in movieToEdit.Actors)
                     {
@@ -381,8 +411,126 @@ namespace Project_B
                 });
                 addOrRemove.UseMenu();
             });
-            whatToEditMenu.UseMenu();
-            _mf.ItemToDb(movieToEdit);
+
+            // Getting all Reservations to check if its planned
+            List<ReservationModel> reservationList = new List<ReservationModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    ReservationModel[] reservations = _rvf.GetItems(100, page, 6);
+                    reservationList.AddRange(reservations);
+                    page++;
+                    if (reservations.Length < 100) break;
+                }
+            }
+            catch { }
+
+            // Menu to chose Movie
+            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select movie to edit:"));
+            foreach (MovieModel movie in movieList)
+            {
+                movieMenu.Add(movie.Name ?? "", (x) => {
+                    ReservationModel[] ReservationsToKeep = reservationList.Where(x => x.TimeTable.MovieID == movie.ID).ToArray();
+                    if (ReservationsToKeep.Count() > 0)
+                    {
+                        Console.WriteLine("This movie has been planned and thus cannot be altered.");
+                        Universal.PressAnyKeyWaiter();
+                        return;
+                    }
+
+                    movieToEdit = movie;
+                    whatToEditMenu.UseMenu();
+
+                    _mf.ItemToDb(movieToEdit);
+
+                    Console.WriteLine($"The changes to {movieToEdit.Name} have been saved.");
+                    Universal.PressAnyKeyWaiter();
+                });
+            }
+            movieMenu.UseMenu();
+            if (movieToEdit == null) return;
+
+            //whatToEditMenu.UseMenu();
+        }
+        public void DeleteMovie()
+        {
+            // Getting all movies //
+            List<MovieModel> movieList = new List<MovieModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    MovieModel[] movies = _mf.GetItems(100, page, 6);
+                    movieList.AddRange(movies);
+                    page++;
+                    if (movies.Length < 100) break;
+                }
+            }
+            catch { }
+
+            MovieModel? selectedMovie = null;
+            InputMenu movieMenu = new InputMenu("Select a movie to remove", null);
+            foreach (var movie in movieList) { movieMenu.Add(movie.Name, (x) => { selectedMovie = movie; }); }
+            movieMenu.UseMenu();
+            if (selectedMovie == null) return;
+            DeleteMovie(selectedMovie);
+        }
+        /// <summary>
+        /// Sets IsRemoved = true |
+        /// Every planned timetable without booked seats gets a .MinValue startdate
+        /// </summary>
+        /// <param name="movieToRemove"></param>
+        public void DeleteMovie(MovieModel movieToRemove)
+        {
+            //Get every timetable & change to not be able to select a deactive movie.
+            //Every planned timetable without selected seats has to be removed.
+
+            // Getting all reservations //
+            List<ReservationModel> reservationList = new List<ReservationModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var reservations = _rvf.GetItems(100, page, 6);
+                    reservationList.AddRange(reservations);
+                    page++;
+                    if (reservations.Length < 100) break;
+                }
+            }
+            catch { }
+
+            // Getting all timetables //
+            List<TimeTableModel> timetableList = new List<TimeTableModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var timetables = _ttf.GetItems(100, page, 6);
+                    timetableList.AddRange(timetables);
+                    page++;
+                    if (timetables.Length < 100) break;
+                }
+            }
+            catch { }
+
+            ReservationModel[] ReservationsToKeep = reservationList.Where(x => x.TimeTable.MovieID == movieToRemove.ID).ToArray();
+            TimeTableModel[] timetablesToKeep = ReservationsToKeep.Select(x => x.TimeTable).ToArray();
+            int?[] timetalbesToKeepIDs = timetablesToKeep.Select(x => x.ID).ToArray();
+
+            TimeTableModel[] timetablesToRemove = timetableList.Where(x => x.MovieID == movieToRemove.ID).ToList().ToArray();
+            int?[] timetablesToRemoveIDs = timetablesToRemove.Select(x => x.ID).Except(timetalbesToKeepIDs).ToArray();
+            foreach (int id in timetablesToRemoveIDs) { _ttf.RemoveFromDB(id); }
+
+            //Set the movie as deactive
+            movieToRemove.IsRemoved = true;
+            _mf.ItemToDb(movieToRemove);
+
+            Console.WriteLine($"The movie {movieToRemove.Name} has been removed.");
         }
 
         public void CreateTimeTable()
@@ -511,7 +659,7 @@ namespace Project_B
                 int page = 1;
                 while (true)
                 {
-                    var tts = _ttf.GetItems(100, page, 6);
+                    var tts = _ttf.GetItems(100, page, 10);
                     timeTableList.AddRange(tts);
                     page++;
                     if (tts.Length < 100) break;
@@ -624,6 +772,205 @@ namespace Project_B
                 Console.WriteLine("Failed to update timetable.");
                 Console.WriteLine("Press 'Enter' to go back in the menu.");
             }
+            Console.ReadLine();
+        }
+
+        public DirectorModel CreateDirector()
+        {
+            Universal.printAsTitle("Create new director");
+
+            // Name //
+            Console.WriteLine("\nWhat is the directors name?");
+            string Name = Universal.takeUserInput("Type...") ?? "";
+
+            // Discription //
+            Console.WriteLine("\nWhat is the director description?");
+            string Discription = Universal.takeUserInput("Type...") ?? "";
+
+            // Age //
+            int Age = 0;
+            Console.WriteLine("\nWhat is the directors age? (18 or older)");
+            int.TryParse(Universal.takeUserInput("Type..."), out Age);
+            while (Age < 18)
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 3);
+                Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
+                Console.WriteLine("\nWhat is the director age? (18 or older)");
+                int.TryParse(Universal.takeUserInput("Type..."), out Age);
+            }
+            Console.SetCursorPosition(0, Console.CursorTop - 3);
+            Console.Write("                          ");
+            Console.SetCursorPosition(0, Console.CursorTop + 3);
+
+            DirectorModel newDirector = new DirectorModel(Name, Discription, Age);
+            _df.CreateItem(newDirector);
+            return newDirector;
+        }
+        public void EditDirector()
+        {
+            List<DirectorModel> directorList = new List<DirectorModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    DirectorModel[] directors = _df.GetItems(100, page, 6);
+                    directorList.AddRange(directors);
+                    page++;
+                    if (directors.Length < 100) break;
+                }
+            }
+            catch { }
+
+            //movie to edit
+            DirectorModel? directorToEdit = null;
+
+            InputMenu whatToEditMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
+            whatToEditMenu.Add("Name", (x) =>
+            {
+                Console.WriteLine($"Current Name = {directorToEdit.Name}" + "\n" + "What is the new name of the director?");
+                string Name = Universal.takeUserInput("Type...") ?? directorToEdit.Name ?? "";
+                directorToEdit.editName(Name);
+            });
+            whatToEditMenu.Add("Description", (x) =>
+            {
+                Console.WriteLine($"Current Description = {directorToEdit.Description}" + "\n" + "What is the new discription of the director?");
+                string Description = Universal.takeUserInput("Type...") ?? directorToEdit.Description ?? "";
+                directorToEdit.editDescription(Description);
+            });
+            whatToEditMenu.Add("Age", (x) =>
+            {
+                // Age //
+                int Age = 0;
+                Console.WriteLine($"Current Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors? (18 or older)");
+                int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                while (Age < 18)
+                {
+                    Console.Clear();
+                    Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
+                    Console.WriteLine($"\nCurrent Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors? (18 or older)");
+                    int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                }
+                
+                directorToEdit.editAge(Age);
+            });
+
+            // Menu to chose Director
+            InputMenu directorMenu = new InputMenu(Universal.centerToScreen("Select director to edit:"));
+            foreach (DirectorModel director in directorList)
+            {
+                directorMenu.Add(director.Name ?? "", (x) => {
+                    directorToEdit = director;
+                    whatToEditMenu.UseMenu();
+                });
+            }
+            directorMenu.UseMenu();
+            if (directorToEdit == null) return;
+
+            //Saving the new item to the database
+            _df.ItemToDb(directorToEdit);
+
+            Console.WriteLine($"The changes to {directorToEdit.Name} have been saved.");
+            Universal.PressAnyKeyWaiter();
+            Console.ReadLine();
+        }
+        public ActorModel CreateActor()
+        {
+            Universal.printAsTitle("Create new actor");
+
+            // Name //
+            Console.WriteLine("\nWhat is the actors name?");
+            string Name = Universal.takeUserInput("Type...") ?? "";
+
+            // Discription //
+            Console.WriteLine("\nWhat is the actors description?");
+            string Discription = Universal.takeUserInput("Type...") ?? "";
+
+            // Age //
+            int Age = 0;
+            Console.WriteLine("\nWhat is the actors age? (18 or older)");
+            int.TryParse(Universal.takeUserInput("Type..."), out Age);
+            while (Age < 18)
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 3);
+                Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
+                Console.WriteLine("\nWhat is the actors age? (18 or older)");
+                int.TryParse(Universal.takeUserInput("Type..."), out Age);
+            }
+            Console.SetCursorPosition(0, Console.CursorTop - 3);
+            Console.Write("                          ");
+            Console.SetCursorPosition(0, Console.CursorTop + 3);
+
+            ActorModel newActor = new ActorModel(Name, Discription, Age);
+            _af.CreateItem(newActor);
+            return newActor;
+        }
+        public void EditActor()
+        {
+            List<ActorModel> actorList = new List<ActorModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    ActorModel[] actors = _af.GetItems(100, page, 6);
+                    actorList.AddRange(actors);
+                    page++;
+                    if (actors.Length < 100) break;
+                }
+            }
+            catch { }
+
+            //movie to edit
+            ActorModel? actorToEdit = null;
+
+            InputMenu whatToEditMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
+            whatToEditMenu.Add("Name", (x) =>
+            {
+                Console.WriteLine($"Current Name = {actorToEdit.Name}" + "\n" + "What is the new name of the actor?");
+                string Name = Universal.takeUserInput("Type...") ?? actorToEdit.Name ?? "";
+                actorToEdit.editName(Name);
+            });
+            whatToEditMenu.Add("Description", (x) =>
+            {
+                Console.WriteLine($"Current Description = {actorToEdit.Description}" + "\n" + "What is the new discription of the actor?");
+                string Description = Universal.takeUserInput("Type...") ?? actorToEdit.Description ?? "";
+                actorToEdit.editDescription(Description);
+            });
+            whatToEditMenu.Add("Age", (x) =>
+            {
+                // Age //
+                int Age = 0;
+                Console.WriteLine($"Current Age = {actorToEdit.Age}" + "\n" + "What is the new age of the actor? (18 or older)");
+                int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                while (Age < 18)
+                {
+                    Console.Clear();
+                    Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
+                    Console.WriteLine($"\nCurrent Age = {actorToEdit.Age}" + "\n" + "What is the new age of the actor? (18 or older)");
+                    int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                }
+
+                actorToEdit.editAge(Age);
+            });
+
+            // Menu to chose Actor
+            InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Select actor to edit:"));
+            foreach (ActorModel actor in actorList)
+            {
+                actorMenu.Add(actor.Name ?? "", (x) => {
+                    actorToEdit = actor;
+                    whatToEditMenu.UseMenu();
+                });
+            }
+            actorMenu.UseMenu();
+            if (actorToEdit == null) return;
+
+            //Saving the new item to the database
+            _af.ItemToDb(actorToEdit);
+
+            Console.WriteLine($"The changes to {actorToEdit.Name} have been saved.");
+            Universal.PressAnyKeyWaiter();
             Console.ReadLine();
         }
     }

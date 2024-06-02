@@ -42,6 +42,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 Description TEXT,
                 Genre TEXT NOT NULL,
                 DurationInMin INTEGER  NOT NULL,
+                IsRemoved BOOL NOT NULL,
                 FOREIGN KEY (DirectorID) REFERENCES Director (ID)
                 )"
             );
@@ -80,7 +81,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             WHERE ID=$1",
             new Dictionary<string, dynamic?>()
             {
-                {"$1", id}
+                {"$1", id},
             }
             ).First();
             getRelatedItemsFromDb(toReturn, deepcopyLv - 1);
@@ -140,16 +141,18 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     pegiAge,
                     Description,
                     Genre,
-                    DurationInMin
+                    DurationInMin,
+                    IsRemoved
                 )
-                VALUES ($1,$2,$3,$4,$5,$6)",
+                VALUES ($1,$2,$3,$4,$5,$6, $7)",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.DirectorID},
                     {"$3", item.PegiAge},
                     {"$4", item.Description},
                     {"$5", item.Genre},
-                    {"$6", item.DurationInMin}
+                    {"$6", item.DurationInMin},
+                    {"$7", item.IsRemoved }
                 }
             );
             bool result = RelatedItemsToDb(item, deepcopyLv - 1);
@@ -189,8 +192,9 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     pegiAge = $3,
                     Description = $4,
                     Genre = $5,
-                    DurationInMin = $6
-                WHERE ID = $7;",
+                    DurationInMin = $6,
+                    IsRemoved = $7
+                WHERE ID = $8;",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.DirectorID},
@@ -198,7 +202,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {"$4", item.Description},
                     {"$5", item.Genre},
                     {"$6", item.DurationInMin},
-                    {"$7", item.ID}
+                    {"$7", item.IsRemoved },
+                    {"$8", item.ID}
                 }
             ) && RelatedItemsToDb(item, deepcopyLv - 1);
             if (toReturn) item.IsChanged = false;
@@ -285,7 +290,11 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (deepcopyLv < 0) return Array.Empty<MovieModel>();
             _db.OpenConnection();
             var movies = _db.ReadData<MovieModel>(
-                    $"SELECT * FROM Movie LIMIT {count} OFFSET {count * page - count}"
+                    $"SELECT * FROM Movie WHERE IsRemoved=$1 LIMIT {count} OFFSET {count * page - count}",
+                    new Dictionary<string, dynamic?>()
+                    {
+                        {"$1", false},
+                    }
                 );
             //return only movies when deepcopyLv is less than 1.
             if (deepcopyLv < 1) return movies;

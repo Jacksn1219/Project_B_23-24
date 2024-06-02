@@ -10,11 +10,13 @@ public class ReservationService
     private readonly ReservationFactory _rf;
     private readonly MovieFactory _mf;
     private readonly TimeTableFactory _tf;
-    public ReservationService(ReservationFactory rf, MovieFactory mf, TimeTableFactory tf)
+    private readonly RoomFactory _roomf;
+    public ReservationService(ReservationFactory rf, MovieFactory mf, TimeTableFactory tf, RoomFactory roomf)
     {
         _rf = rf;
         _mf = mf;
         _tf = tf;
+        _roomf = roomf;
     }
     //add methodes to get and add reservations
     public void CreateReservation(RoomFactory roomFactory)
@@ -51,6 +53,7 @@ public class ReservationService
 
             // Add the selected seat to the list of selected seats
             selectedSeats.Add(seat);
+            tt.Room.Seats[seat.ID - tt.Room.Seats[0].ID ?? 0].IsReserved = true;
 
             // Prompt the user if they want to select another seat
             System.Console.WriteLine("Select another seat? (Y/N)");
@@ -72,6 +75,7 @@ public class ReservationService
                 continue;
             }
         }
+        if (selectedSeats.Count() == 0) return;
     
 
         //get seats
@@ -167,7 +171,7 @@ public class ReservationService
     }
     public void GetReservationById(int id, bool checkMail = false)
     {
-        ReservationModel? reservation = _rf.GetItemFromId(id, 4);
+        ReservationModel? reservation = _rf.GetItemFromId(id, 8);
         if (reservation == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -206,14 +210,30 @@ public class ReservationService
         Console.WriteLine($"Room: {reservation.TimeTable.Room.Name}");
         if (reservation.ReservedSeats != null && reservation.ReservedSeats.Count > 0)
         {
-            string seats = string.Join(", ", reservation.ReservedSeats.Select(seat => seat.Name));
+            string[] reservedSeats = GetSeatLocation(reservation);
+            string seats = string.Join(", ", reservedSeats); //reservation.ReservedSeats.Select(seat => seat.Name)
             Console.WriteLine($"Seats: {seats}");
     }
         else
         {
             Console.WriteLine("No seats reserved.");
         }
-        Console.ReadKey();
+        Universal.PressAnyKeyWaiter();
+        //Console.ReadKey();
+    }
+    public string[] GetSeatLocation(ReservationModel reservation)
+    {
+        List<string> seatLocations = new List<string>();
+        foreach (SeatModel seat in reservation.ReservedSeats) { seatLocations.Add(GetSeatLocation(seat)); }
+        return seatLocations.Order().ToArray();
+    }
+    public string GetSeatLocation(SeatModel seat)
+    {
+        if (seat.Room == null) { seat.Room = _roomf.GetItemFromId(seat.RoomID ?? 1, 6); }
+        int location = seat.Room.Seats.Where(x => x.Type != " " && x.ID < seat.ID).ToArray().Length;
+        int row = Convert.ToInt16(seat.Name) / seat.Room.RowWidth ?? 0;
+        char rowChar = Convert.ToChar(row + 65);
+        return $"{rowChar}{location}";
     }
 
     public TimeTableModel? SelectTimeTableInDay(DateOnly weekday)
@@ -288,7 +308,7 @@ public class ReservationService
         {
             (int, SeatModel) seatInRes = reservesSeatList[0];
             rs.GetReservationById(seatInRes.Item1);
-            Console.ReadLine();
+            //Console.ReadLine();
         }
         catch (Exception ex) { }
     }
