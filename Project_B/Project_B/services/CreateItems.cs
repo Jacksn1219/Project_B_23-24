@@ -169,6 +169,12 @@ namespace Project_B
                 }
             }
             catch { }
+            if (movieList.Count == 0)
+            {
+                Console.WriteLine("No movies are found.(You need to create a movie first to edit it.)");
+                Console.ReadLine();
+                return;
+            }
 
             //movie to edit
             MovieModel movieToEdit = new MovieModel("", "", 4, 120, "");
@@ -401,6 +407,12 @@ namespace Project_B
                 }
             }
             catch { }
+            if (movieList.Count == 0)
+            {
+                Console.WriteLine("No movies are found.(There need to be a movie first to make a timetable.)");
+                Console.ReadLine();
+                return;
+            }
 
             movieList = movieList.OrderBy(m => m.Name).ToList();
 
@@ -520,6 +532,12 @@ namespace Project_B
                 }
             }
             catch { }
+            if (timeTableList.Count == 0)
+            {
+                Console.WriteLine("No timetables created.(You need to plan a movie first to edit a timetable.)");
+                Console.ReadLine();
+                return;
+            }
 
             TimeTableModel ? selectedTimeTable = null;
             
@@ -550,6 +568,12 @@ namespace Project_B
                     }
                 }
                 catch { }
+                if (movieList.Count == 0)
+                {
+                    Console.WriteLine("No movies in the timetable to edit.");
+                    Console.ReadLine();
+                    return;
+                }
 
                 movieList = movieList.OrderBy(m => m.Name).ToList();
 
@@ -653,7 +677,8 @@ namespace Project_B
 
             if (movieList.Count == 0)
             {
-                Console.WriteLine("No movies found.");
+                Console.WriteLine("There are currently no movies to browse.");
+                Console.ReadLine();
                 return;
             }
 
