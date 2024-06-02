@@ -308,7 +308,7 @@ public class ReservationService
         {
             (int, SeatModel) seatInRes = reservesSeatList[0];
             rs.GetReservationById(seatInRes.Item1);
-            Console.ReadLine();
+            //Console.ReadLine();
         }
         catch (Exception ex) { }
     }
