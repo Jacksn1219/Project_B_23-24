@@ -97,8 +97,8 @@ public class ReservationService
         if (tt.Room == null) { return; }
 
         //fill in user data
-        var user = UserInfoInput.GetUserInfo(tt);
-        CustomerModel cust = new CustomerModel(user.fullName, user.age, user.email, user.phoneNumber, true);
+        (CustomerModel? customer, string note) userInfo = UserInfoInput.GetUserInfo(tt);
+        if (userInfo.customer == null) return;
 
         System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(selectedSeats));
         System.Console.WriteLine($"\nCreate reservation? \n {Universal.WriteColor("Once created, the reservation can NOT be cancelled!", ConsoleColor.Red)}(Y/N)");
@@ -106,7 +106,7 @@ public class ReservationService
         if (key.KeyChar == 'y' || key.KeyChar == 'Y')
         {
             // create reservation
-            ReservationModel res = new ReservationModel(cust, tt, selectedSeats, user.userinput);
+            ReservationModel res = new ReservationModel(userInfo.customer, tt, selectedSeats, userInfo.note);
             _rf.ItemToDb(res);
             //print number
             MailService.SendEmail(res.Customer.Email, res.TimeTable.Movie.Name, res.Customer.Name, res.ID, res.TimeTable.StartDate, res.TimeTable.EndDate, res.ReservedSeats);
