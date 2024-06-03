@@ -1,4 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using DataAccessLibrary;
 using Models;
@@ -185,35 +184,10 @@ namespace Project_B.services
         }
         public static decimal CalculatePrices(List<SeatModel> seats)
         {
-            return seats.Sum(CalculatePrice);
+            return seats.Sum(_prices.CalculatePrice);
         }
 
-        public static decimal CalculatePrice(SeatModel seat)
-        {
-            decimal price = 0;
-            switch (seat.Rank.ToLower())
-            {
-                case "ii":
-                    price += _prices.PriceTierII;
-                    break;
-                case "iii":
-                    price += _prices.PriceTierIII;
-                    break;
-                default:
-                    price += _prices.PriceTierI;
-                    break;
-            }
-            switch (seat.Type.ToLower())
-            {
-                case "extra beenruimte":
-                    price += _prices.ExtraSpace;
-                    break;
-                case "loveseat":
-                    price += _prices.LoveSeat;
-                    break;
-            }
-            return price;
-        }
+
         public static string ShowCalculation(List<SeatModel> seats)
         {
             string toReturn = "\n";
@@ -307,16 +281,9 @@ namespace Project_B.services
                     toReturn += $"\n+ {seat.Type} € {_prices.ExtraSpace}";
                     break;
             }
-            toReturn += $"\nTotal price: € {CalculatePrice(seat)}";
+            toReturn += $"\nTotal price: € {_prices.CalculatePrice(seat)}";
             return toReturn;
         }
     }
-    public class SeatPricesModel
-    {
-        public required decimal PriceTierI { get; set; }
-        public required decimal PriceTierII { get; set; }
-        public required decimal PriceTierIII { get; set; }
-        public required decimal LoveSeat { get; set; }
-        public required decimal ExtraSpace { get; set; }
-    }
+
 }

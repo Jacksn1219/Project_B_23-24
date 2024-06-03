@@ -8,7 +8,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataAccessLibrary.logic
 {
-    public class ReservationFactory : IDbItemFactory<ReservationModel>
+    public class ReservationFactory //: IDbItemFactory<ReservationModel> cant be IDbItemFactory, needs to always get prices
     {
         private readonly DataAccess _db;
         private readonly CustomerFactory _cf;
@@ -25,7 +25,7 @@ namespace DataAccessLibrary.logic
             CreateTable();
         }
 
-        public bool CreateItem(ReservationModel item, int deepcopyLv = 99)
+        public bool CreateItem(ReservationModel item, SeatPricesModel prices, int deepcopyLv = 99)
         {
             if (deepcopyLv < 0) return true;
             if (item.ID != null) throw new InvalidDataException("the reservation is already in the db.");
@@ -50,7 +50,7 @@ namespace DataAccessLibrary.logic
                         {"$3", item.Note}
                     }
                 );
-                result = RelatedItemsDependingOnItemToDb(item, deepcopyLv - 1);
+                result = RelatedItemsDependingOnItemToDb(item, deepcopyLv - 1, prices);
                 return item.ID > 0 && result;
             }
             catch (Exception ex)
@@ -85,6 +85,7 @@ namespace DataAccessLibrary.logic
                         ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                         SeatID INTEGER  NOT NULL,
                         ReservationID INTEGER  NOT NULL,
+                        Price REAL NOT NULL DEFAULT = 0.0,
                         FOREIGN KEY (SeatID) REFERENCES Seat (ID),
                         FOREIGN KEY (ReservationID) REFERENCES Reservation (ID)
                     )"
@@ -123,7 +124,7 @@ namespace DataAccessLibrary.logic
             }
         }
 
-        public bool ItemToDb(ReservationModel item, int deepcopyLv = 99)
+        public bool ItemToDb(ReservationModel item, SeatPricesModel prices, int deepcopyLv = 99)
         {
             if (deepcopyLv < 0) return true;
             bool customerChanged = item.Customer != null && item.Customer.IsChanged;
@@ -140,15 +141,15 @@ namespace DataAccessLibrary.logic
             {
                 bool result = RelatedItemsItemDependsOnToDb(item, deepcopyLv - 1);
                 if (!result) return result;
-                return RelatedItemsDependingOnItemToDb(item, deepcopyLv - 1);
+                return RelatedItemsDependingOnItemToDb(item, deepcopyLv - 1, prices);
             }
 
             if (!item.IsChanged) return true;
-            if (item.ID == null) return CreateItem(item, deepcopyLv);
-            else return UpdateItem(item, deepcopyLv);
+            if (item.ID == null) return CreateItem(item, prices, deepcopyLv);
+            else return UpdateItem(item, prices, deepcopyLv);
         }
 
-        public bool UpdateItem(ReservationModel item, int deepcopyLv = 99)
+        public bool UpdateItem(ReservationModel item, SeatPricesModel prices, int deepcopyLv = 99)
         {
             if (deepcopyLv < 0) return true;
             if (item.ID == null) throw new InvalidDataException("the Reservation does not have a value and cannot be updated.");
@@ -175,7 +176,7 @@ namespace DataAccessLibrary.logic
                 if (result)
                 {
                     item.IsChanged = false;
-                    result = RelatedItemsDependingOnItemToDb(item, deepcopyLv - 1);
+                    result = RelatedItemsDependingOnItemToDb(item, deepcopyLv - 1, prices);
                 }
                 return result;
             }
@@ -199,7 +200,7 @@ namespace DataAccessLibrary.logic
             }
             return true;
         }
-        private bool RelatedItemsDependingOnItemToDb(ReservationModel item, int deepcopyLv)
+        private bool RelatedItemsDependingOnItemToDb(ReservationModel item, int deepcopyLv, SeatPricesModel prices)
         {
             if (deepcopyLv < 0) return true;
             foreach (SeatModel SeatModel in item.ReservedSeats)
@@ -221,12 +222,14 @@ namespace DataAccessLibrary.logic
                     _db.SaveData(
                         @"INSERT INTO ReservedSeat(
                             SeatID,
-                            ReservationID
+                            ReservationID,
+                            Price
                         )
-                        VALUES($1,$2)",
+                        VALUES($1,$2, $3)",
                         new Dictionary<string, dynamic?>(){
                             {"$1", SeatModel.ID},
-                            {"$2", item.ID}
+                            {"$2", item.ID},
+                            {"$3", prices.CalculatePrice(SeatModel)}
                         }
                     );
                 }
@@ -276,7 +279,7 @@ namespace DataAccessLibrary.logic
                     @$"SELECT * FROM Reservation
                     INNER JOIN TimeTable ON TimeTable.ID = Reservation.TimeTableID
                     WHERE TimeTable.StartDate >= $1 AND TimeTable.StartDate <= $2
-                    LIMIT $3 OFFSET { count* page - count}",
+                    LIMIT $3 OFFSET {count * page - count}",
                     new()
                     {
                         { "$1", startDate.ToString(CultureInfo.InvariantCulture) },
@@ -389,12 +392,12 @@ namespace DataAccessLibrary.logic
             }
         }
 
-        public bool ItemsToDb(List<ReservationModel> items, int deepcopyLv = 99)
+        public bool ItemsToDb(List<ReservationModel> items, SeatPricesModel prices, int deepcopyLv = 99)
         {
             if (deepcopyLv < 0) return true;
             foreach (var item in items)
             {
-                ItemToDb(item, deepcopyLv);
+                ItemToDb(item, prices, deepcopyLv);
             }
             return true;
         }
