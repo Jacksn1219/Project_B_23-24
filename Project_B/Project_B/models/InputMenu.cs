@@ -112,7 +112,7 @@ namespace Models
         {
             Console.CursorVisible = false;
             int cursor = 0;
-            if (cursor == 0) while ((this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].Name == "X" || this.menuoptions[cursor].isTaken == true) && cursor < this.menuoptions.Count) cursor++;
+            if (cursor == 0) while (cursor < this.menuoptions.Count && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].Name == "X" || this.menuoptions[cursor].isTaken == true)) cursor++;
             ConsoleKey userInput = ConsoleKey.Delete;
             Console.Clear();
             //Main loop

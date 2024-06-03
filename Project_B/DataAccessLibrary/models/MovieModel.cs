@@ -81,7 +81,16 @@ public class MovieModel : DbItem
         }
     }
     public List<ActorModel> Actors = new();
-    public bool IsRemoved { get; set; }
+    private bool _isRemoved;
+    public bool IsRemoved
+    {
+        get => _isRemoved;
+        set
+        {
+            _isRemoved = value;
+            IsChanged = true;
+        }
+    }
     internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int? directorId, string genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }
     internal MovieModel(int? id, string name, string description, PEGIAge pegiAge, int durationInMin, int? directorId, string genre)

@@ -42,7 +42,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 Description TEXT,
                 Genre TEXT NOT NULL,
                 DurationInMin INTEGER  NOT NULL,
-                IsRemoved BOOL NOT NULL,
+                IsRemoved BOOLEAN,
                 FOREIGN KEY (DirectorID) REFERENCES Director (ID)
                 )"
             );
@@ -144,7 +144,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     DurationInMin,
                     IsRemoved
                 )
-                VALUES ($1,$2,$3,$4,$5,$6, $7)",
+                VALUES ($1,$2,$3,$4,$5,$6,$7)",
                 new Dictionary<string, dynamic?>(){
                     {"$1", item.Name},
                     {"$2", item.DirectorID},
@@ -152,7 +152,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {"$4", item.Description},
                     {"$5", item.Genre},
                     {"$6", item.DurationInMin},
-                    {"$7", item.IsRemoved }
+                    {"$7", item.IsRemoved}
                 }
             );
             bool result = RelatedItemsToDb(item, deepcopyLv - 1);
@@ -202,7 +202,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {"$4", item.Description},
                     {"$5", item.Genre},
                     {"$6", item.DurationInMin},
-                    {"$7", item.IsRemoved },
+                    {"$7", item.IsRemoved},
                     {"$8", item.ID}
                 }
             ) && RelatedItemsToDb(item, deepcopyLv - 1);
@@ -291,9 +291,9 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             _db.OpenConnection();
             var movies = _db.ReadData<MovieModel>(
                     $"SELECT * FROM Movie WHERE IsRemoved=$1 LIMIT {count} OFFSET {count * page - count}",
-                    new Dictionary<string, dynamic?>()
+                    new()
                     {
-                        {"$1", false},
+                        {"$1", false}
                     }
                 );
             //return only movies when deepcopyLv is less than 1.

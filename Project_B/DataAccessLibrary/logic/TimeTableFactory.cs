@@ -278,8 +278,8 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 @"SELECT * FROM TimeTable
                 WHERE StartDate >= $1 AND StartDate <= $2",
                 new Dictionary<string, dynamic?>(){
-                    {"$1", date.ToString("MM/dd/yyyy")},
-                    {"$2", date.AddDays(1).ToString("MM/dd/yyyy")}
+                    {"$1", date.ToString(CultureInfo.InvariantCulture)},
+                    {"$2", date.AddDays(1).ToString(CultureInfo.InvariantCulture)}
                 }
             );
         }

@@ -1177,7 +1177,7 @@ public class SQLite_setup
             }
         }
 
-        if (mf.GetItemFromId(1) == null)
+        /*if (mf.GetItemFromId(1) == null)
         {
             List<MovieModel> allMovies = new List<MovieModel>
             {
@@ -1203,7 +1203,7 @@ public class SQLite_setup
                 Console.WriteLine("X Layout database setup : Something went wrong!\n" + ex);
                 Console.ReadLine();
             }
-        }
+        }*/
 
     }
 }

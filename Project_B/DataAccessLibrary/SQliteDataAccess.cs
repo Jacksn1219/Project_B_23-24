@@ -187,6 +187,7 @@ namespace DataAccessLibrary
                 command.CommandText = sqlStatement + "\nRETURNING ID";
                 command.Parameters.AddRange(parameters);
                 var result = command.ExecuteScalar();
+                
                 return Convert.ToInt32(result);
             }
             finally

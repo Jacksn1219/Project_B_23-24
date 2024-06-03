@@ -174,7 +174,6 @@ namespace Project_B
 
             Console.WriteLine($"The new movie {Name} has been created.");
             Universal.PressAnyKeyWaiter();
-            Console.ReadLine();
         }
         public void EditMovie()
         {
