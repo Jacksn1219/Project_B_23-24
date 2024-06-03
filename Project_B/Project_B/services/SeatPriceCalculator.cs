@@ -26,12 +26,14 @@ namespace Project_B.services
         {
 
             WritePrices();
+            System.Console.WriteLine();
+            PressAnyKeyWaiter();
             InputMenu PricesMenu = new("Change prices:");
             SeatPricesModel prices = GetCurrentPrices();
             PricesMenu.Add(new Dictionary<string, Action<string>>()
             {
-                { 
-                    "Price tier I", (x) => 
+                {
+                    "Price tier I", (x) =>
                     {
                         while(true){
                             var resp = takeUserInput("Fill in New price:");
@@ -48,13 +50,13 @@ namespace Project_B.services
                                 Console.WriteLine(ChangeColour(ConsoleColor.DarkRed) + "Invalid input. \n Please fill in a (floating point) number." + ChangeColour(ConsoleColor.White));
                             }
                         }
-                        
+
                     }
                 },
                 {
-                    "Price tier II", (x) => 
+                    "Price tier II", (x) =>
                     {
-                        
+
                         while(true){
                             var resp = takeUserInput("Fill in New price:");
                             if(decimal.TryParse(resp, out var price))
@@ -70,12 +72,12 @@ namespace Project_B.services
                                 Console.WriteLine(ChangeColour(ConsoleColor.DarkRed) + "Invalid input. \n Please fill in a (floating point) number." + ChangeColour(ConsoleColor.White));
                             }
                         }
-                    } 
+                    }
                 },
                 {
-                    "Price tier III", (x) => 
+                    "Price tier III", (x) =>
                     {
-                        
+
                         while(true){
                             var resp = takeUserInput("Fill in New price:");
                             if(decimal.TryParse(resp, out var price))
@@ -136,7 +138,7 @@ namespace Project_B.services
             });
             PricesMenu.UseMenu();
             UpdatePrice(prices);
-            
+
         }
         public static void ReadPrices()
         {
