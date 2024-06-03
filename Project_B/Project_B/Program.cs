@@ -51,7 +51,7 @@ namespace Project_B
                 new Dictionary<string, Action<string>>(){
                     {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
                     {"# Browse movies #", (x) => { /*not yet*/ }},
-                    {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation(rf);}},
+                    {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation();}},
                     {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
                 },
                 //admin options
