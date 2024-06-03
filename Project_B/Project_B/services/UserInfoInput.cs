@@ -22,15 +22,29 @@ namespace Project_B.services
 
             // Display initial info
             DisplayUserInfo((userInfo.customer, userInfo.note)); // cannot use userInfo because of silly nullReference
-
+            
+            Console.WriteLine("\nDo you want to confirm this information? (Y/N)");
             // Confirm or change info
-            Console.WriteLine("\nDo you want to confirm this information? (Yes/No)");
-            string choice = Universal.takeUserInput("Type...")?.ToLower() ?? "";
+            ConsoleKeyInfo key;
+            
+            bool continueReservation = false;
 
-            if (choice == "no")
+            while (!continueReservation)
             {
-                // Change info if desired
-                userInfo = EditUserInfo((userInfo.customer, userInfo.note), (int)tt.Movie.PegiAge);
+                key = System.Console.ReadKey();
+                if (key.KeyChar == 'y' || key.KeyChar == 'Y')
+                {
+                    continueReservation = true;
+                }
+                if (key.KeyChar == 'n' || key.KeyChar == 'N')
+                {
+                    // Change info if desired
+                    userInfo = EditUserInfo((userInfo.customer, userInfo.note), (int)tt.Movie.PegiAge);
+                }
+                else
+                {
+                    System.Console.WriteLine("Invalid input.");
+                }
             }
 
             // Return user info
@@ -160,7 +174,7 @@ namespace Project_B.services
             Console.WriteLine($"Phone Number: {info.customer.PhoneNumber}");
             string msg = info.customer.IsSubscribed ? "Subscribed": "not subscribed";
             Console.WriteLine($"Subscribed to commercial mails: {msg}");
-            Console.WriteLine($"User Input: {info.note}");
+            Console.WriteLine($"Extra info: {info.note}");
         }
         public static (CustomerModel, string) EditUserInfo((CustomerModel customer, string note) options, int minAge)
         {
@@ -270,7 +284,13 @@ namespace Project_B.services
                             Console.ReadKey();
                             return;
                         }
-                    }
+                    },
+                    // {
+                    //     "Confirm", (x) => 
+                    //     { 
+                            
+                    //     }
+                    // }
                 }
             );
             menu.UseMenu();
