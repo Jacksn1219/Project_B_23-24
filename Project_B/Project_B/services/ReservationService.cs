@@ -102,19 +102,36 @@ public class ReservationService
 
         System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(selectedSeats));
         System.Console.WriteLine($"\nCreate reservation? \n {Universal.WriteColor("Once created, the reservation can NOT be cancelled!", ConsoleColor.Red)}(Y/N)");
-        ConsoleKeyInfo key = System.Console.ReadKey();
-        if (key.KeyChar == 'y' || key.KeyChar == 'Y')
+
+        // ConsoleKeyInfo key = System.Console.ReadKey();
+        ConsoleKeyInfo key;
+        bool createReservation = false;
+
+        while (!createReservation)
         {
-            // create reservation
-            ReservationModel res = new ReservationModel(userInfo.customer, tt, selectedSeats, userInfo.note);
-            _rf.ItemToDb(res);
-            //print number
-            MailService.SendEmail(res.Customer.Email, res.TimeTable.Movie.Name, res.Customer.Name, res.ID, res.TimeTable.StartDate, res.TimeTable.EndDate, res.ReservedSeats);
-            Console.Clear();
-            System.Console.WriteLine($"\nReservation is created!\nYour reservation number is: {res.ID}\nAn E-mail has been sent with your confirmation details!");
+            key = System.Console.ReadKey();
+            if (key.KeyChar == 'y' || key.KeyChar == 'Y')
+            {
+                // create reservation
+                ReservationModel res = new ReservationModel(userInfo.customer, tt, selectedSeats, userInfo.note);
+                _rf.ItemToDb(res);
+                //print number
+                MailService.SendEmail(res.Customer.Email, res.TimeTable.Movie.Name, res.Customer.Name, res.ID, res.TimeTable.StartDate, res.TimeTable.EndDate, res.ReservedSeats);
+                Console.Clear();
+                System.Console.WriteLine($"\nReservation is created!\nYour reservation number is: {res.ID}\nAn E-mail has been sent with your confirmation details!");
+                createReservation = true;
+            }
+            if (key.KeyChar == 'n' || key.KeyChar == 'N')
+            {
+                System.Console.WriteLine("\nCanceled reservation!");
+                return; //if else for no
+            }
+            else
+            {
+                System.Console.WriteLine("\nInvalid input. Please enter 'Y' or 'N'");
+            }
         }
-        else System.Console.WriteLine("\nCanceled reservation!"); //if else for no
-        Console.ReadLine();
+        
     }
 
     public void GetReservationByNumber(int nr)
