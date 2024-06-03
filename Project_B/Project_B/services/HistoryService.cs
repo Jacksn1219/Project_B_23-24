@@ -98,7 +98,7 @@ public class HistoryService
                 {
                     reservedSeats.AddRange(reservation.ReservedSeats);
                 }
-                List<SeatModel> tempseatsList = (timeTable.Room.Seats).Where(x => x.Type != "_").ToList();
+                List<SeatModel> tempseatsList = (timeTable.Room.Seats).Where(x => x.Type != "_").Where(x => x.Type != " ").ToList();
                 Console.WriteLine($"Reserved seats: {reservedSeats.Count()} / {tempseatsList.Count()}\n");
                 Console.WriteLine($"Profit: €{SeatPriceCalculator.CalculatePrices(reservedSeats)}\n");
 
