@@ -40,4 +40,10 @@ public class ActorModel : DbItem
         Description = description;
         Age = age;
     }
+
+    public override string ToString()
+    {
+        return Name;
+    }
+    
 }

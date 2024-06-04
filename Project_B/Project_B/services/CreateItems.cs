@@ -176,6 +176,8 @@ namespace Project_B
                 return;
             }
 
+            movieList = movieList.OrderBy(m => m.Name).ToList();
+
             //movie to edit
             MovieModel movieToEdit = new MovieModel("", "", 4, 120, "");
 
@@ -513,7 +515,7 @@ namespace Project_B
             {
                 Console.WriteLine("Failed to add movie to timetable");
             }
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         public void EditTimeTable()
@@ -535,7 +537,7 @@ namespace Project_B
             if (timeTableList.Count == 0)
             {
                 Console.WriteLine("No timetables created.(You need to plan a movie first to edit a timetable.)");
-                Console.ReadLine();
+                Console.ReadKey();
                 return;
             }
 
@@ -571,7 +573,7 @@ namespace Project_B
                 if (movieList.Count == 0)
                 {
                     Console.WriteLine("No movies in the timetable to edit.");
-                    Console.ReadLine();
+                    Console.ReadKey();
                     return;
                 }
 
@@ -652,7 +654,7 @@ namespace Project_B
                 Console.WriteLine("Failed to update timetable.");
                 Console.WriteLine("Press 'Enter' to go back in the menu.");
             }
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         public void browseMovies()
@@ -678,7 +680,7 @@ namespace Project_B
             if (movieList.Count == 0)
             {
                 Console.WriteLine("There are currently no movies to browse.");
-                Console.ReadLine();
+                Console.ReadKey();
                 return;
             }
 
@@ -687,10 +689,12 @@ namespace Project_B
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Browse Movies:"), null);
             foreach (MovieModel movie in movieList)
             {
+                string actors = string.Join(", ", movie.Actors.Select(a => a.Name));
+
                 movieMenu.Add(movie.Name ?? "", (x) =>
                 {
-                    Console.WriteLine($"Movie: {movie.Name}\nDescription: {movie.Description}\nGenre: {movie.Genre}\nDirector of the movie: {movie.Director}\nActors in the movie: {movie.Actors}\nFilm duration:{movie.DurationInMin} min\nPegiAge: {movie.PegiAge}");
-                    Console.ReadLine();
+                    Console.WriteLine($"Movie: {movie.Name}\nDescription: {movie.Description}\nGenre: {movie.Genre}\nDirector of the movie: {movie.Director}\nActors in the movie: {actors}\nFilm duration: {movie.DurationInMin} min\nPegiAge: {movie.PegiAge}");
+                    Console.ReadKey();
                 });
             }
             movieMenu.UseMenu();

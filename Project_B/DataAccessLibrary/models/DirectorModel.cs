@@ -47,4 +47,9 @@ public class DirectorModel : DbItem
         Age = age;
         ID = id;
     }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }
