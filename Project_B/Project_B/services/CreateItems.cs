@@ -541,6 +541,8 @@ namespace Project_B
                 return;
             }
 
+            timeTableList = timeTableList.OrderBy(t => t.DateTimeStartDate).ToList();
+
             TimeTableModel ? selectedTimeTable = null;
             
             InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Select a timetable to edit:"), null);
