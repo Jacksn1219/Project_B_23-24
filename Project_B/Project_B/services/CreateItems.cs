@@ -56,7 +56,7 @@ namespace Project_B
 
             // Duration in minutes //
             int Duration = 0;
-            Console.WriteLine("\nWhat is the duration of the movie? (more than 0)");
+            Console.WriteLine("\nWhat is the duration of the movie in minutes? (more than 0)");
             int.TryParse(Universal.takeUserInput("Type..."), out Duration);
             while (Duration == 0)
             {
@@ -237,13 +237,13 @@ namespace Project_B
             whatToEditMenu.Add("Duration", (x) =>
             {
                 int Duration = 0;
-                Console.WriteLine($"Current duration = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
+                Console.WriteLine($"Current duration = {movieToEdit.DurationInMin} minutes" + "\n" + "What is the new duration of the movie in minutes? (more than 0)");
                 int.TryParse(Universal.takeUserInput("Type..."), out Duration);
                 while (Duration == 0)
                 {
                     Console.Clear();
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                    Console.WriteLine($"\nCurrent duration = {movieToEdit.DurationInMin}" + "\n" + "What is the new duration of the movie? (more than 0)");
+                    Console.WriteLine($"\nCurrent duration = {movieToEdit.DurationInMin} minutes" + "\n" + "What is the new duration of the movie in minutes? (more than 0)");
                     int.TryParse(Universal.takeUserInput("Type..."), out Duration);
                 }
                 movieToEdit.editDuration(Duration);
@@ -294,6 +294,9 @@ namespace Project_B
                 }
                 directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) => {
                     Director = CreateDirector();
+
+                    Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
+                    Universal.PressAnyKeyWaiter();
                 });
                 if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
                 movieToEdit.editDirector(Director);
@@ -335,6 +338,9 @@ namespace Project_B
                     actorMenu.Add("Create a new actor", (x) => {
                         ActorModel newActor = CreateActor();
                         movieToEdit.addActor(newActor);
+
+                        Console.WriteLine($"The new actor {newActor.Name} has been added to the movie.");
+                        Universal.PressAnyKeyWaiter();
                     });
                     // Deleting chosen actor
                     foreach (ActorModel actor in movieToEdit.Actors) actorMenu.Remove(actor.Name);
@@ -788,13 +794,13 @@ namespace Project_B
 
             // Age //
             int Age = 0;
-            Console.WriteLine("\nWhat is the directors age? (18 or older)");
+            Console.WriteLine("\nWhat is the directors age?");
             int.TryParse(Universal.takeUserInput("Type..."), out Age);
-            while (Age < 18)
+            while (Age <= 0)
             {
                 Console.SetCursorPosition(0, Console.CursorTop - 3);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                Console.WriteLine("\nWhat is the director age? (18 or older)");
+                Console.WriteLine("\nWhat is the director age?");
                 int.TryParse(Universal.takeUserInput("Type..."), out Age);
             }
             Console.SetCursorPosition(0, Console.CursorTop - 3);
@@ -803,6 +809,10 @@ namespace Project_B
 
             DirectorModel newDirector = new DirectorModel(Name, Discription, Age);
             _df.CreateItem(newDirector);
+
+
+            Console.WriteLine($"The new director {Name} has been created.");
+            Universal.PressAnyKeyWaiter();
             return newDirector;
         }
         public void EditDirector()
@@ -841,13 +851,13 @@ namespace Project_B
             {
                 // Age //
                 int Age = 0;
-                Console.WriteLine($"Current Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors? (18 or older)");
+                Console.WriteLine($"Current Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors?");
                 int.TryParse(Universal.takeUserInput("Type..."), out Age);
-                while (Age < 18)
+                while (Age <= 0)
                 {
                     Console.Clear();
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                    Console.WriteLine($"\nCurrent Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors? (18 or older)");
+                    Console.WriteLine($"\nCurrent Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors?");
                     int.TryParse(Universal.takeUserInput("Type..."), out Age);
                 }
                 
@@ -887,13 +897,13 @@ namespace Project_B
 
             // Age //
             int Age = 0;
-            Console.WriteLine("\nWhat is the actors age? (18 or older)");
+            Console.WriteLine("\nWhat is the actors age?");
             int.TryParse(Universal.takeUserInput("Type..."), out Age);
-            while (Age < 18)
+            while (Age <= 0)
             {
                 Console.SetCursorPosition(0, Console.CursorTop - 3);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                Console.WriteLine("\nWhat is the actors age? (18 or older)");
+                Console.WriteLine("\nWhat is the actors age?");
                 int.TryParse(Universal.takeUserInput("Type..."), out Age);
             }
             Console.SetCursorPosition(0, Console.CursorTop - 3);
@@ -902,6 +912,10 @@ namespace Project_B
 
             ActorModel newActor = new ActorModel(Name, Discription, Age);
             _af.CreateItem(newActor);
+
+
+            Console.WriteLine($"The new actor {Name} has been created.");
+            Universal.PressAnyKeyWaiter();
             return newActor;
         }
         public void EditActor()
@@ -942,7 +956,7 @@ namespace Project_B
                 int Age = 0;
                 Console.WriteLine($"Current Age = {actorToEdit.Age}" + "\n" + "What is the new age of the actor? (18 or older)");
                 int.TryParse(Universal.takeUserInput("Type..."), out Age);
-                while (Age < 18)
+                while (Age <= 0)
                 {
                     Console.Clear();
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);

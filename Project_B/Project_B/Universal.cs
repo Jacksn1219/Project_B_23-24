@@ -125,6 +125,8 @@ public static class Universal
     }
     public static string takeUserInput(string question)
     {
+        Console.CursorVisible = true;
+
         // Setting colors
         Console.BackgroundColor = ConsoleColor.DarkGray;
         Console.ForegroundColor = ConsoleColor.White;
@@ -138,18 +140,20 @@ public static class Universal
         while (!Console.KeyAvailable) { }
         Console.Write("                             ");
         Console.SetCursorPosition(Console.CursorLeft - 29, Console.CursorTop);
+        (int, int) tempMouseLocation = (Console.CursorLeft - 1, Console.CursorTop);
         
         // Userinput
         string userInput = Console.ReadLine() ?? "";
 
         if (userInput == "")
         {
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
+            Console.SetCursorPosition(tempMouseLocation.Item1, tempMouseLocation.Item2);
             userInput = takeUserInput("You have to type something...");
         }
 
         // Reseting the color
         Console.BackgroundColor = ConsoleColor.Black;
+        Console.CursorVisible = false;
         return userInput;
     }
     private static void setupFolder(string folderName) => System.IO.Directory.CreateDirectory(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\" + folderName)));

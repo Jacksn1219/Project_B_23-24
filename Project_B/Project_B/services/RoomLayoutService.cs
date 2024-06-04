@@ -229,7 +229,7 @@ class RoomLayoutService : LayoutModel
                     Universal.WriteColor("E", ConsoleColor.DarkYellow);
                     Console.Write(") = Extra beenruimte       (2) = Betaal niveau 2        (Enter) = goedkeuren aanpassing\n  (");
                     Universal.WriteColor("L", ConsoleColor.Magenta);
-                    Console.Write(") = Love SeatModel         (3) = Betaal niveau 3");
+                    Console.Write(") = Love Seat              (3) = Betaal niveau 3");
 
                     //Getting User choice
                     userInput = Console.ReadKey().Key;
