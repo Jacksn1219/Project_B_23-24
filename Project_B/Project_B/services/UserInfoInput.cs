@@ -7,7 +7,7 @@ using Models;
 
 namespace Project_B.services
 {
-    
+
     public static class UserInfoInput
     {
         public static (CustomerModel?, string) GetUserInfo(TimeTableModel tt)
@@ -22,15 +22,16 @@ namespace Project_B.services
 
             // Display initial info
             DisplayUserInfo((userInfo.customer, userInfo.note)); // cannot use userInfo because of silly nullReference
-            
-            Console.WriteLine("\nDo you want to confirm this information? (Y/N)");
+
+
             // Confirm or change info
             ConsoleKeyInfo key;
-            
+
             bool continueReservation = false;
 
             while (!continueReservation)
             {
+                Console.WriteLine("\nDo you want to confirm this information? (Y/N)");
                 key = System.Console.ReadKey();
                 if (key.KeyChar == 'y' || key.KeyChar == 'Y')
                 {
@@ -93,9 +94,9 @@ namespace Project_B.services
                 if (int.TryParse(input, out age) && age > 0 && age < 100)
                 {
 
-                    
 
-                    if ( (int)movie.PegiAge > age)
+
+                    if ((int)movie.PegiAge > age)
                     {
                         Universal.WriteColor($"\nWarning: This movie is not suitable for a {age}-year-old. Do you want to continue? (Y/N)", ConsoleColor.Red);
                         string choice = Universal.takeUserInput("Type...")?.ToLower() ?? "";
@@ -149,8 +150,8 @@ namespace Project_B.services
             Console.Clear();
             Console.WriteLine("Thank you, YourEyes will do their utmost best to accompany your needs. Here is what you entered: ");
             Console.WriteLine(userinput);
-            
-            return  (new CustomerModel(fullName, age, email, phoneNumber, canSendMail), userinput);
+
+            return (new CustomerModel(fullName, age, email, phoneNumber, canSendMail), userinput);
         }
 
         private static bool IsValidFullName(string fullName)
@@ -172,7 +173,7 @@ namespace Project_B.services
             Console.WriteLine($"Age: {info.customer.Age}");
             Console.WriteLine($"Email: {info.customer.Email}");
             Console.WriteLine($"Phone Number: {info.customer.PhoneNumber}");
-            string msg = info.customer.IsSubscribed ? "Subscribed": "not subscribed";
+            string msg = info.customer.IsSubscribed ? "Subscribed" : "not subscribed";
             Console.WriteLine($"Subscribed to commercial mails: {msg}");
             Console.WriteLine($"Extra info: {info.note}");
         }
@@ -185,7 +186,7 @@ namespace Project_B.services
                 new Dictionary<string, Action<string>>()
                 {
                     {
-                        "Full Name", (x) => 
+                        "Full Name", (x) =>
                         {
                             while(true)
                             {
@@ -198,12 +199,12 @@ namespace Project_B.services
                                     return;
                                 }
                                 else Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "Invalid name. Please try again." + Universal.ChangeColour(ConsoleColor.White));
-                            
+
                             }
                         }
                     },
                     {
-                        "Email", (x) => 
+                        "Email", (x) =>
                         {
                             while(true)
                             {
@@ -216,7 +217,7 @@ namespace Project_B.services
                                     return;
                                 }
                                 else Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "Invalid Email. Please try again." + Universal.ChangeColour(ConsoleColor.White));
-                            
+
                             }
                         }
                     },
@@ -234,7 +235,7 @@ namespace Project_B.services
                                     return;
                                 }
                                 else Console.WriteLine(Universal.ChangeColour(ConsoleColor.Red) + "Invalid phone number. Please try again." + Universal.ChangeColour(ConsoleColor.White));
-                            
+
                             }
                         }
                     },
