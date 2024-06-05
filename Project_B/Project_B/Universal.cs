@@ -1,4 +1,5 @@
-﻿using DataAccessLibrary;
+﻿using System.Globalization;
+using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Models;
@@ -6,6 +7,10 @@ using Models;
 namespace Project_B;
 public static class Universal
 {
+    /// <summary>
+    /// the datetime format of the user based on his culture
+    /// </summary>
+    public static string UserDateTimeFormat { get => CultureInfo.CurrentUICulture.DateTimeFormat.FullDateTimePattern; }
     /// <summary>
     /// basic check if mail is valid. (totaly not stolen from the internet)
     /// </summary>
@@ -141,7 +146,7 @@ public static class Universal
         Console.Write("                             ");
         Console.SetCursorPosition(Console.CursorLeft - 29, Console.CursorTop);
         (int, int) tempMouseLocation = (Console.CursorLeft - 1, Console.CursorTop);
-        
+
         // Userinput
         string userInput = Console.ReadLine() ?? "";
 
