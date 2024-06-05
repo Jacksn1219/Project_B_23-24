@@ -689,6 +689,29 @@ namespace Project_B
             movieList = movieList.OrderBy(m => m.Name).ToList();
 
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Browse Movies:"), null);
+            movieMenu.Add("> Filter movie <", (x) =>
+            {
+                InputMenu filterMenu = new InputMenu(Universal.centerToScreen("Filter by:"), null);
+                filterMenu.Add("PegiAge", (x) =>
+                {
+                    int pegiAge = 0;
+                    Console.WriteLine("Choose a PEGIage for the movie? (4, 7, 12, 16, 18)");
+                    int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
+                    List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
+                    while (!possiblePegiAges.Contains(pegiAge))
+                    {
+                        Console.SetCursorPosition(0, Console.CursorTop - 4);
+                        Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
+                        Console.WriteLine("\nWhat is the PEGIage of the movie? (4, 7, 12, 16, 18)");
+                        int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
+                    }
+                    Console.SetCursorPosition(0, Console.CursorTop - 4);
+                    Console.Write("                          ");
+                    Console.SetCursorPosition(0, Console.CursorTop + 4);
+                });
+                filterMenu.UseMenu();
+            });
+            movieMenu.UseMenu();
             foreach (MovieModel movie in movieList)
             {
                 string actors = string.Join(", ", movie.Actors.Select(a => a.Name));
