@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Xml.Linq;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
+using System.Globalization;
 
 namespace Project_B
 {
@@ -197,6 +198,8 @@ namespace Project_B
                 Console.ReadLine();
                 return;
             }
+
+            movieList = movieList.OrderBy(m => m.Name).ToList();
 
             //movie to edit
             MovieModel? movieToEdit = null;
@@ -547,6 +550,14 @@ namespace Project_B
                 }
             }
             catch { }
+            if (movieList.Count == 0)
+            {
+                Console.WriteLine("No movies are found.(There need to be a movie first to make a timetable.)");
+                Console.ReadLine();
+                return;
+            }
+
+            movieList = movieList.OrderBy(m => m.Name).ToList();
 
             MovieModel ? selectedMovie = null;
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
@@ -584,14 +595,15 @@ namespace Project_B
             if (selectedRoom == null)
             { return; }
 
-            Console.WriteLine("Enter the start date (yyyy-MM-dd HH:mm):");
+            Console.WriteLine("Enter the start date (dd-MM-yyyy HH:mm):");
             DateTime startDate;
             DateTime endDate;
             DateTime now = DateTime.Now;
 
             while (true)
             {
-                if (DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate))
+            string userInput = Universal.takeUserInput("Type...");
+            if (DateTime.TryParseExact(userInput, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
                 {
                     endDate = startDate.AddMinutes(selectedMovie.DurationInMin + 15); //15 min delay between movies
                     if (startDate.Date > now.Date &&
@@ -624,12 +636,12 @@ namespace Project_B
                     }
                     else
                     {
-                        Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (yyyy-MM-dd HH:mm):", ConsoleColor.DarkRed));
+                        Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (dd-MM-yyyy HH:mm):", ConsoleColor.DarkRed));
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid date format. Please enter the start date (yyyy-MM-dd HH:mm):");
+                    Console.WriteLine("Invalid date format. Please enter the start date (dd-MM-yyyy HH:mm):");
                 }
             }
 
@@ -644,10 +656,8 @@ namespace Project_B
             {
                 Console.WriteLine("Failed to add movie to timetable");
             }
-            Console.ReadLine();
+            Console.ReadKey();
         }
-
-
 
         public void EditTimeTable()
         {
@@ -658,13 +668,21 @@ namespace Project_B
                 int page = 1;
                 while (true)
                 {
-                    var tts = _ttf.GetItems(100, page, 10);
+                    var tts = _ttf.GetItems(100, page, 6);
                     timeTableList.AddRange(tts);
                     page++;
                     if (tts.Length < 100) break;
                 }
             }
             catch { }
+            if (timeTableList.Count == 0)
+            {
+                Console.WriteLine("No timetables created.(You need to plan a movie first to edit a timetable.)");
+                Console.ReadKey();
+                return;
+            }
+
+            timeTableList = timeTableList.OrderBy(t => t.DateTimeStartDate).ToList();
 
             TimeTableModel ? selectedTimeTable = null;
             
@@ -695,6 +713,14 @@ namespace Project_B
                     }
                 }
                 catch { }
+                if (movieList.Count == 0)
+                {
+                    Console.WriteLine("No movies in the timetable to edit.");
+                    Console.ReadKey();
+                    return;
+                }
+
+                movieList = movieList.OrderBy(m => m.Name).ToList();
 
                 MovieModel ? selectedMovie = null;
                 InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a new movie:"), null);
@@ -741,7 +767,7 @@ namespace Project_B
             });
             editMenu.Add("Start Date", (x) =>
             {
-                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("yyyy-MM-dd HH:mm")}" + "\n" + "Enter the new start date (yyyy-MM-dd HH:mm):");
+                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("dd-MM-yyyy HH:mm")}" + "\n" + "Enter the new start date (dd-MM-yyyy HH:mm):");
                 DateTime startDate;
                 DateTime endDate;
                 DateTime now = DateTime.Now;
@@ -753,8 +779,8 @@ namespace Project_B
                     {
                         startDate = y ?? DateTime.Now;
                         endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-                        selectedTimeTable.StartDate = startDate.ToString("yyyy-MM-dd HH:mm");;
-                        selectedTimeTable.EndDate = endDate.ToString("yyyy-MM-dd HH:mm");;
+                        selectedTimeTable.StartDate = startDate.ToString("dd-MM-yyyy HH:mm");;
+                        selectedTimeTable.EndDate = endDate.ToString("dd-MM-yyyy HH:mm");;
                         break;
                     }
                 }
@@ -771,9 +797,52 @@ namespace Project_B
                 Console.WriteLine("Failed to update timetable.");
                 Console.WriteLine("Press 'Enter' to go back in the menu.");
             }
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
+        public void browseMovies()
+        {
+            List<MovieModel> movieList = new List<MovieModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var movies = _mf.GetItems(100, page, 6);
+                    movieList.AddRange(movies);
+                    page++;
+                    if (movies.Length < 100) break;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error fetching movies from database.");
+                return;
+            }
+
+            if (movieList.Count == 0)
+            {
+                Console.WriteLine("There are currently no movies to browse.");
+                Console.ReadKey();
+                return;
+            }
+
+            movieList = movieList.OrderBy(m => m.Name).ToList();
+
+            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Browse Movies:"), null);
+            foreach (MovieModel movie in movieList)
+            {
+                string actors = string.Join(", ", movie.Actors.Select(a => a.Name));
+
+                movieMenu.Add(movie.Name ?? "", (x) =>
+                {
+                    Console.WriteLine($"Movie: {movie.Name}\nDescription: {movie.Description}\nGenre: {movie.Genre}\nDirector of the movie: {movie.Director}\nActors in the movie: {actors}\nFilm duration: {movie.DurationInMin} min\nPegiAge: {movie.PegiAge}");
+                    Console.ReadKey();
+                });
+            }
+            movieMenu.UseMenu();
+        }
+        
         public DirectorModel CreateDirector()
         {
             Universal.printAsTitle("Create new director");

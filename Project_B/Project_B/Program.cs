@@ -42,7 +42,7 @@ namespace Project_B
             StartupMenu.UseMenu(() =>
             {
                 //loaddata
-                SQLite_setup.SetupProjectB(rf, mf, Universal.datafolderPath);
+                SQLite_setup.SetupProjectB(rf, Universal.datafolderPath);
             });
 
             //----- main screen -----//
@@ -50,7 +50,7 @@ namespace Project_B
                 //user options
                 new Dictionary<string, Action<string>>(){
                     {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
-                    {"# Browse movies #", (x) => { /*not yet*/ }},
+                    {"Browse movies", (x) => { createItems.browseMovies(); }},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation();}},
                     {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
                 },
@@ -65,7 +65,7 @@ namespace Project_B
                             {"Add Movie", (x) => {createItems.CreateNewMovie();}},
                             {"Edit Movie", (x) => {createItems.EditMovie();}},
                             {"Remove Movie", (x) => {createItems.DeleteMovie();}},
-                            {"\n" + centerToScreen("Add Timetable"), (x) => {createItems.CreateTimeTable();}},
+                            {"\n" + centerToScreen("Plan a movie"), (x) => {createItems.CreateTimeTable();}},
                             {"Edit Timetable", (x) => {createItems.EditTimeTable();}},
                             {"\n" + centerToScreen("Add Director"), (x) => {createItems.CreateDirector();}},
                             {"Edit Director", (x) => {createItems.EditDirector();}},
