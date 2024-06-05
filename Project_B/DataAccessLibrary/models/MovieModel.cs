@@ -4,7 +4,7 @@ using System.Text;
 namespace DataAccessLibrary;
 public enum PEGIAge
 {
-    PEGI3 = 3,
+    PEGI4 = 4,
     PEGI7 = 7,
     PEGI12 = 12,
     PEGI16 = 16,

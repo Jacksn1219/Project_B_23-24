@@ -689,39 +689,60 @@ namespace Project_B
             movieList = movieList.OrderBy(m => m.Name).ToList();
 
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Browse Movies:"), null);
+            movieMenu.Add("> All movies <", (x) => 
+            {
+                InputMenu allMovieMenu = new InputMenu(Universal.centerToScreen("All movies are here:"));
+                foreach (MovieModel movie in movieList)
+                {
+                    string actors = string.Join(", ", movie.Actors.Select(a => a.Name));
+
+                    allMovieMenu.Add(movie.Name ?? "", (x) =>
+                    {
+                        Console.WriteLine($"Movie: {movie.Name}\nDescription: {movie.Description}\nGenre: {movie.Genre}\nDirector of the movie: {movie.Director}\nActors in the movie: {actors}\nFilm duration: {movie.DurationInMin} min\nPegiAge: {movie.PegiAge}");
+                        Console.ReadKey();
+                    });
+                }
+                allMovieMenu.UseMenu();
+            });
             movieMenu.Add("> Filter movie <", (x) =>
             {
                 InputMenu filterMenu = new InputMenu(Universal.centerToScreen("Filter by:"), null);
                 filterMenu.Add("PegiAge", (x) =>
                 {
-                    int pegiAge = 0;
-                    Console.WriteLine("Choose a PEGIage for the movie? (4, 7, 12, 16, 18)");
-                    int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
-                    List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
-                    while (!possiblePegiAges.Contains(pegiAge))
+                    InputMenu pegiMenu = new InputMenu(Universal.centerToScreen("Choose PegiAge:"), null);
+                    var pegiAges = Enum.GetValues(typeof(PEGIAge)).Cast<PEGIAge>().ToList();
+
+                    foreach (var pegiAge in pegiAges)
                     {
-                        Console.SetCursorPosition(0, Console.CursorTop - 4);
-                        Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                        Console.WriteLine("\nWhat is the PEGIage of the movie? (4, 7, 12, 16, 18)");
-                        int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
+                        pegiMenu.Add(pegiAge.ToString(), (y) =>
+                        {
+                            var filteredMovies = movieList.Where(m => m.PegiAge == pegiAge).ToList();
+
+                            if (filteredMovies.Count == 0)
+                            {
+                                Console.WriteLine($"There are no movies with PegiAge {pegiAge}.");
+                                Console.ReadKey();
+                                return;
+                            }
+
+                            InputMenu filteredMenu = new InputMenu(Universal.centerToScreen($"Movies with PegiAge {pegiAge}:"));
+                            foreach (var movie in filteredMovies)
+                            {
+                                string actors = string.Join(", ", movie.Actors.Select(a => a.Name));
+
+                                filteredMenu.Add(movie.Name ?? "", (z) =>
+                                {
+                                    Console.WriteLine($"Movie: {movie.Name}\nDescription: {movie.Description}\nGenre: {movie.Genre}\nDirector: {movie.Director}\nActors: {actors}\nDuration: {movie.DurationInMin} min\nPegiAge: {movie.PegiAge}");
+                                    Console.ReadKey();
+                                });
+                            }
+                            filteredMenu.UseMenu();
+                        });
                     }
-                    Console.SetCursorPosition(0, Console.CursorTop - 4);
-                    Console.Write("                          ");
-                    Console.SetCursorPosition(0, Console.CursorTop + 4);
+                    pegiMenu.UseMenu();
                 });
                 filterMenu.UseMenu();
             });
-            movieMenu.UseMenu();
-            foreach (MovieModel movie in movieList)
-            {
-                string actors = string.Join(", ", movie.Actors.Select(a => a.Name));
-
-                movieMenu.Add(movie.Name ?? "", (x) =>
-                {
-                    Console.WriteLine($"Movie: {movie.Name}\nDescription: {movie.Description}\nGenre: {movie.Genre}\nDirector of the movie: {movie.Director}\nActors in the movie: {actors}\nFilm duration: {movie.DurationInMin} min\nPegiAge: {movie.PegiAge}");
-                    Console.ReadKey();
-                });
-            }
             movieMenu.UseMenu();
         }
     }
