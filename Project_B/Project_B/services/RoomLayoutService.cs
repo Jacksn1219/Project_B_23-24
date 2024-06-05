@@ -274,6 +274,9 @@ class RoomLayoutService : LayoutModel
                     }
                 };
             }, false, Convert.ToInt16(seatModel.Name));
+            
+            //revert changing the type
+            if (seatModel.Type == "_") seatModel.Type = " ";
         }
         SeatModelSelectionMenu.UseMenu();
     }
