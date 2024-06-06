@@ -4,8 +4,6 @@ using Project_B.services;
 using Serilog;
 using DataAccessLibrary.logic;
 using Project_B.menu_s;
-using System.Diagnostics;
-using Microsoft.Extensions.Logging;
 using static Project_B.Universal;
 
 namespace Project_B
@@ -49,9 +47,10 @@ namespace Project_B
             MainMenu.UseMenu(
                 //user options
                 new Dictionary<string, Action<string>>(){
-                    {"Browse movies", (x) => { createItems.browseMovies(); }},
-                    {Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation();}},
-                    {Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
+                    {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
+                    {"# Browse movies #", (x) => { /*not yet*/ }},
+                    {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation();}},
+                    {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
                 },
                 //admin options
                 new Dictionary<string, Action<string>>(){
@@ -64,7 +63,7 @@ namespace Project_B
                             {"Add Movie", (x) => {createItems.CreateNewMovie();}},
                             {"Edit Movie", (x) => {createItems.EditMovie();}},
                             {"Remove Movie", (x) => {createItems.DeleteMovie();}},
-                            {"\n" + centerToScreen("Plan a movie"), (x) => {createItems.CreateTimeTable();}},
+                            {"\n" + centerToScreen("Add Timetable"), (x) => {createItems.CreateTimeTable();}},
                             {"Edit Timetable", (x) => {createItems.EditTimeTable();}},
                             {"\n" + centerToScreen("Add Director"), (x) => {createItems.CreateDirector();}},
                             {"Edit Director", (x) => {createItems.EditDirector();}},
