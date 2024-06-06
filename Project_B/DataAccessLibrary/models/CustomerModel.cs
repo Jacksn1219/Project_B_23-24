@@ -23,9 +23,9 @@ public class CustomerModel : DbItem
         }
     }
     private string? _email;
-    private string _name;
+    private string _name = "";
     private int _age;
-    private string _phoneNumber;
+    private string _phoneNumber = "";
     private bool _isSubscribed;
 
     public string? Email
@@ -58,6 +58,10 @@ public class CustomerModel : DbItem
             _isSubscribed = value;
             IsChanged = true;
         }
+    }
+    public CustomerModel()
+    {
+
     }
     public CustomerModel(string name, int age, string email, string phoneNumber, bool isSubscribed)
     : this(null, name, age, email, phoneNumber, isSubscribed)
@@ -94,5 +98,9 @@ public class CustomerModel : DbItem
         {
             return false;
         }
+    }
+    public override string ToString()
+    {
+        return $"Name: {Name}, Age: {Age}, Email: {Email}, PhoneNumber: {PhoneNumber}, IsSubscribed: {IsSubscribed}";
     }
 }

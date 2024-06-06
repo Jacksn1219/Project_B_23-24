@@ -1,6 +1,6 @@
-﻿using DataAccessLibrary.models;
+﻿using System.Text;
+using DataAccessLibrary.models;
 using DataAccessLibrary.models.interfaces;
-
 namespace DataAccessLibrary;
 
 public class ReservationModel : DbItem
@@ -18,7 +18,7 @@ public class ReservationModel : DbItem
             IsChanged = true;
         }
     }
-    public readonly List<SeatModel> ReservedSeatModels = new List<SeatModel>();
+    public List<SeatModel> ReservedSeats = new List<SeatModel>();
     private string? _note;
     public ReservationModel() { }
     public ReservationModel(CustomerModel customer, TimeTableModel timeTable, List<SeatModel> SeatModels, string? note = null)
@@ -26,7 +26,7 @@ public class ReservationModel : DbItem
     {
         Customer = customer;
         TimeTable = timeTable;
-        ReservedSeatModels.AddRange(SeatModels);
+        ReservedSeats.AddRange(SeatModels);
     }
     internal ReservationModel(int? id, int? customerId, int? timetableId, string? note)
     {
@@ -34,5 +34,20 @@ public class ReservationModel : DbItem
         CustomerID = customerId;
         TimeTableID = timetableId;
         Note = note;
+    }
+    public override string ToString()
+    {
+        StringBuilder sb = new();
+        sb.AppendLine($"Nummer: {ID}");
+        if(Customer != null) sb.AppendLine($"Customer: \n{Customer.ToString()}");
+        if(TimeTable != null) sb.AppendLine($"Movie at time: \n{TimeTable.ToString()}");
+        if (ReservedSeats.Count > 0){
+            sb.AppendLine("Reserved seats: ");
+        }
+        foreach (SeatModel seatModel in ReservedSeats)
+        {
+            sb.AppendLine($"{seatModel.ToString()}");
+        }
+        return  sb.ToString();
     }
 }
