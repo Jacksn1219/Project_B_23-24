@@ -1,6 +1,7 @@
 namespace DataAccessLibraryTest;
 using DataAccessLibrary.models.interfaces;
 using DataAccessLibrary;
+using Serilog;
 
 [TestClass]
 public class SQLiteTest
@@ -15,8 +16,11 @@ public class SQLiteTest
 
         }
         catch { }
+        using var logger = new LoggerConfiguration()
+                .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .CreateLogger();
         string connectionstring = "Data Source=database.db; Version = 3; New = True; Compress = True;";
-        _db = new SQliteDataAccess(connectionstring);
+        _db = new SQliteDataAccess(connectionstring, logger);
         _db.SaveData("CREATE TABLE IF NOT EXISTS SampleTable(Col1 VARCHAR(20), Col2 INT)");
     }
     [TestMethod]

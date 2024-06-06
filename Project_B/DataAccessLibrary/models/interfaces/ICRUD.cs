@@ -9,7 +9,7 @@ namespace DataAccessLibrary.models.interfaces
         public int CreateData(string sqlStatement, Dictionary<string, dynamic?> parameters);
         public bool SaveData(string sqlStatement);
         public bool SaveData(string sqlStatement, Dictionary<string, dynamic?> parameters);
-        public List<T> ReadData<T>(string sqlStatement);
-        public List<T> ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters);
+        public T[] ReadData<T>(string sqlStatement);
+        public T[] ReadData<T>(string sqlStatement, Dictionary<string, dynamic?> parameters);
     }
 }

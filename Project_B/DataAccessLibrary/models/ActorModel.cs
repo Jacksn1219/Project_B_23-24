@@ -40,4 +40,13 @@ public class ActorModel : DbItem
         Description = description;
         Age = age;
     }
+
+    public void editName(string name) { Name = name; }
+    public void editDescription(string description) { Description = description; }
+    public void editAge(int age) { Age = age; }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }

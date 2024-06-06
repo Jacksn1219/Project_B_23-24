@@ -81,6 +81,16 @@ public class MovieModel : DbItem
         }
     }
     public List<ActorModel> Actors = new();
+    private bool _isRemoved;
+    public bool IsRemoved
+    {
+        get => _isRemoved;
+        set
+        {
+            _isRemoved = value;
+            IsChanged = true;
+        }
+    }
     internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int? directorId, string genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }
     internal MovieModel(int? id, string name, string description, PEGIAge pegiAge, int durationInMin, int? directorId, string genre)
@@ -92,6 +102,7 @@ public class MovieModel : DbItem
         DurationInMin = durationInMin;
         DirectorID = directorId;
         Genre = genre;
+        IsRemoved = false;
     }
     /// <summary>
     /// parameterless ctor to please the JsonSerializer gods
@@ -115,7 +126,11 @@ public class MovieModel : DbItem
     public void editDuration(int newDuration) => this.DurationInMin = newDuration;
     public void editGenre(string newGenre) => this.Genre = newGenre;
     public void editDirector(DirectorModel newDirector) => this.Director = newDirector;
-    public void addActor(ActorModel newActors) => this.Actors.Add(newActors);
+    public void addActor(ActorModel newActor)
+    {
+        List<int?> IDList = Actors.Select(x => (int?)x.ID).ToList();
+        if(!IDList.Contains(newActor.ID)) this.Actors.Add(newActor);
+    }
     public void removeActor(ActorModel newActors) => this.Actors.Remove(newActors);
     public string SeeActors()
     {

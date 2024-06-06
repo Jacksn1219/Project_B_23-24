@@ -1,6 +1,7 @@
 using System.Text.Json;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
+using Serilog;
 
 namespace DataAccessLibraryTest
 {
@@ -22,11 +23,13 @@ namespace DataAccessLibraryTest
             {
                 System.Console.WriteLine($"cannot delete testdb {TestDbPath}: {ex.Message}");
             }
-
-            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;");
-            _af = new ActorFactory(_db);
-            _df = new DirectorFactory(_db);
-            _mf = new MovieFactory(_db, _df, _af);
+            using var logger = new LoggerConfiguration()
+                .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+                .CreateLogger();
+            _db = new SQliteDataAccess($"Data Source={TestDbPath}; Version = 3; New = True; Compress = True;", logger);
+            _af = new ActorFactory(_db, logger);
+            _df = new DirectorFactory(_db, logger);
+            _mf = new MovieFactory(_db, _df, _af, logger);
         }
         [TestMethod]
         public void TestAddMovieNoOtherFactories()
@@ -117,6 +120,13 @@ namespace DataAccessLibraryTest
             Assert.AreEqual(newMovie.Genre, movie.Genre);
             var dir = _df.GetItemFromId(newMovie.DirectorID ?? 1);
             Assert.AreEqual(dir.Name, movie.Director.Name);
+        }
+        [TestMethod]
+        public void TestGetFirstHundridMov()
+        {
+            MovieModel[] movs = _mf.GetItems(100);
+            MovieModel[] movsPageTwoLvTwo = _mf.GetItems(100, 2, 2);
+            _mf.getRelatedItemsFromDb(movs.First(), 66);
         }
     }
 }

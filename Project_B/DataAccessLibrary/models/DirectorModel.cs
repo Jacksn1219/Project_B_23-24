@@ -47,4 +47,12 @@ public class DirectorModel : DbItem
         Age = age;
         ID = id;
     }
+    public void editName(string name) { Name = name; }
+    public void editDescription(string description) { Description = description; }
+    public void editAge(int age) { Age = age; }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }
