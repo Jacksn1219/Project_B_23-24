@@ -200,7 +200,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {"$2", item.DirectorID},
                     {"$3", (int)item.PegiAge},
                     {"$4", item.Description},
-                    {"$5", item.Genre},
+                    {"$5", $"{item.Genre}"},
                     {"$6", item.DurationInMin},
                     {"$7", item.IsRemoved},
                     {"$8", item.ID}

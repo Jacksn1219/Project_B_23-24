@@ -38,7 +38,7 @@ namespace DataAccessLibraryTest
             _rf = new ReservationFactory(_db, _cf, _sf, tf, logger);
             SeatModel SeatModel = new SeatModel("SeatModel1", "1", "1");
             RoomModel room = new RoomModel("room1", 10, 1, new List<SeatModel>() { SeatModel });
-            MovieModel mov = new MovieModel("movie1", "descr1", 3, 300, "genre");
+            MovieModel mov = new MovieModel("movie1", "descr1", 3, 300, default(Genre));
             testTimeTable = new TimeTableModel(
                 room, mov, DateTime.Now
             );

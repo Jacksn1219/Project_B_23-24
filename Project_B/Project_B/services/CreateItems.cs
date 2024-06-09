@@ -27,6 +27,23 @@ namespace Project_B
             _ttf = ttf;
             _rvf = rvf;
         }
+        Genre chooseGenre(MovieModel? movie = null)
+        {
+            Genre toReturn = default(Genre);
+            InputMenu GenreMenu = new InputMenu("useLambda", null);
+            foreach(Genre genre in Enum.GetValues<Genre>())
+            {
+                GenreMenu.Add($"{genre}", (x) =>
+                {
+                    toReturn = genre;
+                });
+            }
+            GenreMenu.UseMenu(() => {
+                Console.WriteLine(movie != null ? $"The current Genre is {movie.Genre}" : "");
+                Universal.printAsTitle(movie != null ? "Choose a new genre" : "Choose a genre");
+            });
+            return toReturn;
+        }
         public void CreateNewMovie()
         {
             Universal.printAsTitle("Create new movie");
@@ -71,8 +88,8 @@ namespace Project_B
             Console.SetCursorPosition(0, Console.CursorTop + 3);
 
             // genre //
-            Console.WriteLine("\nWhat is the genre of the movie?");
-            string Genre = Universal.takeUserInput("Type...") ?? "";
+            //Console.WriteLine("\nWhat is the genre of the movie?");
+            Genre Genre = chooseGenre();
 
             // Director //
             DirectorModel Director = new DirectorModel("", "", 0);
@@ -254,7 +271,7 @@ namespace Project_B
             whatToEditMenu.Add("Genre", (x) =>
             {
                 Console.WriteLine($"Current genre = {movieToEdit.Genre}" + "\n" + "What is the new genre of the movie?");
-                string Genre = Universal.takeUserInput("Type...") ?? "";
+                Genre Genre = chooseGenre(movieToEdit);
                 movieToEdit.editGenre(Genre);
             });
             whatToEditMenu.Add("Director", (x) =>
