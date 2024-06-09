@@ -219,8 +219,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (!dontClose) _db.CloseConnection();
         }
     }
-    private bool DependingItemsToDb(MovieModel item, int deepcopyLv){
-        if (item.DirectorID == null) return true;
+    private bool DependingItemsToDb(MovieModel item, int deepcopyLv){//______________________________________________________________________________
+        //if (item.DirectorID == null) return true;
         if (item.Director != null)
         {
             if(!_df.ItemToDb(item.Director, deepcopyLv)) return false;
@@ -243,6 +243,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     //check if actorInMovie already exists
                     if (_db.ReadData<ActorModel>
                     (
+                        //INNER JOIN Actor ON Actor.ID = ActorInMovie.ActorID
                         @"SELECT ID FROM ActorInMovie
                         WHERE MovieID = $1 AND ActorID = $2",
                         new(){
@@ -269,6 +270,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 }
 
             }
+            DependingItemsToDb(item, deepcopyLv - 1);
             return true;
         }
         catch (Exception ex)
@@ -295,7 +297,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                     {
                         {"$1", false}
                     }
-                );
+                ).OrderBy(x => x.Name).ToArray();
             //return only movies when deepcopyLv is less than 1.
             if (deepcopyLv < 1) return movies;
             foreach (MovieModel mov in movies)
@@ -349,7 +351,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 new Dictionary<string, dynamic?>{
                     { "$1", movie.ID }
                 }
-            );
+            ).OrderBy(x => x.Name).ToArray();
         }
         catch(Exception ex)
         {

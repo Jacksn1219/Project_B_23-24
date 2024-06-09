@@ -122,6 +122,7 @@ namespace Project_B
             directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) => {
                 Director = CreateDirector();
 
+                Console.Clear();
                 Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
                 Universal.PressAnyKeyWaiter();
             });
@@ -164,6 +165,7 @@ namespace Project_B
                 ActorModel newActor = CreateActor();
                 Actors.Add(newActor);
 
+                Console.Clear();
                 Console.WriteLine($"The new actor {newActor.Name} has been added to the movie.");
                 Universal.PressAnyKeyWaiter();
             });
@@ -321,6 +323,7 @@ namespace Project_B
                 directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) => {
                     Director = CreateDirector();
 
+                    Console.Clear();
                     Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
                     Universal.PressAnyKeyWaiter();
                 });
@@ -365,6 +368,7 @@ namespace Project_B
                         ActorModel newActor = CreateActor();
                         movieToEdit.addActor(newActor);
 
+                        Console.Clear();
                         Console.WriteLine($"The new actor {newActor.Name} has been added to the movie.");
                         Universal.PressAnyKeyWaiter();
                     });
@@ -947,7 +951,7 @@ namespace Project_B
             _df.CreateItem(newDirector);
 
 
-            Console.WriteLine($"The new director {Name} has been created.");
+            Console.WriteLine($"\nThe new director {Name} has been created.");
             Universal.PressAnyKeyWaiter();
             return newDirector;
         }
@@ -1015,9 +1019,8 @@ namespace Project_B
             //Saving the new item to the database
             _df.ItemToDb(directorToEdit);
 
-            Console.WriteLine($"The changes to {directorToEdit.Name} have been saved.");
+            Console.WriteLine($"\nThe changes to {directorToEdit.Name} have been saved.");
             Universal.PressAnyKeyWaiter();
-            Console.ReadLine();
         }
         public ActorModel CreateActor()
         {
@@ -1050,7 +1053,7 @@ namespace Project_B
             _af.CreateItem(newActor);
 
 
-            Console.WriteLine($"The new actor {Name} has been created.");
+            Console.WriteLine($"\nThe new actor {Name} has been created.");
             Universal.PressAnyKeyWaiter();
             return newActor;
         }
@@ -1118,9 +1121,8 @@ namespace Project_B
             //Saving the new item to the database
             _af.ItemToDb(actorToEdit);
 
-            Console.WriteLine($"The changes to {actorToEdit.Name} have been saved.");
+            Console.WriteLine($"\nThe changes to {actorToEdit.Name} have been saved.");
             Universal.PressAnyKeyWaiter();
-            Console.ReadLine();
         }
     }
 }
