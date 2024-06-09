@@ -121,6 +121,9 @@ namespace Project_B
             }
             directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) => {
                 Director = CreateDirector();
+
+                Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
+                Universal.PressAnyKeyWaiter();
             });
             if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
             
@@ -160,6 +163,9 @@ namespace Project_B
             actorMenu.Add("Create a new actor", (x) => {
                 ActorModel newActor = CreateActor();
                 Actors.Add(newActor);
+
+                Console.WriteLine($"The new actor {newActor.Name} has been added to the movie.");
+                Universal.PressAnyKeyWaiter();
             });
             actorMenu.UseMenu();
 
