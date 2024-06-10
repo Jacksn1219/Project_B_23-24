@@ -142,13 +142,13 @@ public class ReservationService
         else System.Console.WriteLine(res.ToString());
     }
     public DateOnly? GetWeekDay()
-    {
+    {//commented code was code that hid days that where before today. (so if tuesday, you do not see monday)
         //get current day
         DateTime today = DateTime.Today;
-        DayOfWeek currentDay = today.DayOfWeek;
+        //DayOfWeek currentDay = today.DayOfWeek;
         //get amount of weekdays left
-        int weekdayInt = (int)currentDay;
-        if (weekdayInt < 1) weekdayInt = 1;
+        int weekdayInt = 1;//(int)currentDay;
+        //if (weekdayInt < 1) weekdayInt = 1;
         DateOnly? toReturn = null;
         //create inputmenu
         InputMenu selectDay = new InputMenu("| Select a day |", null);
