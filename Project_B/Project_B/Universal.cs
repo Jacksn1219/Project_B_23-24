@@ -10,7 +10,7 @@ public static class Universal
     /// <summary>
     /// the datetime format of the user based on his culture
     /// </summary>
-    public static string UserDateTimeFormat { get => CultureInfo.CurrentUICulture.DateTimeFormat.FullDateTimePattern; }
+    public static string UserDateTimeFormat { get => CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern + " " + CultureInfo.CurrentUICulture.DateTimeFormat.ShortTimePattern; }
 
     /// <summary>
     /// Asks the user to fill in a date & time until a valid datetime format is filled in.
