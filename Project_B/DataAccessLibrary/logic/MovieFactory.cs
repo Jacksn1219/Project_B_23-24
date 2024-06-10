@@ -112,7 +112,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 break;
             }
         }
-        if (!item.IsChanged && (actorsChanged || directorchanged) && deepcopyLv > 0) return RelatedItemsToDb(item, deepcopyLv - 1);
+        RelatedItemsToDb(item, deepcopyLv - 1);
         if (!item.IsChanged) return true;
         if (item.ID == null) return CreateItem(item, deepcopyLv);
         return UpdateItem(item, deepcopyLv);
@@ -219,12 +219,13 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (!dontClose) _db.CloseConnection();
         }
     }
-    private bool DependingItemsToDb(MovieModel item, int deepcopyLv){//______________________________________________________________________________
+    private bool DependingItemsToDb(MovieModel item, int deepcopyLv){
         //if (item.DirectorID == null) return true;
         if (item.Director != null)
         {
             if(!_df.ItemToDb(item.Director, deepcopyLv)) return false;
             item.DirectorID = item.Director.ID;
+            item.IsChanged = true;
         }
         return true;
     }

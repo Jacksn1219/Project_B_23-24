@@ -117,7 +117,7 @@ namespace DataAccessLibraryTest
                 "hanz", "vlammenwerfer", 100
             );
             Assert.IsTrue(_mf.ItemToDb(movie));
-            var newMovie = _mf.GetItemFromId(movie.ID ?? 1);
+            var newMovie = _mf.GetItemFromId(movie.ID ?? 1, 99);
             Assert.AreEqual(newMovie.Genre, movie.Genre);
             var dir = _df.GetItemFromId(newMovie.DirectorID ?? 1);
             Assert.AreEqual(dir.Name, movie.Director.Name);

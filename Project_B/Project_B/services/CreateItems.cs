@@ -92,7 +92,7 @@ namespace Project_B
             Genre Genre = chooseGenre();
 
             // Director //
-            DirectorModel Director = new DirectorModel("", "", 0);
+            DirectorModel? Director = null; // new DirectorModel("", "", 0);
 
             List<DirectorModel> directorList = new List<DirectorModel>();
             // Test directors
@@ -103,7 +103,7 @@ namespace Project_B
             try
             {
                 int i = 1;
-                DirectorModel? director = new DirectorModel("", "", 0);
+                DirectorModel? director = null;
                 while (director != null)
                 {
                     director = _df.GetItemFromId(i);
@@ -284,7 +284,7 @@ namespace Project_B
             });
             whatToEditMenu.Add("Director", (x) =>
             {
-                DirectorModel Director = new DirectorModel("", "", 0);
+                DirectorModel? Director = null; // new DirectorModel("", "", 0);
 
                 List<DirectorModel> directorList = new List<DirectorModel>();
                 // Test directors
@@ -294,7 +294,7 @@ namespace Project_B
                 try
                 {
                     int i = 1;
-                    DirectorModel? director = new DirectorModel("", "", 0);
+                    DirectorModel? director = null;
                     while (director != null)
                     {
                         director = _df.GetItemFromId(i);
