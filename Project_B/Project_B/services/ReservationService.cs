@@ -1,3 +1,4 @@
+using System.Text;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
@@ -238,6 +239,36 @@ public class ReservationService
         }
         Universal.PressAnyKeyWaiter();
         //Console.ReadKey();
+    }
+    public void SeeCustomerEmails()
+    {
+        List<CustomerModel> allCustomers = new List<CustomerModel>();
+        try
+            {
+                int page = 1;
+                while (true)
+                {
+                    CustomerModel[] customers = _cf.GetItems(100, page, 6);
+                    foreach (CustomerModel customer in customers)
+                    {
+                        if (customer.IsSubscribed)
+                        {
+                            allCustomers.Add(customer);
+                        }
+                    }
+                    page++;
+                    if (customers.Length < 100) break;
+                }
+            }
+        catch { }
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("Here are the e-mails of all the subscribed customers:\n");
+        foreach (CustomerModel customer in allCustomers)
+        {
+            sb.Append($"Name: {customer.Name}, Age: {customer.Age}, E-mail: {customer.Email}\n");
+        }
+        Console.WriteLine(sb.ToString());
+        Universal.PressAnyKeyWaiter();
     }
     public string[] GetSeatLocation(ReservationModel reservation)
     {

@@ -74,7 +74,8 @@ namespace Project_B
                         });
                         CreateMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
                     }},
-                    {"History", (x) => { hs.UseMenu(); }}
+                    {"History", (x) => { hs.UseMenu(); }},
+                    {"See customer e-mails", (x) => { rs.SeeCustomerEmails();}}
                 }
             );
         }

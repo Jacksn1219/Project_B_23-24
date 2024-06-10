@@ -21,6 +21,7 @@ public static class MailService
             mail.Subject = "Reservation details YourEyes";
             mail.Body = $"Dear {customerName},\n\n" + 
             $"Thank you for booking at YourEyes!\n" +
+            $"You booked {reservedSeats.Count} seats.\n" +
             $"Here are the details of your reservation:\n" +
             $"Movie: {movieName}\n" +
             $"Starts at: {startTime.Split(" ")[1]} - {endTime.Split(" ")[1]}\n" +
