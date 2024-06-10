@@ -88,7 +88,7 @@ namespace DataAccessLibrary.logic
             {
                 return _db.ReadData<ActorModel>(
                     $"SELECT * FROM Actor LIMIT {count} OFFSET {count * page - count}"
-                );
+                ).OrderBy(x => x.Name).ToArray();
             }
             catch (Exception ex)
             {

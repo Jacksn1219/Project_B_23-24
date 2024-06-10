@@ -107,8 +107,7 @@ namespace DataAccessLibrary.logic
             try
             {
                 var toReturn = _db.ReadData<ReservationModel>(
-                    @"SELECT * FROM Reservation
-                    WHERE ID = $1",
+                    @"SELECT * FROM Reservation WHERE ID = $1",
                     new Dictionary<string, dynamic?>(){
                         {"$1", id},
                     }
@@ -247,14 +246,15 @@ namespace DataAccessLibrary.logic
             {
                 _db.OpenConnection();
                 ReservationModel[] result = _db.ReadData<ReservationModel>(
-                    $"SELECT * FROM Reservation LIMIT {count} OFFSET {count * page - count}"
+                    @$"SELECT * FROM Reservation
+                    LIMIT {count} OFFSET {count * page - count}"
                 );
                 if (deepcopyLv < 1) return result;
                 foreach (ReservationModel item in result)
                 {
                     getRelatedItemsFromDb(item, deepcopyLv - 1);
                 }
-                return result;
+                return result.OrderBy(x => x.TimeTable.StartDate).ToArray();
             }
             catch (Exception ex)
             {
@@ -289,7 +289,7 @@ namespace DataAccessLibrary.logic
                 {
                     getRelatedItemsFromDb(item, deepcopyLv - 1);
                 }
-                return result;
+                return result.OrderBy(x => x.TimeTable.StartDate).ToArray();
             }
             catch (Exception ex)
             {
@@ -331,7 +331,7 @@ namespace DataAccessLibrary.logic
                 {
                     getRelatedItemsFromDb(item, deepcopyLv - 1);
                 }
-                return result;
+                return result.OrderBy(x => x.TimeTable.StartDate).ToArray();
             }
             catch (Exception ex)
             {

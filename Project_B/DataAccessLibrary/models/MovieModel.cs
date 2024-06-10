@@ -10,6 +10,20 @@ public enum PEGIAge
     PEGI16 = 16,
     PEGI18 = 18
 }
+public enum Genre
+{
+    Action_and_adventure,
+    Animation,
+    Comedy,
+    Devotional,
+    Drama,
+    Historical,
+    Horror,
+    Science_fiction,
+    Western,
+    Kids,
+    Violence
+}
 
 public class MovieModel : DbItem
 {
@@ -70,8 +84,8 @@ public class MovieModel : DbItem
     /// </summary>
     public int? DirectorID { get; set; }
     public DirectorModel? Director;
-    private string? _genre;
-    public string? Genre
+    private Genre _genre;
+    public Genre Genre
     {
         get => _genre;
         set
@@ -91,9 +105,9 @@ public class MovieModel : DbItem
             IsChanged = true;
         }
     }
-    internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int? directorId, string genre)
+    internal MovieModel(int? id, string name, string description, int pegiAge, int durationInMin, int? directorId, Genre genre)
     : this(id, name, description, (PEGIAge)pegiAge, durationInMin, directorId, genre) { }
-    internal MovieModel(int? id, string name, string description, PEGIAge pegiAge, int durationInMin, int? directorId, string genre)
+    internal MovieModel(int? id, string name, string description, PEGIAge pegiAge, int durationInMin, int? directorId, Genre genre)
     {
         ID = id;
         Name = name;
@@ -111,9 +125,9 @@ public class MovieModel : DbItem
     {
 
     }
-    public MovieModel(string name, string description, int pegiAge, int durationInMin, string genre)
+    public MovieModel(string name, string description, int pegiAge, int durationInMin, Genre genre)
     : this(null, name, description, pegiAge, durationInMin, null, genre) { }
-    public MovieModel(string name, string description, int pegiAge, int durationInMin, string genre, DirectorModel dir, List<ActorModel> actors)
+    public MovieModel(string name, string description, int pegiAge, int durationInMin, Genre genre, DirectorModel dir, List<ActorModel> actors)
     : this(null, name, description, pegiAge, durationInMin, dir.ID, genre)
     {
         Director = dir;
@@ -124,7 +138,7 @@ public class MovieModel : DbItem
     public void editDescription(string newDescription) => this.Description = newDescription;
     public void editpegiAge(int newpegiAge) => this.PegiAge = (PEGIAge)newpegiAge;
     public void editDuration(int newDuration) => this.DurationInMin = newDuration;
-    public void editGenre(string newGenre) => this.Genre = newGenre;
+    public void editGenre(Genre newGenre) => this.Genre = newGenre;
     public void editDirector(DirectorModel newDirector) => this.Director = newDirector;
     public void addActor(ActorModel newActor)
     {

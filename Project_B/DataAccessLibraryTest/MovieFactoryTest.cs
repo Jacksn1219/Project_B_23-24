@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.Json;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
@@ -35,7 +36,7 @@ namespace DataAccessLibraryTest
         public void TestAddMovieNoOtherFactories()
         {
             MovieModel movie = new MovieModel(
-                "Shrek", "the best movie", 7, 123, "art"
+                "Shrek", "the best movie", 7, 123, Genre.Historical
             );
             Assert.IsTrue(_mf.ItemToDb(movie));
             Assert.IsNotNull(movie.ID);
@@ -48,7 +49,7 @@ namespace DataAccessLibraryTest
                 new ActorModel("lord farquad", "", 45)
             };
             DirectorModel dir = new("someone", "I used to know", 0);
-            MovieModel movie = new MovieModel("shrek remastered", "remaster", 18, 321, "horor", dir, actors);
+            MovieModel movie = new MovieModel("shrek remastered", "remaster", 18, 321, Genre.Horror, dir, actors);
             Assert.IsTrue(_mf.ItemToDb(movie));
             Assert.IsNotNull(movie.ID);
             Assert.IsNotNull(actors[0].ID);
@@ -58,7 +59,7 @@ namespace DataAccessLibraryTest
         public void TestGetMovieNoOtherFactories()
         {
             MovieModel movie = new MovieModel(
-                "Toy story", "movie", 3, 211, "child"
+                "Toy story", "movie", 3, 211, Genre.Kids
             );
             Assert.IsTrue(_mf.CreateItem(movie));
             var newMovie = _mf.GetItemFromId(movie.ID ?? 1);
@@ -73,7 +74,7 @@ namespace DataAccessLibraryTest
             };
             DirectorModel dir = new("dude", "a dude", 32);
             MovieModel movie = new MovieModel(
-                "toy story 2", "now with actors and director", 3, 343, "kids", dir, actors
+                "toy story 2", "now with actors and director", 3, 343, Genre.Kids, dir, actors
             );
             Assert.IsTrue(_mf.ItemToDb(movie));
             var newMovie = _mf.GetItemFromId(movie.ID ?? 1);
@@ -87,10 +88,10 @@ namespace DataAccessLibraryTest
         public void TestUpdateMovieNoOtherFactories()
         {
             MovieModel movie = new MovieModel(
-                "John Wick", "Baba Yaga", 18, 300, "mindless violence"
+                "John Wick", "Baba Yaga", 18, 300, Genre.Action_and_adventure
             );
             Assert.IsTrue(_mf.ItemToDb(movie));
-            movie.Genre = "mindfull violence";
+            movie.Genre = Genre.Action_and_adventure;
             Assert.IsTrue(_mf.ItemToDb(movie));
             var newMovie = _mf.GetItemFromId(movie.ID ?? 1);
             Assert.AreEqual(newMovie.Genre, movie.Genre);
@@ -99,7 +100,7 @@ namespace DataAccessLibraryTest
         public void TestUpdateMovieWithOtherFactories()
         {
             MovieModel movie = new MovieModel(
-                "John Wick 2", "Baba Yaga 2 electric bogalo", 18, 306, "violence"
+                "John Wick 2", "Baba Yaga 2 electric bogalo", 18, 306, Genre.Violence
             );
             Assert.IsTrue(_mf.ItemToDb(movie));
             movie.Actors.Add(
@@ -116,7 +117,7 @@ namespace DataAccessLibraryTest
                 "hanz", "vlammenwerfer", 100
             );
             Assert.IsTrue(_mf.ItemToDb(movie));
-            var newMovie = _mf.GetItemFromId(movie.ID ?? 1);
+            var newMovie = _mf.GetItemFromId(movie.ID ?? 1, 99);
             Assert.AreEqual(newMovie.Genre, movie.Genre);
             var dir = _df.GetItemFromId(newMovie.DirectorID ?? 1);
             Assert.AreEqual(dir.Name, movie.Director.Name);
