@@ -1,4 +1,5 @@
 using System.CodeDom;
+using System.Globalization;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
@@ -377,8 +378,12 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         return _db.ReadData<TimeTableModel>
         (
             @"SELECT ID FROM TimeTable
-            WHERE MovieID = $1",
-            new Dictionary<string, dynamic?>() { { "$1", item.ID } }
+            WHERE MovieID = $1 AND StartDate > $2",
+            new Dictionary<string, dynamic?>()
+            {
+                { "$1", item.ID },
+                {"$2", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
+            }
         ).Length > 0;
     }
 }
