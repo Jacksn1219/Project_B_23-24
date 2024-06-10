@@ -790,15 +790,11 @@ namespace Project_B
                     startDate = Universal.GetDateTimeFromUser();
                     if (selectedTimeTable.Movie is null)
                     {
-                        startDate = y ?? DateTime.Now;
-                        endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-                        selectedTimeTable.StartDate = startDate.ToString(CultureInfo.InvariantCulture);
-                        selectedTimeTable.EndDate = endDate.ToString(CultureInfo.InvariantCulture);
                         break;
                     }
                     endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-                    selectedTimeTable.StartDate = startDate.ToString("dd-MM-yyyy HH:mm"); ;
-                    selectedTimeTable.EndDate = endDate.ToString("dd-MM-yyyy HH:mm"); ;
+                    selectedTimeTable.StartDate = startDate.ToString(CultureInfo.InvariantCulture);
+                    selectedTimeTable.EndDate = endDate.ToString(CultureInfo.InvariantCulture);
                     break;
 
                 }
