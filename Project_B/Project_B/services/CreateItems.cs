@@ -637,50 +637,47 @@ namespace Project_B
             {
                 startDate = Universal.GetDateTimeFromUser();
                 endDate = startDate.AddMinutes(selectedMovie.DurationInMin + 15); //15 min delay between movies
-                if (startDate.Date > now.Date &&
-                    startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
-                    endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
+
+                if (startDate <= now)
+                {
+                    Console.WriteLine(Universal.WriteColor("The start date must be in the future.", ConsoleColor.DarkRed));
+                }
+                else if (startDate.TimeOfDay < new TimeSpan(10, 0, 0))
+                {
+                    Console.WriteLine(Universal.WriteColor("The start time must be no earlier than 10:00.", ConsoleColor.DarkRed));
+                }
+                else if (startDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                {
+                    Console.WriteLine(Universal.WriteColor("The start time must be no later than 22:00.", ConsoleColor.DarkRed));
+                }
+                else if (endDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                {
+                    Console.WriteLine(Universal.WriteColor("The end time must be no later than 22:00.", ConsoleColor.DarkRed));
+                }
+                else
                 {
                     if (selectedRoom.ID == null)
                     {
                         _rf.ItemToDb(selectedRoom);
                         if (selectedRoom.ID == null)
                         {
-                            System.Console.WriteLine("this room is invalid");
-                            System.Console.ReadKey();
+                            Console.WriteLine("This room is invalid");
+                            Console.ReadKey();
                             return;
                         }
-
-                        }                                                   //selected room id cant be null after checks, but for some reason it is still nullable
-                        var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, startDate, endDate);
-                        if (collisions.Length > 0)
+                    }
+                    var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, startDate, endDate);
+                    if (collisions.Length > 0)
+                    {
+                        Console.WriteLine(Universal.WriteColor("This timetable item is colliding with these timetables:", ConsoleColor.DarkRed));
+                        foreach (var tt in collisions)
                         {
-                            System.Console.WriteLine(Universal.WriteColor("this timetable item is coliding with these timetables:", ConsoleColor.DarkRed));
-                            foreach (var tt in collisions)
-                            {
-                                System.Console.WriteLine(tt.ToString());
-                            }
-                            System.Console.WriteLine("please fill in another date:");
-                            continue;
+                            Console.WriteLine(tt.ToString());
                         }
-                        break;
+                        Console.WriteLine("Please enter another date:");
+                        continue;
                     }
-                    if (startDate.Date <= now.Date)
-                    {
-                        System.Console.WriteLine(Universal.WriteColor("The start date must be in the future", ConsoleColor.DarkRed));
-                    }
-                    if (startDate.Date <= now.Date && startDate.TimeOfDay < new TimeSpan(10, 0, 0) && endDate.TimeOfDay > new TimeSpan(22, 0, 0))
-                    {
-                        System.Console.WriteLine(Universal.WriteColor("The start date must be in the future and it needs to be in between 10:00 and 22:00 (The movie must end by 22:00).", ConsoleColor.DarkRed));
-                    }
-                    if (startDate.TimeOfDay < new TimeSpan(10, 0, 0) || endDate.TimeOfDay > new TimeSpan(22, 0, 0))
-                    {
-                        System.Console.WriteLine(Universal.WriteColor("The movie must be between 10:00 and 22:00. And it must end by 22:00.", ConsoleColor.DarkRed));
-                    }
-                }
-                else
-                {
-                    Console.WriteLine(Universal.WriteColor("Invalid date format. Please enter the start date (dd-MM-yyyy HH:mm):", ConsoleColor.DarkRed));
+                    break;
                 }
             }
 
@@ -697,6 +694,7 @@ namespace Project_B
             }
             Console.ReadKey();
         }
+
 
         public void EditTimeTable()
         {
@@ -789,16 +787,40 @@ namespace Project_B
                     }
                 }
                 catch { }
+
                 RoomModel? selectedRoom = null;
-                InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a new room:"), null);
-                foreach (RoomModel room in roomList)
+                bool validSelection = false;
+
+                while (!validSelection)
                 {
-                    roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
-                }
-                roomMenu.UseMenu();
-                if (selectedRoom == null)
-                {
-                    return;
+                    InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a new room:"), null);
+                    
+                    foreach (RoomModel room in roomList)
+                    {
+                        roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
+                    }
+
+                    roomMenu.UseMenu();
+
+                    if (selectedRoom == null)
+                    {
+                        Console.WriteLine(Universal.WriteColor("No room selected. Please select a room.", ConsoleColor.DarkRed));
+                        Universal.PressAnyKeyWaiter();
+                        continue;
+                    }
+
+                    var existingTimeTables = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, selectedTimeTable.DateTimeStartDate, selectedTimeTable.DateTimeEndDate);
+                    bool conflict = existingTimeTables.Any(t => t.RoomID == selectedRoom.ID && t.StartDate == selectedTimeTable.StartDate);
+
+                    if (conflict)
+                    {
+                        Console.WriteLine(Universal.WriteColor("The selected room is already booked at the specified time. Please choose another room.", ConsoleColor.DarkRed));
+                        Universal.PressAnyKeyWaiter();
+                    }
+                    else
+                    {
+                        validSelection = true;
+                    }
                 }
 
                 selectedTimeTable.Room = selectedRoom;
@@ -806,27 +828,73 @@ namespace Project_B
             });
             editMenu.Add("Start Date", (x) =>
             {
-                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("dd-MM-yyyy HH:mm")}" + "\n" + "Enter the new start date (dd-MM-yyyy HH:mm):");
+                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("M/d/yyyy HH:mm")}");
                 DateTime startDate;
                 DateTime endDate;
                 DateTime now = DateTime.Now;
-                while (true)
+                bool validDate = false;
+
+                while (!validDate)
                 {
                     startDate = Universal.GetDateTimeFromUser();
-                    if (selectedTimeTable.Movie is null)
+                    endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin + 15);
+
+                    if (startDate < now)
                     {
-                        startDate = y ?? DateTime.Now;
+                        Console.WriteLine(Universal.WriteColor("The start date cannot be in the past. Please enter a valid date.", ConsoleColor.DarkRed));
+                        continue;
+                    }
+
+                    if (startDate.Date == now.Date)
+                    {
+                        Console.WriteLine(Universal.WriteColor("The start date cannot be today. Please enter a different date.", ConsoleColor.DarkRed));
+                        continue;
+                    }
+
+                    if (startDate.TimeOfDay < new TimeSpan(10, 0, 0) || endDate.TimeOfDay > new TimeSpan(22, 0, 0) || startDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                    {
+                        Console.WriteLine(Universal.WriteColor("The start date must be between 10:00 and 22:00. Please enter a valid time.", ConsoleColor.DarkRed));
+                        continue;
+                    }
+
+                    var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedTimeTable.Room.ID ?? -1, startDate, endDate);
+                    if (collisions.Length > 0)
+                    {
+                        Console.WriteLine(Universal.WriteColor("This timetable item is colliding with these timetables:", ConsoleColor.DarkRed));
+                        foreach (var tt in collisions)
+                        {
+                            Console.WriteLine(tt.ToString());
+                        }
+                        Console.WriteLine("Please enter another date.");
+                        continue;
+                    }
+
+                    if (selectedTimeTable.Movie != null)
+                    {
                         endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
+                        if (endDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                        {
+                            Console.WriteLine(Universal.WriteColor("The end date must be before 22:00. Please enter a valid start time.", ConsoleColor.DarkRed));
+                            continue;
+                        }
+
                         selectedTimeTable.StartDate = startDate.ToString(CultureInfo.InvariantCulture);
                         selectedTimeTable.EndDate = endDate.ToString(CultureInfo.InvariantCulture);
-                        break;
+                        validDate = true; // valid date and time found
                     }
-                    endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-                    selectedTimeTable.StartDate = startDate.ToString("dd-MM-yyyy HH:mm"); ;
-                    selectedTimeTable.EndDate = endDate.ToString("dd-MM-yyyy HH:mm"); ;
-                    break;
-
                 }
+
+                if (_ttf.ItemToDb(selectedTimeTable))
+                {
+                    Console.WriteLine("Updated timetable successfully.");
+                    Console.WriteLine("Press 'Enter' to go back in the menu.");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to update timetable.");
+                    Console.WriteLine("Press 'Enter' to go back in the menu.");
+                }
+                Console.ReadKey();
             });
             editMenu.UseMenu();
 
@@ -1159,7 +1227,7 @@ namespace Project_B
             
             if (timeTableList.Count == 0)
             {
-                Console.WriteLine("No timetables created.(You need to plan a movie first to edit a timetable.)");
+                Console.WriteLine("There are currently no movies planned at the cinema");
                 Console.ReadKey();
                 return;
             }
