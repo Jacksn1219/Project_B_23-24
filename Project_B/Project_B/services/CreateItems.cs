@@ -1121,5 +1121,52 @@ namespace Project_B
             Console.WriteLine($"The changes to {actorToEdit.Name} have been saved.");
             Universal.PressAnyKeyWaiter();
         }
+
+        public void DisplayTable()
+        {
+            List<TimeTableModel> timeTableList = new List<TimeTableModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var tts = _ttf.GetItems(100, page, 6);
+                    timeTableList.AddRange(tts);
+                    page++;
+                    if (tts.Length < 100) break;
+                }
+            }
+            catch { }
+            
+            if (timeTableList.Count == 0)
+            {
+                Console.WriteLine("No timetables created.(You need to plan a movie first to edit a timetable.)");
+                Console.ReadKey();
+                return;
+            }
+
+            DateTime currentDate = DateTime.Now;
+
+            timeTableList = timeTableList.Where(t => t.DateTimeStartDate >= currentDate && t.DateTimeStartDate < currentDate.AddDays(28)).ToList();
+
+            timeTableList = timeTableList.OrderBy(t => t.DateTimeStartDate).ToList();
+
+            TimeTableModel? selectedTimeTable = null;
+
+            InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Movies at cinema YourEyes:"), null);
+
+            foreach (TimeTableModel timeTable in timeTableList)
+            {
+                timeTableMenu.Add($"Movie: {timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
+            }
+            
+            timeTableMenu.UseMenu();
+            
+            if (selectedTimeTable == null)
+            {
+                return;
+            }
+        }
+
     }
 }
