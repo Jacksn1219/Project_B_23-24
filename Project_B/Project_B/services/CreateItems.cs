@@ -812,8 +812,8 @@ namespace Project_B
                     {
                         startDate = y ?? DateTime.Now;
                         endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-                        selectedTimeTable.StartDate = startDate.ToString("dd-MM-yyyy HH:mm");;
-                        selectedTimeTable.EndDate = endDate.ToString("dd-MM-yyyy HH:mm");;
+                        selectedTimeTable.StartDate = startDate.ToString(CultureInfo.InvariantCulture);
+                        selectedTimeTable.EndDate = endDate.ToString(CultureInfo.InvariantCulture);
                         break;
                     }
                 }

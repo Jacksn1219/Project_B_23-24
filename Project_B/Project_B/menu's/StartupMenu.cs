@@ -13,7 +13,7 @@ public static class StartupMenu
         //Console.WriteLine("                                          [w], [s], [a], [d], [enter], [escape]\n\n\n\n\n\n\n\n\n");
         Console.Write($"\n\n\n\n\n                                                    Loading data...");
 
-        Universal.WriteColor("\n\n\n\n\n\n\n\n\n                                  [", ConsoleColor.Blue);
+        Universal.WriteColor("\n\n\n\n\n\n\n\n\n                               [", ConsoleColor.Blue);
         Console.Write(" Use arrow keys, w, s, a, d, Enter, Esc to navigate menu's ");
         Universal.WriteColor("]", ConsoleColor.Blue);
 
