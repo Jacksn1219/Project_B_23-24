@@ -4,8 +4,6 @@ using Project_B.services;
 using Serilog;
 using DataAccessLibrary.logic;
 using Project_B.menu_s;
-using System.Diagnostics;
-using Microsoft.Extensions.Logging;
 using static Project_B.Universal;
 
 namespace Project_B
@@ -50,7 +48,7 @@ namespace Project_B
                 //user options
                 new Dictionary<string, Action<string>>(){
                     {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
-                    {"Browse movies", (x) => { createItems.browseMovies(); }},
+                    {"Browse movies", (x) => {createItems.browseMovies();}},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation();}},
                     {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
                 },
@@ -66,7 +64,7 @@ namespace Project_B
                             {"Edit Movie", (x) => {createItems.EditMovie();}},
                             {"Remove Movie", (x) => {createItems.DeleteMovie();}},
                             {"\n" + centerToScreen("Plan a movie"), (x) => {createItems.CreateTimeTable();}},
-                            {"Edit Timetable", (x) => {createItems.EditTimeTable();}},
+                            {"Edit planned movie", (x) => {createItems.EditTimeTable();}},
                             {"\n" + centerToScreen("Add Director"), (x) => {createItems.CreateDirector();}},
                             {"Edit Director", (x) => {createItems.EditDirector();}},
                             {"\n" + centerToScreen("Add Actor"), (x) => {createItems.CreateActor();}},
