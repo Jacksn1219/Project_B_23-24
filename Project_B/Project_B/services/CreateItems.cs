@@ -113,6 +113,8 @@ namespace Project_B
             }
             catch { }
 
+            directorList = directorList.OrderBy(m => m.Name).ToList();
+
             // Menu to chose director
             InputMenu directorMenu = new InputMenu(Universal.centerToScreen("Choose a director:"), null);
             foreach (DirectorModel director in directorList)
@@ -155,6 +157,8 @@ namespace Project_B
                 }
             }
             catch { }
+
+            actorList = actorList.OrderBy(m => m.Name).ToList();
 
             // Menu to chose director
             InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
@@ -306,6 +310,8 @@ namespace Project_B
                 }
                 catch { }
 
+                directorList = directorList.OrderBy(m => m.Name).ToList();
+
                 //Get directors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
                 movieToEdit.Director = _df.GetItemFromId(movieToEdit.DirectorID ?? 1);
 
@@ -357,6 +363,8 @@ namespace Project_B
                         }
                     }
                     catch { }
+
+                    actorList = actorList.OrderBy(m => m.Name).ToList();
 
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
                     //_mf.AddRelatedActors(movieToEdit); // this is built into _mf.ItemToDb() if  deepcopy greater than 0.
@@ -495,6 +503,8 @@ namespace Project_B
             }
             catch { }
 
+            movieList = movieList.OrderBy(x => x.Name).ToList();
+
             MovieModel? selectedMovie = null;
             InputMenu movieMenu = new InputMenu("Select a movie to remove", null);
             foreach (var movie in movieList) { movieMenu.Add(movie.Name, (x) => { selectedMovie = movie; }); }
@@ -541,6 +551,8 @@ namespace Project_B
                 }
             }
             catch { }
+
+            timetableList = timetableList.OrderBy(x => x.StartDate).ToList();
 
             ReservationModel[] ReservationsToKeep = reservationList.Where(x => x.TimeTable.MovieID == movieToRemove.ID).ToArray();
             TimeTableModel[] timetablesToKeep = ReservationsToKeep.Select(x => x.TimeTable).ToArray();
@@ -639,23 +651,36 @@ namespace Project_B
                             return;
                         }
 
-                    }                                                   //selected room id cant be null after checks, but for some reason it is still nullable
-                    var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, startDate, endDate);
-                    if (collisions.Length > 0)
-                    {
-                        System.Console.WriteLine("this timetable item is coliding with these timetables:");
-                        foreach (var tt in collisions)
+                        }                                                   //selected room id cant be null after checks, but for some reason it is still nullable
+                        var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, startDate, endDate);
+                        if (collisions.Length > 0)
                         {
-                            System.Console.WriteLine(tt.ToString());
+                            System.Console.WriteLine(Universal.WriteColor("this timetable item is coliding with these timetables:", ConsoleColor.DarkRed));
+                            foreach (var tt in collisions)
+                            {
+                                System.Console.WriteLine(tt.ToString());
+                            }
+                            System.Console.WriteLine("please fill in another date:");
+                            continue;
                         }
-                        System.Console.WriteLine("please fill in another date:");
-                        continue;
+                        break;
                     }
-                    break;
+                    if (startDate.Date <= now.Date)
+                    {
+                        System.Console.WriteLine(Universal.WriteColor("The start date must be in the future", ConsoleColor.DarkRed));
+                    }
+                    if (startDate.Date <= now.Date && startDate.TimeOfDay < new TimeSpan(10, 0, 0) && endDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                    {
+                        System.Console.WriteLine(Universal.WriteColor("The start date must be in the future and it needs to be in between 10:00 and 22:00 (The movie must end by 22:00).", ConsoleColor.DarkRed));
+                    }
+                    if (startDate.TimeOfDay < new TimeSpan(10, 0, 0) || endDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                    {
+                        System.Console.WriteLine(Universal.WriteColor("The movie must be between 10:00 and 22:00. And it must end by 22:00.", ConsoleColor.DarkRed));
+                    }
                 }
                 else
                 {
-                    Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (dd-MM-yyyy HH:mm):", ConsoleColor.DarkRed));
+                    Console.WriteLine(Universal.WriteColor("Invalid date format. Please enter the start date (dd-MM-yyyy HH:mm):", ConsoleColor.DarkRed));
                 }
             }
 
@@ -956,6 +981,8 @@ namespace Project_B
             }
             catch { }
 
+            directorList = directorList.OrderBy(x => x.Name).ToList();
+
             //movie to edit
             DirectorModel? directorToEdit = null;
 
@@ -1059,6 +1086,8 @@ namespace Project_B
             }
             catch { }
 
+            actorList = actorList.OrderBy(x => x.Name).ToList();
+
             //movie to edit
             ActorModel? actorToEdit = null;
 
@@ -1110,6 +1139,52 @@ namespace Project_B
 
             Console.WriteLine($"\nThe changes to {actorToEdit.Name} have been saved.");
             Universal.PressAnyKeyWaiter();
+        }
+
+        public void DisplayTable()
+        {
+            List<TimeTableModel> timeTableList = new List<TimeTableModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var tts = _ttf.GetItems(100, page, 6);
+                    timeTableList.AddRange(tts);
+                    page++;
+                    if (tts.Length < 100) break;
+                }
+            }
+            catch { }
+            
+            if (timeTableList.Count == 0)
+            {
+                Console.WriteLine("No timetables created.(You need to plan a movie first to edit a timetable.)");
+                Console.ReadKey();
+                return;
+            }
+
+            DateTime currentDate = DateTime.Now;
+
+            timeTableList = timeTableList.Where(t => t.DateTimeStartDate >= currentDate && t.DateTimeStartDate < currentDate.AddDays(28)).ToList();
+
+            timeTableList = timeTableList.OrderBy(t => t.DateTimeStartDate).ToList();
+
+            TimeTableModel? selectedTimeTable = null;
+
+            InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Movies at cinema YourEyes:"), null);
+
+            foreach (TimeTableModel timeTable in timeTableList)
+            {
+                timeTableMenu.Add($"Movie: {timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
+            }
+            
+            timeTableMenu.UseMenu();
+            
+            if (selectedTimeTable == null)
+            {
+                return;
+            }
         }
     }
 }

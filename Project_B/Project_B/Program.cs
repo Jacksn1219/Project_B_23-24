@@ -47,7 +47,7 @@ namespace Project_B
             MainMenu.UseMenu(
                 //user options
                 new Dictionary<string, Action<string>>(){
-                    {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
+                    {"Schedule", (x) => {createItems.DisplayTable();}},
                     {"Browse movies", (x) => {createItems.browseMovies();}},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation();}},
                     {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}

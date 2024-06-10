@@ -297,8 +297,6 @@ public class ReservationService
         tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
         if (tt == null)
         {
-            System.Console.WriteLine("failed to get timetable");
-            Console.ReadLine();
             return;
         }
         else if (tt != null)
