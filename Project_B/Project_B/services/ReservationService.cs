@@ -260,7 +260,7 @@ public class ReservationService
         if (timetables == null || timetables.Length == 0)
         {
             System.Console.WriteLine("there are no movies planned today");
-            Console.ReadKey();
+            Universal.PressAnyKeyWaiter();
             return null;
         }
         foreach (TimeTableModel timeTable in timetables)

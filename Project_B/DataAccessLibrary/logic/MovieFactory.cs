@@ -1,6 +1,7 @@
 using System.CodeDom;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
+using DataAccessLibrary.models;
 
 public class MovieFactory : IDbItemFactory<MovieModel>
 {
@@ -56,7 +57,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 )"
             );
         }
-        catch(Exception ex){
+        catch (Exception ex)
+        {
             _logger.Fatal(ex, "failed to create table Movie and/or ActorInMovie");
             throw;
         }
@@ -72,10 +74,10 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// <returns>the first movie returned from the query</returns>
     public MovieModel? GetItemFromId(int id, int deepcopyLv = 0)
     {
-        if(deepcopyLv < 0) return null;
+        if (deepcopyLv < 0) return null;
         try
         {
-            
+
             var toReturn = _db.ReadData<MovieModel>(
             @"SELECT * FROM Movie
             WHERE ID=$1",
@@ -99,9 +101,9 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// </summary>
     /// <param name="item">the movie to update or create</param>
     /// <returns>true if succesfull, else false</returns>
-    public bool ItemToDb(MovieModel item,int deepcopyLv = 99 )
+    public bool ItemToDb(MovieModel item, int deepcopyLv = 99)
     {
-        if(deepcopyLv < 0) return true;
+        if (deepcopyLv < 0) return true;
         bool directorchanged = item.Director != null && item.Director.IsChanged;
         bool actorsChanged = false;
         foreach (var act in item.Actors)
@@ -132,7 +134,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
         {
             if (item.ID != null) throw new InvalidOperationException("this movie already exists in the db");
             if (!item.IsChanged) return true;
-            if(!DependingItemsToDb(item, deepcopyLv - 1)) return false;
+            if (!DependingItemsToDb(item, deepcopyLv - 1)) return false;
             _db.OpenConnection();
             item.ID = _db.CreateData(
                 @"INSERT INTO Movie(
@@ -160,7 +162,8 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (item.ID > 0) item.IsChanged = false;
             return item.ID > 0;
         }
-        catch (Exception ex){
+        catch (Exception ex)
+        {
             _logger.Warning(ex, "failed to create a movie");
             return false;
         }
@@ -177,7 +180,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
     /// <exception cref="InvalidOperationException">if ID of the movie is null</exception>
     public bool UpdateItem(MovieModel item, int deepcopyLv = 99)
     {
-        if(deepcopyLv < 0) return true;
+        if (deepcopyLv < 0) return true;
         bool dontClose = _db.IsOpen;
         try
         {
@@ -209,7 +212,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (toReturn) item.IsChanged = false;
             return toReturn;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.Warning(ex, $"failed to update movie with ID {item.ID}");
             return false;
@@ -219,18 +222,19 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             if (!dontClose) _db.CloseConnection();
         }
     }
-    private bool DependingItemsToDb(MovieModel item, int deepcopyLv){
+    private bool DependingItemsToDb(MovieModel item, int deepcopyLv)
+    {
         if (item.DirectorID == null) return true;
         if (item.Director != null)
         {
-            if(!_df.ItemToDb(item.Director, deepcopyLv)) return false;
+            if (!_df.ItemToDb(item.Director, deepcopyLv)) return false;
             item.DirectorID = item.Director.ID;
         }
         return true;
     }
     private bool RelatedItemsToDb(MovieModel item, int deepcopyLv)
     {
-        if(deepcopyLv < 0) return true;
+        if (deepcopyLv < 0) return true;
         bool dontClose = _db.IsOpen;
         try
         {
@@ -351,7 +355,7 @@ public class MovieFactory : IDbItemFactory<MovieModel>
                 }
             );
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.Warning(ex, $"Failed to get actors of Movie with ID {movie.ID}");
             return Array.Empty<ActorModel>();
@@ -366,5 +370,15 @@ public class MovieFactory : IDbItemFactory<MovieModel>
             ItemToDb(item, deepcopyLv);
         }
         return true;
+    }
+    public bool IsInTimeTable(MovieModel item)
+    {
+        if (item.ID is null) return false;
+        return _db.ReadData<TimeTableModel>
+        (
+            @"SELECT ID FROM TimeTable
+            WHERE MovieID = $1",
+            new Dictionary<string, dynamic?>() { { "$1", item.ID } }
+        ).Length > 0;
     }
 }

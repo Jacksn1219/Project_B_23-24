@@ -424,29 +424,13 @@ namespace Project_B
                 addOrRemove.UseMenu();
             });
 
-            // Getting all Reservations to check if its planned
-            List<ReservationModel> reservationList = new List<ReservationModel>();
-            try
-            {
-                int page = 1;
-                while (true)
-                {
-                    ReservationModel[] reservations = _rvf.GetItems(100, page, 6);
-                    reservationList.AddRange(reservations);
-                    page++;
-                    if (reservations.Length < 100) break;
-                }
-            }
-            catch { }
-
             // Menu to chose Movie
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select movie to edit:"));
             foreach (MovieModel movie in movieList)
             {
                 movieMenu.Add(movie.Name ?? "", (x) =>
                 {
-                    ReservationModel[] ReservationsToKeep = reservationList.Where(x => x.TimeTable.MovieID == movie.ID).ToArray();
-                    if (ReservationsToKeep.Count() > 0)
+                    if (_mf.IsInTimeTable(movie))
                     {
                         Console.WriteLine("This movie has been planned and thus cannot be altered.");
                         Universal.PressAnyKeyWaiter();
@@ -455,10 +439,10 @@ namespace Project_B
 
                     movieToEdit = movie;
                     whatToEditMenu.UseMenu();
+                    if (!movieToEdit.IsChanged) System.Console.WriteLine("no changes where made");
+                    else if (_mf.ItemToDb(movieToEdit)) Console.WriteLine($"The changes to {movieToEdit.Name} have been saved.");
+                    else System.Console.WriteLine("failed to save the changes to the movie");
 
-                    _mf.ItemToDb(movieToEdit);
-
-                    Console.WriteLine($"The changes to {movieToEdit.Name} have been saved.");
                     Universal.PressAnyKeyWaiter();
                 });
             }
@@ -833,7 +817,7 @@ namespace Project_B
             movieList = movieList.OrderBy(m => m.Name).ToList();
 
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Browse Movies:"), null);
-            movieMenu.Add("> All movies <", (x) => 
+            movieMenu.Add("> All movies <", (x) =>
             {
                 InputMenu allMovieMenu = new InputMenu(Universal.centerToScreen("All movies are here:"));
                 foreach (MovieModel movie in movieList)

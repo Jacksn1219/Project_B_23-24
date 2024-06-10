@@ -28,13 +28,9 @@ public class HistoryService
     {
         InputMenu HistoryMenu = new InputMenu("useLambda");
 
-        DateTime startDate;
-        Console.WriteLine("Enter the start date (yyyy-MM-dd):");
-        DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate);
+        DateTime startDate = Universal.GetDateTimeFromUser();
 
-        DateTime endDate;
-        Console.WriteLine("\nEnter the end date (yyyy-MM-dd):");
-        DateTime.TryParse(Universal.takeUserInput("Type..."), out endDate);
+        DateTime endDate = Universal.GetDateTimeFromUser();
 
         HistoryMenu.Add(new Dictionary<string, Action<string>>{
             {"Profits", (x) => {
@@ -48,10 +44,12 @@ public class HistoryService
 
         HistoryMenu.UseMenu(() => Universal.printAsTitle("History"));
     }
-    public void showReservedSeatsPerTimetable() {
+    public void showReservedSeatsPerTimetable()
+    {
         _rs.showReservedSeatsPerTimetable(_rf, _sf, _cf, _reservationFactory, _rs);
     }
-    private ReservationModel[] GetReservationHistory(DateTime startDate, DateTime endDate) {
+    private ReservationModel[] GetReservationHistory(DateTime startDate, DateTime endDate)
+    {
         return _reservationFactory.GetReservationsBetweenDates(100, startDate, endDate, 1, 69);
         //return _tf.GetTimeTablesInRoomBetweenDates(startDate, endDate);
     }
@@ -59,7 +57,7 @@ public class HistoryService
     {
         ReservationModel[] reservationModels = GetReservationHistory(startDate, endDate);
         List<SeatModel> seats = new List<SeatModel>();
-        foreach(ReservationModel item in reservationModels)
+        foreach (ReservationModel item in reservationModels)
         {
             seats.AddRange(item.ReservedSeats);
         }
@@ -73,7 +71,7 @@ public class HistoryService
         Console.WriteLine(SeatPriceCalculator.ShowCalculation(seats));
 
         Universal.PressAnyKeyWaiter();
-        
+
         return Convert.ToInt32(total);
     }
     public void GetScheduleBetweenDates(DateTime startDate, DateTime endDate)
