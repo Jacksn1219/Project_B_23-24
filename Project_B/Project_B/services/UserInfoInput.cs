@@ -18,7 +18,7 @@ namespace Project_B.services
 
             // var userInfo = UserInfoInput.InitialUserInfo(movie);
             if (tt.Movie == null) return (null, "");
-            (CustomerModel? customer, string note) userInfo = InitialUserInfo(tt.Movie);
+            (CustomerModel? customer, string note) userInfo = InitialUserInfo(tt.Movie, cf);
             if (userInfo.customer == null) return (null, "");
 
             // Display initial info

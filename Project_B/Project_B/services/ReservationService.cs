@@ -11,12 +11,14 @@ public class ReservationService
     private readonly MovieFactory _mf;
     private readonly TimeTableFactory _tf;
     private readonly RoomFactory _roomf;
-    public ReservationService(ReservationFactory rf, MovieFactory mf, TimeTableFactory tf, RoomFactory roomf)
+    private readonly CustomerFactory _cf;
+    public ReservationService(ReservationFactory rf, MovieFactory mf, TimeTableFactory tf, RoomFactory roomf, CustomerFactory cf)
     {
         _rf = rf;
         _mf = mf;
         _tf = tf;
         _roomf = roomf;
+        _cf = cf;
     }
     //add methodes to get and add reservations
     public void CreateReservation()
@@ -96,7 +98,7 @@ public class ReservationService
         if (tt.Room == null) { return; }
 
         //fill in user data
-        (CustomerModel? customer, string note) userInfo = UserInfoInput.GetUserInfo(tt);
+        (CustomerModel? customer, string note) userInfo = UserInfoInput.GetUserInfo(tt, _cf);
         if (userInfo.customer == null) return;
 
         System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(selectedSeats));
