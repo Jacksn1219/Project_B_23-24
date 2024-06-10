@@ -125,7 +125,7 @@ namespace DataAccessLibrary.logic
             {
                 return _db.ReadData<CustomerModel>(
                     $"SELECT * FROM Customer LIMIT {count} OFFSET {count * page - count}"
-                );
+                ).OrderBy(x => x.Name).ToArray();
             }
             catch (Exception ex)
             {

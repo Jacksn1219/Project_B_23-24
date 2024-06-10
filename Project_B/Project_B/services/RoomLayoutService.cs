@@ -153,8 +153,15 @@ class RoomLayoutService : LayoutModel
     {
         //List<SeatModel> layout = getSeatModelsFromDatabase(); - Aymane
         //Room room = getRoomFromDatabase(); - Aymane
+        Console.WriteLine("Use arrow keys, w, s, a, d, Enter, Esc to navigate.");
+        Console.WriteLine("Press \"Enter\" to confirm a seat....\n");
+        Universal.PressAnyKeyWaiter();
 
-        InputMenu SeatModelSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth ?? 0);
+        string screenString = "[   Screen   ]";
+        int screenPosition = ((room.RowWidth ?? 1) / 2);
+        for (int i = 0; i < screenPosition; i++) { screenString = "   " + screenString; }
+        screenString = screenString.Substring(7);
+        InputMenu SeatModelSelectionMenu = new InputMenu(screenString, false, room.RowWidth ?? 0);
         //string SeatModelName;
 
         string getType;

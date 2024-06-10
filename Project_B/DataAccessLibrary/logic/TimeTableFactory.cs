@@ -119,7 +119,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 {
                     {"$1", DateTime.MinValue.ToString(CultureInfo.InvariantCulture)},
                 }
-            );
+            ).OrderBy(x => x.StartDate).ToArray();
             if (deepcopyLv < 1) return tts;
             foreach (TimeTableModel tt in tts)
             {
@@ -281,7 +281,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                     {"$1", date.ToString(CultureInfo.InvariantCulture)},
                     {"$2", date.AddDays(1).ToString(CultureInfo.InvariantCulture)}
                 }
-            );
+            ).OrderBy(x => x.StartDate).ToArray();
         }
         catch (Exception ex)
         {
@@ -305,7 +305,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 {"$1", startDate.ToString(CultureInfo.InvariantCulture)},
                 {"$2", endDate.ToString(CultureInfo.InvariantCulture)}
             }
-        );
+        ).OrderBy(x => x.StartDate).ToArray();
     }
     /// <summary>
     /// gets all TimeTables that play in the room with ID: <para>roomID</para>,
@@ -326,7 +326,7 @@ public class TimeTableFactory : IDbItemFactory<TimeTableModel>
                 {"$2", endDate.ToString(CultureInfo.InvariantCulture)},
                 {"$3", roomID}
             }
-        );
+        ).OrderBy(x => x.StartDate).ToArray();
     }
     public void RemoveFromDB(int id)
     {
