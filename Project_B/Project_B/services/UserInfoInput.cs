@@ -3,6 +3,7 @@ using System.Data.SQLite;
 using DataAccessLibrary.models;
 using DataAccessLibrary;
 using Models;
+using DataAccessLibrary.logic;
 
 
 namespace Project_B.services
@@ -10,7 +11,7 @@ namespace Project_B.services
 
     public static class UserInfoInput
     {
-        public static (CustomerModel?, string) GetUserInfo(TimeTableModel tt)
+        public static (CustomerModel?, string) GetUserInfo(TimeTableModel tt, CustomerFactory cf)
         {
             // Get initial user info
             // Call the InitialUserInfo method and pass the movie instance as an argument
@@ -52,23 +53,8 @@ namespace Project_B.services
             return userInfo;
         }
 
-        public static (CustomerModel?, string) InitialUserInfo(MovieModel movie)
+        public static (CustomerModel?, string) InitialUserInfo(MovieModel movie, CustomerFactory cf)
         {
-            string fullName;
-            while (true)
-            {
-                Console.Write("Enter your full name: ");
-                fullName = Universal.takeUserInput("Type...") ?? "";
-                if (IsValidFullName(fullName))
-                {
-                    break;  // Exit the loop if a valid full name is entered
-                }
-                else
-                {
-                    Console.WriteLine("Please enter a valid full name.");
-                }
-            }
-
             string email;
             while (true)
             {
@@ -82,6 +68,28 @@ namespace Project_B.services
                 else
                 {
                     System.Console.WriteLine("Please enter a valid email.");
+                }
+            }
+            //check if customer already exists
+            CustomerModel? existingCustomer = cf.GetCustomerFromEmail(email);
+            if (existingCustomer is not null)
+            {
+                System.Console.WriteLine("Your e-mail is already in the system.");
+                Universal.PressAnyKeyWaiter();
+                return (existingCustomer, "");
+            }
+            string fullName;
+            while (true)
+            {
+                Console.Write("Enter your full name: ");
+                fullName = Universal.takeUserInput("Type...") ?? "";
+                if (IsValidFullName(fullName))
+                {
+                    break;  // Exit the loop if a valid full name is entered
+                }
+                else
+                {
+                    Console.WriteLine("Please enter a valid full name.");
                 }
             }
 

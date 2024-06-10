@@ -27,11 +27,12 @@ public class ReservationService
 
 
         //select timetable
-        TimeTableModel? tt = null;
-
-        tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
-        if (tt == null)
+        TimeTableModel? tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
+        if (tt is null) return; //has stopped reservation
+        if (tt.Room is null || tt.Movie is null)
         {
+            System.Console.WriteLine("this planned movie can't be reserved yet.");
+            Universal.PressAnyKeyWaiter();
             return;
         }
 
