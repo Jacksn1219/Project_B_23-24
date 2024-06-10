@@ -11,6 +11,28 @@ public static class Universal
     /// the datetime format of the user based on his culture
     /// </summary>
     public static string UserDateTimeFormat { get => CultureInfo.CurrentUICulture.DateTimeFormat.FullDateTimePattern; }
+
+    /// <summary>
+    /// Asks the user to fill in a date & time until a valid datetime format is filled in.
+    /// </summary>
+    /// <returns>the DateTime the user filled in</returns>
+    public static DateTime GetDateTimeFromUser()
+    {
+        while (true)
+        {
+            try
+            {
+                Console.WriteLine($"Fill in the date & time (in this format: {UserDateTimeFormat})");
+                return DateTime.Parse(Console.ReadLine() ?? "", CultureInfo.CurrentUICulture);
+            }
+            catch
+            {
+                System.Console.WriteLine(ChangeColour(ConsoleColor.Red) + "Invalid datetime format!" + ChangeColour(ConsoleColor.White));
+            }
+
+        }
+    }
+
     /// <summary>
     /// basic check if mail is valid. (totaly not stolen from the internet)
     /// </summary>

@@ -38,7 +38,7 @@ public class ReservationService
         }
 
         //get reserved seats,
-        
+
         // Loop until the user is done selecting seats
         List<SeatModel> selectedSeats = new List<SeatModel>();
         while (true)
@@ -76,7 +76,7 @@ public class ReservationService
             }
         }
         if (selectedSeats.Count() == 0) return;
-    
+
 
         //get seats
 
@@ -131,7 +131,7 @@ public class ReservationService
                 System.Console.WriteLine("\nInvalid input. Please enter 'Y' or 'N'");
             }
         }
-        
+
     }
 
     public void GetReservationByNumber(int nr)
@@ -157,9 +157,9 @@ public class ReservationService
             DayOfWeek temp = (DayOfWeek)i; //temp DayOfWeekValue. (if you use i it will always be 7)
             selectDay.Add($"{temp}", (x) =>
         {
-                var date = today.AddDays((int)temp - weekdayInt);
-                toReturn = DateOnly.FromDateTime(date);
-                //Console.ReadLine();
+            var date = today.AddDays((int)temp - weekdayInt);
+            toReturn = DateOnly.FromDateTime(date);
+            //Console.ReadLine();
         });
         }
         selectDay.UseMenu();
@@ -170,7 +170,7 @@ public class ReservationService
         bool validInput = false;
         int confirmationNumber = 0;
         while (!validInput)
-    {
+        {
             Console.Write("Please enter your confirmation number: ");
             string userInput = Universal.takeUserInput("Type...");
             if (int.TryParse(userInput, out confirmationNumber))
@@ -230,7 +230,7 @@ public class ReservationService
             string[] reservedSeats = GetSeatLocation(reservation);
             string seats = string.Join(", ", reservedSeats); //reservation.ReservedSeats.Select(seat => seat.Name)
             Console.WriteLine($"Seats: {seats}");
-    }
+        }
         else
         {
             Console.WriteLine("No seats reserved.");
@@ -259,7 +259,7 @@ public class ReservationService
         InputMenu movieSelecter = new InputMenu("| Selecteer een film |", null);
         TimeTableModel[]? timetables = _tf.GetTimeTablesFromDate(weekday);
         //TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
-        if(timetables == null || timetables.Length == 0) 
+        if (timetables == null || timetables.Length == 0)
         {
             System.Console.WriteLine("there are no movies planned today");
             Console.ReadKey();
@@ -313,8 +313,8 @@ public class ReservationService
             throw new ArgumentNullException(nameof(tt), "The tt object is null.");
         }
         if (tt.Room == null) { return; }
-        
-        
+
+
         // Select a reserved seat to show the info of
         SeatModel seat = RoomLayoutService.selectReservedSeatModel(tt.Room) ?? new();
 

@@ -102,11 +102,12 @@ namespace Project_B
             {
                 directorMenu.Add(director.Name, (x) => { Director = director; });
             }
-            directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) => {
+            directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) =>
+            {
                 Director = CreateDirector();
             });
             if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
-            
+
             //Check for if escape has been pushed
             if (Director.Name == null) return;
 
@@ -140,7 +141,8 @@ namespace Project_B
             {
                 actorMenu.Add(actor.Name, (x) => { Actors.Add(actor); });
             }
-            actorMenu.Add("Create a new actor", (x) => {
+            actorMenu.Add("Create a new actor", (x) =>
+            {
                 ActorModel newActor = CreateActor();
                 Actors.Add(newActor);
             });
@@ -295,7 +297,8 @@ namespace Project_B
                     if (movieToEdit.Director != null && movieToEdit.Director.Name == director.Name) continue;
                     directorMenu.Add(director.Name, (x) => { Director = director; });
                 }
-                directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) => {
+                directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) =>
+                {
                     Director = CreateDirector();
 
                     Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
@@ -338,7 +341,8 @@ namespace Project_B
                     {
                         actorMenu.Add(actor.Name, (x) => { movieToEdit.addActor(actor); });
                     }
-                    actorMenu.Add("Create a new actor", (x) => {
+                    actorMenu.Add("Create a new actor", (x) =>
+                    {
                         ActorModel newActor = CreateActor();
                         movieToEdit.addActor(newActor);
 
@@ -439,7 +443,8 @@ namespace Project_B
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select movie to edit:"));
             foreach (MovieModel movie in movieList)
             {
-                movieMenu.Add(movie.Name ?? "", (x) => {
+                movieMenu.Add(movie.Name ?? "", (x) =>
+                {
                     ReservationModel[] ReservationsToKeep = reservationList.Where(x => x.TimeTable.MovieID == movie.ID).ToArray();
                     if (ReservationsToKeep.Count() > 0)
                     {
@@ -565,7 +570,7 @@ namespace Project_B
 
             movieList = movieList.OrderBy(m => m.Name).ToList();
 
-            MovieModel ? selectedMovie = null;
+            MovieModel? selectedMovie = null;
             InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
             foreach (MovieModel movie in movieList)
             {
@@ -591,7 +596,7 @@ namespace Project_B
             }
             catch { }
 
-            RoomModel ? selectedRoom = null;
+            RoomModel? selectedRoom = null;
             InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a room: (Room1, Room2, Room3)"), null);
             foreach (RoomModel room in roomList)
             {
@@ -601,53 +606,45 @@ namespace Project_B
             if (selectedRoom == null)
             { return; }
 
-            Console.WriteLine("Enter the start date (dd-MM-yyyy HH:mm):");
             DateTime startDate;
             DateTime endDate;
             DateTime now = DateTime.Now;
 
             while (true)
             {
-            string userInput = Universal.takeUserInput("Type...");
-            if (DateTime.TryParseExact(userInput, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
+                startDate = Universal.GetDateTimeFromUser();
+                endDate = startDate.AddMinutes(selectedMovie.DurationInMin + 15); //15 min delay between movies
+                if (startDate.Date > now.Date &&
+                    startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
+                    endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
                 {
-                    endDate = startDate.AddMinutes(selectedMovie.DurationInMin + 15); //15 min delay between movies
-                    if (startDate.Date > now.Date &&
-                        startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
-                        endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
+                    if (selectedRoom.ID == null)
                     {
+                        _rf.ItemToDb(selectedRoom);
                         if (selectedRoom.ID == null)
                         {
-                            _rf.ItemToDb(selectedRoom);
-                            if (selectedRoom.ID == null)
-                            {
-                                System.Console.WriteLine("this room is invalid");
-                                System.Console.ReadKey();
-                                return;
-                            }
-
-                        }                                                   //selected room id cant be null after checks, but for some reason it is still nullable
-                        var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, startDate, endDate);
-                        if (collisions.Length > 0)
-                        {
-                            System.Console.WriteLine("this timetable item is coliding with these timetables:");
-                            foreach (var tt in collisions)
-                            {
-                                System.Console.WriteLine(tt.ToString());
-                            }
-                            System.Console.WriteLine("please fill in another date:");
-                            continue;
+                            System.Console.WriteLine("this room is invalid");
+                            System.Console.ReadKey();
+                            return;
                         }
-                        break;
-                    }
-                    else
+
+                    }                                                   //selected room id cant be null after checks, but for some reason it is still nullable
+                    var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, startDate, endDate);
+                    if (collisions.Length > 0)
                     {
-                        Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (dd-MM-yyyy HH:mm):", ConsoleColor.DarkRed));
+                        System.Console.WriteLine("this timetable item is coliding with these timetables:");
+                        foreach (var tt in collisions)
+                        {
+                            System.Console.WriteLine(tt.ToString());
+                        }
+                        System.Console.WriteLine("please fill in another date:");
+                        continue;
                     }
+                    break;
                 }
                 else
                 {
-                    Console.WriteLine("Invalid date format. Please enter the start date (dd-MM-yyyy HH:mm):");
+                    Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (dd-MM-yyyy HH:mm):", ConsoleColor.DarkRed));
                 }
             }
 
@@ -690,8 +687,8 @@ namespace Project_B
 
             timeTableList = timeTableList.OrderBy(t => t.DateTimeStartDate).ToList();
 
-            TimeTableModel ? selectedTimeTable = null;
-            
+            TimeTableModel? selectedTimeTable = null;
+
             InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Select a timetable to edit:"), null);
             foreach (TimeTableModel timeTable in timeTableList)
             {
@@ -728,7 +725,7 @@ namespace Project_B
 
                 movieList = movieList.OrderBy(m => m.Name).ToList();
 
-                MovieModel ? selectedMovie = null;
+                MovieModel? selectedMovie = null;
                 InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a new movie:"), null);
                 foreach (MovieModel movie in movieList)
                 {
@@ -756,7 +753,7 @@ namespace Project_B
                     }
                 }
                 catch { }
-                RoomModel ? selectedRoom = null;
+                RoomModel? selectedRoom = null;
                 InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a new room:"), null);
                 foreach (RoomModel room in roomList)
                 {
@@ -779,20 +776,20 @@ namespace Project_B
                 DateTime now = DateTime.Now;
                 while (true)
                 {
-                    string startdatestr = Console.ReadLine();
-                    bool result = startdatestr.IsStartDate(selectedTimeTable.Movie.DurationInMin, out var y);
-                    if (result && y != null)
+                    startDate = Universal.GetDateTimeFromUser();
+                    if (selectedTimeTable.Movie is null)
                     {
-                        startDate = y ?? DateTime.Now;
-                        endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-                        selectedTimeTable.StartDate = startDate.ToString("dd-MM-yyyy HH:mm");;
-                        selectedTimeTable.EndDate = endDate.ToString("dd-MM-yyyy HH:mm");;
                         break;
                     }
+                    endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
+                    selectedTimeTable.StartDate = startDate.ToString("dd-MM-yyyy HH:mm"); ;
+                    selectedTimeTable.EndDate = endDate.ToString("dd-MM-yyyy HH:mm"); ;
+                    break;
+
                 }
             });
             editMenu.UseMenu();
-            
+
             if (_ttf.ItemToDb(selectedTimeTable))
             {
                 Console.WriteLine("Updated timetable successfully.");
@@ -848,7 +845,7 @@ namespace Project_B
             }
             movieMenu.UseMenu();
         }
-        
+
         public DirectorModel CreateDirector()
         {
             Universal.printAsTitle("Create new director");
@@ -929,7 +926,7 @@ namespace Project_B
                     Console.WriteLine($"\nCurrent Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors?");
                     int.TryParse(Universal.takeUserInput("Type..."), out Age);
                 }
-                
+
                 directorToEdit.editAge(Age);
             });
 
@@ -937,7 +934,8 @@ namespace Project_B
             InputMenu directorMenu = new InputMenu(Universal.centerToScreen("Select director to edit:"));
             foreach (DirectorModel director in directorList)
             {
-                directorMenu.Add(director.Name ?? "", (x) => {
+                directorMenu.Add(director.Name ?? "", (x) =>
+                {
                     directorToEdit = director;
                     whatToEditMenu.UseMenu();
                 });
@@ -1040,7 +1038,8 @@ namespace Project_B
             InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Select actor to edit:"));
             foreach (ActorModel actor in actorList)
             {
-                actorMenu.Add(actor.Name ?? "", (x) => {
+                actorMenu.Add(actor.Name ?? "", (x) =>
+                {
                     actorToEdit = actor;
                     whatToEditMenu.UseMenu();
                 });
