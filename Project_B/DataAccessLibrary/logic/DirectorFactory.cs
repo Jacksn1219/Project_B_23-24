@@ -85,7 +85,7 @@ public class DirectorFactory : IDbItemFactory<DirectorModel>
         {
             return _db.ReadData<DirectorModel>(
                 $"SELECT * FROM Director LIMIT {count} OFFSET {count * page - count}"
-            );
+            ).OrderBy(x => x.Name).ToArray();
         }
         catch(Exception ex)
         {

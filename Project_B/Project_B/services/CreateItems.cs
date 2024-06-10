@@ -27,6 +27,23 @@ namespace Project_B
             _ttf = ttf;
             _rvf = rvf;
         }
+        Genre chooseGenre(MovieModel? movie = null)
+        {
+            Genre toReturn = default(Genre);
+            InputMenu GenreMenu = new InputMenu("useLambda", null);
+            foreach(Genre genre in Enum.GetValues<Genre>())
+            {
+                GenreMenu.Add($"{genre}", (x) =>
+                {
+                    toReturn = genre;
+                });
+            }
+            GenreMenu.UseMenu(() => {
+                Console.WriteLine(movie != null ? $"The current Genre is {movie.Genre}" : "");
+                Universal.printAsTitle(movie != null ? "Choose a new genre" : "Choose a genre");
+            });
+            return toReturn;
+        }
         public void CreateNewMovie()
         {
             Universal.printAsTitle("Create new movie");
@@ -71,11 +88,11 @@ namespace Project_B
             Console.SetCursorPosition(0, Console.CursorTop + 3);
 
             // genre //
-            Console.WriteLine("\nWhat is the genre of the movie?");
-            string Genre = Universal.takeUserInput("Type...") ?? "";
+            //Console.WriteLine("\nWhat is the genre of the movie?");
+            Genre Genre = chooseGenre();
 
             // Director //
-            DirectorModel Director = new DirectorModel("", "", 0);
+            DirectorModel? Director = null; // new DirectorModel("", "", 0);
 
             List<DirectorModel> directorList = new List<DirectorModel>();
             // Test directors
@@ -86,7 +103,7 @@ namespace Project_B
             try
             {
                 int i = 1;
-                DirectorModel? director = new DirectorModel("", "", 0);
+                DirectorModel? director = null;
                 while (director != null)
                 {
                     director = _df.GetItemFromId(i);
@@ -105,6 +122,10 @@ namespace Project_B
             directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) =>
             {
                 Director = CreateDirector();
+
+                Console.Clear();
+                Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
+                Universal.PressAnyKeyWaiter();
             });
             if (directorMenu.GetMenuOptionsCount() > 0) directorMenu.UseMenu();
 
@@ -145,6 +166,10 @@ namespace Project_B
             {
                 ActorModel newActor = CreateActor();
                 Actors.Add(newActor);
+
+                Console.Clear();
+                Console.WriteLine($"The new actor {newActor.Name} has been added to the movie.");
+                Universal.PressAnyKeyWaiter();
             });
             actorMenu.UseMenu();
 
@@ -256,12 +281,12 @@ namespace Project_B
             whatToEditMenu.Add("Genre", (x) =>
             {
                 Console.WriteLine($"Current genre = {movieToEdit.Genre}" + "\n" + "What is the new genre of the movie?");
-                string Genre = Universal.takeUserInput("Type...") ?? "";
+                Genre Genre = chooseGenre(movieToEdit);
                 movieToEdit.editGenre(Genre);
             });
             whatToEditMenu.Add("Director", (x) =>
             {
-                DirectorModel Director = new DirectorModel("", "", 0);
+                DirectorModel? Director = null; // new DirectorModel("", "", 0);
 
                 List<DirectorModel> directorList = new List<DirectorModel>();
                 // Test directors
@@ -271,7 +296,7 @@ namespace Project_B
                 try
                 {
                     int i = 1;
-                    DirectorModel? director = new DirectorModel("", "", 0);
+                    DirectorModel? director = null;
                     while (director != null)
                     {
                         director = _df.GetItemFromId(i);
@@ -301,6 +326,7 @@ namespace Project_B
                 {
                     Director = CreateDirector();
 
+                    Console.Clear();
                     Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
                     Universal.PressAnyKeyWaiter();
                 });
@@ -346,6 +372,7 @@ namespace Project_B
                         ActorModel newActor = CreateActor();
                         movieToEdit.addActor(newActor);
 
+                        Console.Clear();
                         Console.WriteLine($"The new actor {newActor.Name} has been added to the movie.");
                         Universal.PressAnyKeyWaiter();
                     });
@@ -763,6 +790,10 @@ namespace Project_B
                     startDate = Universal.GetDateTimeFromUser();
                     if (selectedTimeTable.Movie is null)
                     {
+                        startDate = y ?? DateTime.Now;
+                        endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
+                        selectedTimeTable.StartDate = startDate.ToString(CultureInfo.InvariantCulture);
+                        selectedTimeTable.EndDate = endDate.ToString(CultureInfo.InvariantCulture);
                         break;
                     }
                     endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
@@ -905,7 +936,7 @@ namespace Project_B
             _df.CreateItem(newDirector);
 
 
-            Console.WriteLine($"The new director {Name} has been created.");
+            Console.WriteLine($"\nThe new director {Name} has been created.");
             Universal.PressAnyKeyWaiter();
             return newDirector;
         }
@@ -974,9 +1005,8 @@ namespace Project_B
             //Saving the new item to the database
             _df.ItemToDb(directorToEdit);
 
-            Console.WriteLine($"The changes to {directorToEdit.Name} have been saved.");
+            Console.WriteLine($"\nThe changes to {directorToEdit.Name} have been saved.");
             Universal.PressAnyKeyWaiter();
-            Console.ReadLine();
         }
         public ActorModel CreateActor()
         {
@@ -1009,7 +1039,7 @@ namespace Project_B
             _af.CreateItem(newActor);
 
 
-            Console.WriteLine($"The new actor {Name} has been created.");
+            Console.WriteLine($"\nThe new actor {Name} has been created.");
             Universal.PressAnyKeyWaiter();
             return newActor;
         }
@@ -1078,9 +1108,8 @@ namespace Project_B
             //Saving the new item to the database
             _af.ItemToDb(actorToEdit);
 
-            Console.WriteLine($"The changes to {actorToEdit.Name} have been saved.");
+            Console.WriteLine($"\nThe changes to {actorToEdit.Name} have been saved.");
             Universal.PressAnyKeyWaiter();
-            Console.ReadLine();
         }
     }
 }

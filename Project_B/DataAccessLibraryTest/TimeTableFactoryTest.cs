@@ -43,7 +43,7 @@ namespace DataAccessLibraryTest
             );
             room.AddSeatModel(new SeatModel("a SeatModel", "1", "1"));
             MovieModel mov = new(
-                "a movie", "disc", 3, 300, "boring"
+                "a movie", "disc", 3, 300, Genre.Animation
             );
             TimeTableModel timet = new(
                 room, mov, DateTime.Now
@@ -60,7 +60,7 @@ namespace DataAccessLibraryTest
                 "room2", 99, 2
             );
             MovieModel mov = new(
-                "mama mia", "here we go again", 3, 999, "pain"
+                "mama mia", "here we go again", 3, 999, Genre.Drama
             );
             TimeTableModel tt = new(
                 room, mov, DateTime.Now.AddMonths(1)
@@ -76,7 +76,7 @@ namespace DataAccessLibraryTest
                 "lastRoom", 9, 9
             );
             MovieModel mov = new(
-                "aliens", "are real, source: trust me bro", 18, 13, "pain"
+                "aliens", "are real, source: trust me bro", 18, 13, Genre.Drama
             );
             TimeTableModel tt = new(
                 room, mov, DateTime.Now.AddMonths(-1)
