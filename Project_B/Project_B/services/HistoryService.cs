@@ -26,7 +26,7 @@ public class HistoryService
 
     public void UseMenu()
     {
-        InputMenu HistoryMenu = new InputMenu("useLambda");
+        InputMenu HistoryMenu = new InputMenu("History");
 
         DateTime startDate = Universal.GetDateTimeFromUser();
 
@@ -42,7 +42,7 @@ public class HistoryService
             }}
         });
 
-        HistoryMenu.UseMenu(() => Universal.printAsTitle("History"));
+        HistoryMenu.UseMenu((title) => Universal.printAsTitle(title));
     }
     public void showReservedSeatsPerTimetable()
     {

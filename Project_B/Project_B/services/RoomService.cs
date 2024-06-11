@@ -28,7 +28,7 @@ public class RoomService
     }
     public RoomModel? SelectRoom(string title)
     {
-        InputMenu selectRoom = new InputMenu("useLambda", null);
+        InputMenu selectRoom = new InputMenu(title, null);
         RoomModel? selectedOption = null;
         foreach (RoomModel room in _rooms)
         {
@@ -38,7 +38,7 @@ public class RoomService
             });
         }
         selectRoom.Add("return", (x) => selectedOption = null);
-        selectRoom.UseMenu(() => Universal.printAsTitle(title));
+        selectRoom.UseMenu((title) => Universal.printAsTitle(title));
         return selectedOption;
     }
     public List<SeatModel> SelectSeatsOfRoom(RoomModel room, string title)

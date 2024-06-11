@@ -13,9 +13,9 @@ namespace Project_B.menu_s
             {
                 // ------ Medewerker menu met menu opties ------//
                 //create menu
-                InputMenu medewerkerMenu = new InputMenu("useLambda");
+                InputMenu medewerkerMenu = new InputMenu("Admin menu");
                 medewerkerMenu.Add(menuItems);
-                medewerkerMenu.UseMenu(() => Universal.printAsTitle("Admin menu"));
+                medewerkerMenu.UseMenu((title) => Universal.printAsTitle(title));
             }
             IsLogedIn = false;
         }

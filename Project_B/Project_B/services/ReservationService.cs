@@ -152,7 +152,7 @@ public class ReservationService
         //if (weekdayInt < 1) weekdayInt = 1;
         DateOnly? toReturn = null;
         //create inputmenu
-        InputMenu selectDay = new InputMenu("| Select a day |", null);
+        InputMenu selectDay = new InputMenu("Select a day", null);
         //add days of week left.
         for (int i = weekdayInt; i < 7; i++)
         {
@@ -164,7 +164,7 @@ public class ReservationService
             //Console.ReadLine();
         });
         }
-        selectDay.UseMenu();
+        selectDay.UseMenu((title) => Universal.printAsTitle(title));
         return toReturn;
     }
     public void GetReservationById()
