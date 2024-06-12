@@ -146,10 +146,10 @@ public class ReservationService
     {//commented code was code that hid days that where before today. (so if tuesday, you do not see monday)
         //get current day
         DateTime today = DateTime.Today;
-        //DayOfWeek currentDay = today.DayOfWeek;
+        DayOfWeek currentDay = today.DayOfWeek;
         //get amount of weekdays left
-        int weekdayInt = 1;//(int)currentDay;
-        //if (weekdayInt < 1) weekdayInt = 1;
+        int weekdayInt = (int)currentDay;
+        if (weekdayInt < 1) weekdayInt = 1;
         DateOnly? toReturn = null;
         //create inputmenu
         InputMenu selectDay = new InputMenu("| Select a day |", null);
@@ -158,11 +158,11 @@ public class ReservationService
         {
             DayOfWeek temp = (DayOfWeek)i; //temp DayOfWeekValue. (if you use i it will always be 7)
             selectDay.Add($"{temp}", (x) =>
-        {
-            var date = today.AddDays((int)temp - weekdayInt);
-            toReturn = DateOnly.FromDateTime(date);
-            //Console.ReadLine();
-        });
+            {
+                var date = today.AddDays((int)temp - weekdayInt);
+                toReturn = DateOnly.FromDateTime(date);
+                //Console.ReadLine();
+            });
         }
         selectDay.UseMenu();
         return toReturn;
@@ -173,8 +173,9 @@ public class ReservationService
         int confirmationNumber = 0;
         while (!validInput)
         {
-            Console.Write("Please enter your confirmation number: ");
+            Console.Write("Please enter your confirmation number:");
             string userInput = Universal.takeUserInput("Type...");
+            if (userInput.Equals("q", StringComparison.OrdinalIgnoreCase)) return;
             if (int.TryParse(userInput, out confirmationNumber))
             {
                 validInput = true;
@@ -182,7 +183,7 @@ public class ReservationService
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid input. Please enter a valid confirmation number.\n");
+                Console.WriteLine("Invalid input. Please enter a valid confirmation number. (Q to quit)\n");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -206,10 +207,11 @@ public class ReservationService
             {
                 Console.Write("Please enter the E-mail associated with this reservation: ");
                 string emaily = Universal.takeUserInput("Type...");
-                if (emaily.ToLower() != reservation.Customer.Email.ToLower())
+                if (emaily.Equals("q", StringComparison.OrdinalIgnoreCase)) return;
+                if (emaily.ToLower() != reservation.Customer?.Email?.ToLower())
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Sorry this is not the correct E-mail. Please try again\n");
+                    Console.WriteLine("Sorry this is not the correct E-mail. Please try again (Q to quit)\n");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
                 else
@@ -221,12 +223,12 @@ public class ReservationService
         Console.Clear();
         Console.WriteLine($"These are the details of your reservation:\n");
         Console.WriteLine($"Confirmation number: {reservation.ID}");
-        Console.WriteLine($"Name: {reservation.Customer.Name}");
-        Console.WriteLine($"E-mail: {reservation.Customer.Email}");
-        Console.WriteLine($"Phone number: {reservation.Customer.PhoneNumber}");
-        Console.WriteLine($"Movie: {reservation.TimeTable.Movie.Name}");
-        Console.WriteLine($"Starts at: {reservation.TimeTable.StartDate.Split(" ")[1]} - {reservation.TimeTable.EndDate.Split(" ")[1]}");
-        Console.WriteLine($"Room: {reservation.TimeTable.Room.Name}");
+        Console.WriteLine($"Name: {reservation.Customer?.Name}");
+        Console.WriteLine($"E-mail: {reservation.Customer?.Email}");
+        Console.WriteLine($"Phone number: {reservation.Customer?.PhoneNumber}");
+        Console.WriteLine($"Movie: {reservation.TimeTable?.Movie?.Name}");
+        Console.WriteLine($"Starts at: {reservation.TimeTable?.StartDate.Split(" ")[1]} - {reservation.TimeTable?.EndDate.Split(" ")[1]}");
+        Console.WriteLine($"Room: {reservation.TimeTable?.Room?.Name}");
         if (reservation.ReservedSeats != null && reservation.ReservedSeats.Count > 0)
         {
             string[] reservedSeats = GetSeatLocation(reservation);
@@ -244,22 +246,22 @@ public class ReservationService
     {
         List<CustomerModel> allCustomers = new List<CustomerModel>();
         try
+        {
+            int page = 1;
+            while (true)
             {
-                int page = 1;
-                while (true)
+                CustomerModel[] customers = _cf.GetItems(100, page, 6);
+                foreach (CustomerModel customer in customers)
                 {
-                    CustomerModel[] customers = _cf.GetItems(100, page, 6);
-                    foreach (CustomerModel customer in customers)
+                    if (customer.IsSubscribed)
                     {
-                        if (customer.IsSubscribed)
-                        {
-                            allCustomers.Add(customer);
-                        }
+                        allCustomers.Add(customer);
                     }
-                    page++;
-                    if (customers.Length < 100) break;
                 }
+                page++;
+                if (customers.Length < 100) break;
             }
+        }
         catch { }
         StringBuilder sb = new StringBuilder();
         sb.AppendLine("Here are the e-mails of all the subscribed customers:\n");

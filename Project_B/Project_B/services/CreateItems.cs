@@ -103,7 +103,7 @@ namespace Project_B
             try
             {
                 int i = 1;
-                DirectorModel? director = null;
+                DirectorModel? director = new DirectorModel("", "", 0);
                 while (director != null)
                 {
                     director = _df.GetItemFromId(i);
@@ -638,9 +638,13 @@ namespace Project_B
                 startDate = Universal.GetDateTimeFromUser();
                 endDate = startDate.AddMinutes(selectedMovie.DurationInMin + 15); //15 min delay between movies
 
-                if (startDate <= now)
+                if (startDate < now)
                 {
                     Console.WriteLine(Universal.WriteColor("The start date must be in the future.", ConsoleColor.DarkRed));
+                }
+                else if(startDate.Date == now.Date)
+                {
+                    Console.WriteLine(Universal.WriteColor("The start date cannot be today.", ConsoleColor.DarkRed));
                 }
                 else if (startDate.TimeOfDay < new TimeSpan(10, 0, 0))
                 {
