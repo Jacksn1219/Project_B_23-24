@@ -103,7 +103,7 @@ namespace Project_B
             try
             {
                 int i = 1;
-                DirectorModel? director = null;
+                DirectorModel? director = new DirectorModel("", "", 0);
                 while (director != null)
                 {
                     director = _df.GetItemFromId(i);
@@ -112,6 +112,8 @@ namespace Project_B
                 }
             }
             catch { }
+
+            directorList = directorList.OrderBy(m => m.Name).ToList();
 
             // Menu to chose director
             InputMenu directorMenu = new InputMenu(Universal.centerToScreen("Choose a director:"), null);
@@ -155,6 +157,8 @@ namespace Project_B
                 }
             }
             catch { }
+
+            actorList = actorList.OrderBy(m => m.Name).ToList();
 
             // Menu to chose director
             InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Choose an actor:"), null);
@@ -306,6 +310,8 @@ namespace Project_B
                 }
                 catch { }
 
+                directorList = directorList.OrderBy(m => m.Name).ToList();
+
                 //Get directors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
                 movieToEdit.Director = _df.GetItemFromId(movieToEdit.DirectorID ?? 1);
 
@@ -357,6 +363,8 @@ namespace Project_B
                         }
                     }
                     catch { }
+
+                    actorList = actorList.OrderBy(m => m.Name).ToList();
 
                     //Get actors -> .FindIndex((x) => x.ID == movieToEdit.DirectorID)
                     //_mf.AddRelatedActors(movieToEdit); // this is built into _mf.ItemToDb() if  deepcopy greater than 0.
@@ -495,6 +503,8 @@ namespace Project_B
             }
             catch { }
 
+            movieList = movieList.OrderBy(x => x.Name).ToList();
+
             MovieModel? selectedMovie = null;
             InputMenu movieMenu = new InputMenu("Select a movie to remove", null);
             foreach (var movie in movieList) { movieMenu.Add(movie.Name, (x) => { selectedMovie = movie; }); }
@@ -541,6 +551,8 @@ namespace Project_B
                 }
             }
             catch { }
+
+            timetableList = timetableList.OrderBy(x => x.StartDate).ToList();
 
             ReservationModel[] ReservationsToKeep = reservationList.Where(x => x.TimeTable.MovieID == movieToRemove.ID).ToArray();
             TimeTableModel[] timetablesToKeep = ReservationsToKeep.Select(x => x.TimeTable).ToArray();
@@ -625,37 +637,51 @@ namespace Project_B
             {
                 startDate = Universal.GetDateTimeFromUser();
                 endDate = startDate.AddMinutes(selectedMovie.DurationInMin + 15); //15 min delay between movies
-                if (startDate.Date > now.Date &&
-                    startDate.TimeOfDay >= new TimeSpan(10, 0, 0) &&
-                    endDate.TimeOfDay <= new TimeSpan(22, 0, 0))
+
+                if (startDate < now)
+                {
+                    Console.WriteLine(Universal.WriteColor("The start date must be in the future.", ConsoleColor.DarkRed));
+                }
+                else if(startDate.Date == now.Date)
+                {
+                    Console.WriteLine(Universal.WriteColor("The start date cannot be today.", ConsoleColor.DarkRed));
+                }
+                else if (startDate.TimeOfDay < new TimeSpan(10, 0, 0))
+                {
+                    Console.WriteLine(Universal.WriteColor("The start time must be no earlier than 10:00.", ConsoleColor.DarkRed));
+                }
+                else if (startDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                {
+                    Console.WriteLine(Universal.WriteColor("The start time must be no later than 22:00.", ConsoleColor.DarkRed));
+                }
+                else if (endDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                {
+                    Console.WriteLine(Universal.WriteColor("The end time must be no later than 22:00.", ConsoleColor.DarkRed));
+                }
+                else
                 {
                     if (selectedRoom.ID == null)
                     {
                         _rf.ItemToDb(selectedRoom);
                         if (selectedRoom.ID == null)
                         {
-                            System.Console.WriteLine("this room is invalid");
-                            System.Console.ReadKey();
+                            Console.WriteLine("This room is invalid");
+                            Console.ReadKey();
                             return;
                         }
-
-                    }                                                   //selected room id cant be null after checks, but for some reason it is still nullable
+                    }
                     var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, startDate, endDate);
                     if (collisions.Length > 0)
                     {
-                        System.Console.WriteLine("this timetable item is coliding with these timetables:");
+                        Console.WriteLine(Universal.WriteColor("This timetable item is colliding with these timetables:", ConsoleColor.DarkRed));
                         foreach (var tt in collisions)
                         {
-                            System.Console.WriteLine(tt.ToString());
+                            Console.WriteLine(tt.ToString());
                         }
-                        System.Console.WriteLine("please fill in another date:");
+                        Console.WriteLine("Please enter another date:");
                         continue;
                     }
                     break;
-                }
-                else
-                {
-                    Console.WriteLine(Universal.WriteColor("The start date must be in the future, between 10:00 and 22:00, and the movie must end by 22:00. Please enter a valid date (dd-MM-yyyy HH:mm):", ConsoleColor.DarkRed));
                 }
             }
 
@@ -672,6 +698,7 @@ namespace Project_B
             }
             Console.ReadKey();
         }
+
 
         public void EditTimeTable()
         {
@@ -764,16 +791,40 @@ namespace Project_B
                     }
                 }
                 catch { }
+
                 RoomModel? selectedRoom = null;
-                InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a new room:"), null);
-                foreach (RoomModel room in roomList)
+                bool validSelection = false;
+
+                while (!validSelection)
                 {
-                    roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
-                }
-                roomMenu.UseMenu();
-                if (selectedRoom == null)
-                {
-                    return;
+                    InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a new room:"), null);
+                    
+                    foreach (RoomModel room in roomList)
+                    {
+                        roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
+                    }
+
+                    roomMenu.UseMenu();
+
+                    if (selectedRoom == null)
+                    {
+                        Console.WriteLine(Universal.WriteColor("No room selected. Please select a room.", ConsoleColor.DarkRed));
+                        Universal.PressAnyKeyWaiter();
+                        continue;
+                    }
+
+                    var existingTimeTables = _ttf.GetTimeTablesInRoomBetweenDates(selectedRoom.ID ?? -1, selectedTimeTable.DateTimeStartDate, selectedTimeTable.DateTimeEndDate);
+                    bool conflict = existingTimeTables.Any(t => t.RoomID == selectedRoom.ID && t.StartDate == selectedTimeTable.StartDate);
+
+                    if (conflict)
+                    {
+                        Console.WriteLine(Universal.WriteColor("The selected room is already booked at the specified time. Please choose another room.", ConsoleColor.DarkRed));
+                        Universal.PressAnyKeyWaiter();
+                    }
+                    else
+                    {
+                        validSelection = true;
+                    }
                 }
 
                 selectedTimeTable.Room = selectedRoom;
@@ -781,23 +832,73 @@ namespace Project_B
             });
             editMenu.Add("Start Date", (x) =>
             {
-                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("dd-MM-yyyy HH:mm")}" + "\n" + "Enter the new start date (dd-MM-yyyy HH:mm):");
+                Console.WriteLine($"Current Start Date = {selectedTimeTable.DateTimeStartDate.ToString("M/d/yyyy HH:mm")}");
                 DateTime startDate;
                 DateTime endDate;
                 DateTime now = DateTime.Now;
-                while (true)
+                bool validDate = false;
+
+                while (!validDate)
                 {
                     startDate = Universal.GetDateTimeFromUser();
-                    if (selectedTimeTable.Movie is null)
-                    {
-                        break;
-                    }
-                    endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
-                    selectedTimeTable.StartDate = startDate.ToString(CultureInfo.InvariantCulture);
-                    selectedTimeTable.EndDate = endDate.ToString(CultureInfo.InvariantCulture);
-                    break;
+                    endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin + 15);
 
+                    if (startDate < now)
+                    {
+                        Console.WriteLine(Universal.WriteColor("The start date cannot be in the past. Please enter a valid date.", ConsoleColor.DarkRed));
+                        continue;
+                    }
+
+                    if (startDate.Date == now.Date)
+                    {
+                        Console.WriteLine(Universal.WriteColor("The start date cannot be today. Please enter a different date.", ConsoleColor.DarkRed));
+                        continue;
+                    }
+
+                    if (startDate.TimeOfDay < new TimeSpan(10, 0, 0) || endDate.TimeOfDay > new TimeSpan(22, 0, 0) || startDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                    {
+                        Console.WriteLine(Universal.WriteColor("The start date must be between 10:00 and 22:00. Please enter a valid time.", ConsoleColor.DarkRed));
+                        continue;
+                    }
+
+                    var collisions = _ttf.GetTimeTablesInRoomBetweenDates(selectedTimeTable.Room.ID ?? -1, startDate, endDate);
+                    if (collisions.Length > 0)
+                    {
+                        Console.WriteLine(Universal.WriteColor("This timetable item is colliding with these timetables:", ConsoleColor.DarkRed));
+                        foreach (var tt in collisions)
+                        {
+                            Console.WriteLine(tt.ToString());
+                        }
+                        Console.WriteLine("Please enter another date.");
+                        continue;
+                    }
+
+                    if (selectedTimeTable.Movie != null)
+                    {
+                        endDate = startDate.AddMinutes(selectedTimeTable.Movie.DurationInMin);
+                        if (endDate.TimeOfDay > new TimeSpan(22, 0, 0))
+                        {
+                            Console.WriteLine(Universal.WriteColor("The end date must be before 22:00. Please enter a valid start time.", ConsoleColor.DarkRed));
+                            continue;
+                        }
+
+                        selectedTimeTable.StartDate = startDate.ToString(CultureInfo.InvariantCulture);
+                        selectedTimeTable.EndDate = endDate.ToString(CultureInfo.InvariantCulture);
+                        validDate = true; // valid date and time found
+                    }
                 }
+
+                if (_ttf.ItemToDb(selectedTimeTable))
+                {
+                    Console.WriteLine("Updated timetable successfully.");
+                    Console.WriteLine("Press 'Enter' to go back in the menu.");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to update timetable.");
+                    Console.WriteLine("Press 'Enter' to go back in the menu.");
+                }
+                Console.ReadKey();
             });
             editMenu.UseMenu();
 
@@ -952,6 +1053,8 @@ namespace Project_B
             }
             catch { }
 
+            directorList = directorList.OrderBy(x => x.Name).ToList();
+
             //movie to edit
             DirectorModel? directorToEdit = null;
 
@@ -1055,6 +1158,8 @@ namespace Project_B
             }
             catch { }
 
+            actorList = actorList.OrderBy(x => x.Name).ToList();
+
             //movie to edit
             ActorModel? actorToEdit = null;
 
@@ -1106,6 +1211,52 @@ namespace Project_B
 
             Console.WriteLine($"\nThe changes to {actorToEdit.Name} have been saved.");
             Universal.PressAnyKeyWaiter();
+        }
+
+        public void DisplayTable()
+        {
+            List<TimeTableModel> timeTableList = new List<TimeTableModel>();
+            try
+            {
+                int page = 1;
+                while (true)
+                {
+                    var tts = _ttf.GetItems(100, page, 6);
+                    timeTableList.AddRange(tts);
+                    page++;
+                    if (tts.Length < 100) break;
+                }
+            }
+            catch { }
+            
+            if (timeTableList.Count == 0)
+            {
+                Console.WriteLine("There are currently no movies planned at the cinema");
+                Console.ReadKey();
+                return;
+            }
+
+            DateTime currentDate = DateTime.Now;
+
+            timeTableList = timeTableList.Where(t => t.DateTimeStartDate >= currentDate && t.DateTimeStartDate < currentDate.AddDays(28)).ToList();
+
+            timeTableList = timeTableList.OrderBy(t => t.DateTimeStartDate).ToList();
+
+            TimeTableModel? selectedTimeTable = null;
+
+            InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Movies at cinema YourEyes:"), null);
+
+            foreach (TimeTableModel timeTable in timeTableList)
+            {
+                timeTableMenu.Add($"Movie: {timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
+            }
+            
+            timeTableMenu.UseMenu();
+            
+            if (selectedTimeTable == null)
+            {
+                return;
+            }
         }
     }
 }
