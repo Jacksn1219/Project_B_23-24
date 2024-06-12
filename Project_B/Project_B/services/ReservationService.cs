@@ -308,7 +308,7 @@ public class ReservationService
                 _tf.getRelatedItemsFromDb(timeTable, 40);
             }
             if (timeTable.Movie == null) continue;
-            movieSelecter.Add($"Film: {timeTable.Movie.Name}", (x) =>
+            movieSelecter.Add($"Film: {timeTable.Movie.Name} | Time: {timeTable.DateTimeStartDate.ToShortTimeString()} till {timeTable.DateTimeEndDate.ToShortTimeString()} | Room: {timeTable.Room?.Name}", (x) =>
             {
                 mov = timeTable;
             });
