@@ -5,7 +5,6 @@ using DataAccessLibrary.models;
 using System.Data.SqlClient;
 using System.Net.Mail;
 using System.Net;
-
 public static class MailService
 {
     public static void SendEmail(string toAdress, string movieName, string customerName, int? reservationID, string startTime, string endTime, List<SeatModel> reservedSeats)
