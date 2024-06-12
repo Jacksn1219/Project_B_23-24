@@ -80,15 +80,15 @@ namespace Project_B
 
             // Duration in minutes //
             int Duration = 0;
-            Console.WriteLine("\nWhat is the duration of the movie in minutes? (more than 0)");
+            Console.WriteLine("\nWhat is the duration of the movie in minutes? (more than 0 and lower than 240)");
             temp = Universal.takeUserInput("Type...");
             if (temp == null) return;
             int.TryParse(temp, out Duration);
-            while (Duration == 0)
+            while (Duration == 0 || Duration < 0 || Duration > 240)
             {
                 Console.SetCursorPosition(0, Console.CursorTop - 3);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                Console.WriteLine("\nWhat is the duration of the movie? (more than 0)");
+                Console.WriteLine("\nWhat is the duration of the movie? (more than 0 and lower than 240)");
                 temp = Universal.takeUserInput("Type...");
                 if (temp == null) return;
                 int.TryParse(temp, out Duration);
@@ -291,11 +291,11 @@ namespace Project_B
                 string? temp = Universal.takeUserInput("Type...");
                 if (temp == null) return;
                 int.TryParse(temp, out Duration);
-                while (Duration == 0)
+                while (Duration == 0 || Duration < 0 || Duration > 240)
                 {
                     Console.Clear();
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
-                    Console.WriteLine($"\nCurrent duration = {movieToEdit.DurationInMin} minutes" + "\n" + "What is the new duration of the movie in minutes? (more than 0)");
+                    Console.WriteLine($"\nCurrent duration = {movieToEdit.DurationInMin} minutes" + "\n" + "What is the new duration of the movie in minutes? (more than 0 and lower than 240)");
                     temp = Universal.takeUserInput("Type...");
                     if (temp == null) return;
                     int.TryParse(temp, out Duration);
