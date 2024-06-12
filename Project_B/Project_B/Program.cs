@@ -20,6 +20,8 @@ namespace Project_B
                 .WriteTo.File("logs/dbErrors.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
             using var db = new SQliteDataAccess($"Data Source={Universal.datafolderPath}\\database.db; Version = 3; New = True; Compress = True;", logger);
+            SeatPriceCalculator.GetCurrentPrices();
+
             //set up factories
             ActorFactory af = new(db, logger);
             DirectorFactory df = new(db, logger);
@@ -50,7 +52,8 @@ namespace Project_B
                     {"Schedule", (x) => {createItems.DisplayTable();}},
                     {"Browse movies", (x) => {createItems.browseMovies();}},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation();}},
-                    {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
+                    {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}},
+                    {"ReadPrices()", (x) => { Console.WriteLine(ReservationFactory.ReadPrices()); }}
                 },
                 //admin options
                 new Dictionary<string, Action<string>>(){

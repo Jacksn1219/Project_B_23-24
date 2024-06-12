@@ -5,10 +5,12 @@ public class ReservedSeatModel
     public int ID { get; }
     public int SeatModelID { get; }
     public int ReservationID { get; }
-    public ReservedSeatModel(int id, int seatModelID, int reservationID)
+    public int Price { get; }
+    public ReservedSeatModel(int id, int seatModelID, int reservationID, int price)
     {
         ID = id;
         SeatModelID = seatModelID;
         ReservationID = reservationID;
+        Price = price;
     }
 }
