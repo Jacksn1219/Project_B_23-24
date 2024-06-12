@@ -9,6 +9,7 @@ using Project_B.services;
 public class ReservationService
 {
     private readonly ReservationFactory _rf;
+    private readonly MailService _ms;
     private readonly MovieFactory _mf;
     private readonly TimeTableFactory _tf;
     private readonly RoomFactory _roomf;
@@ -17,6 +18,7 @@ public class ReservationService
     {
         _rf = rf;
         _mf = mf;
+        _ms = new MailService(this);
         _tf = tf;
         _roomf = roomf;
         _cf = cf;
@@ -118,7 +120,7 @@ public class ReservationService
                 ReservationModel res = new ReservationModel(userInfo.customer, tt, selectedSeats, userInfo.note);
                 _rf.ItemToDb(res);
                 //print number
-                MailService.SendEmail(res.Customer.Email, res.TimeTable.Movie.Name, res.Customer.Name, res.ID, res.TimeTable.StartDate, res.TimeTable.EndDate, res.ReservedSeats);
+                _ms.SendEmail(res);
                 Console.Clear();
                 System.Console.WriteLine($"\nReservation is created!\nYour reservation number is: {res.ID}\nAn E-mail has been sent with your confirmation details!");
                 createReservation = true;
