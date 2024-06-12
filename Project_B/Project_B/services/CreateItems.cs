@@ -482,7 +482,7 @@ namespace Project_B
             });
 
             // Menu to chose Movie
-            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select movie to edit:"));
+            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select movie to edit: (close & open menu to see the changes)"));
             foreach (MovieModel movie in movieList)
             {
                 movieMenu.Add(movie.Name ?? "", (x) =>
