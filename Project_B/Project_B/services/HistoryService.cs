@@ -2,6 +2,7 @@
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Models;
+using System.IO;
 
 namespace Project_B.services;
 public class HistoryService
@@ -39,6 +40,9 @@ public class HistoryService
             }},
             {"Schedule", (x) => {
                 GetScheduleBetweenDates(startDate, endDate);
+            }},
+            {"Create csv file", (x) => {
+                CreateCsvFile(startDate, endDate);
             }}
         });
 
@@ -114,5 +118,34 @@ public class HistoryService
 
             Universal.PressAnyKeyWaiter();
         }
+    }
+    public void CreateCsvFile(DateTime startDate, DateTime endDate)
+    {
+        int totalProfits = GetProfitsBetweenDates(startDate, endDate);
+        TimeTableModel[] timeTables = _ttf.GetTimeTablesBetweenDates(startDate, endDate);
+        string directoryPath = Path.Combine(Environment.CurrentDirectory, "csv_history");
+        Directory.CreateDirectory(directoryPath);
+        string fileName = $"{startDate:yyyy-MM-dd} - {endDate:yyyy-MM-dd}.csv";
+        string filePath = Path.Combine(directoryPath, fileName);
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            writer.WriteLine("Name, Date, Time, Room, Reserved Seats");
+            foreach (TimeTableModel timeTable in timeTables)
+            {
+                _ttf.getRelatedItemsFromDb(timeTable, 534);
+                if(timeTable.Movie is null || timeTable.Room is null) continue;
+                ReservationModel[] reservations = GetReservationHistory(startDate, endDate).Where(x => x.TimeTableID == timeTable.ID).ToArray();
+                List<SeatModel> reservedSeats = new();
+                foreach (ReservationModel reservation in reservations)
+                {
+                    reservedSeats.AddRange(reservation.ReservedSeats);
+                }
+                string line = $"{timeTable.Movie.Name}, {timeTable.DateTimeStartDate.ToString("dd/MM/yyyy")}, {timeTable.DateTimeStartDate.ToString("HH:mm")}, {timeTable.Room.Name}, {reservedSeats.Count()}";
+                writer.WriteLine(line);
+            }
+        }
+        Console.WriteLine($"\nA csv file has been created under the name: {fileName}");
+        Console.WriteLine($"This file can be found under the folder: {directoryPath}");
+        Universal.PressAnyKeyWaiter();
     }
 }

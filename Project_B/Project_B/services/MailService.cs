@@ -5,28 +5,34 @@ using DataAccessLibrary.models;
 using System.Data.SqlClient;
 using System.Net.Mail;
 using System.Net;
-
-public static class MailService
+using Project_B.services;
+public class MailService
 {
-    public static void SendEmail(string toAdress, string movieName, string customerName, int? reservationID, string startTime, string endTime, List<SeatModel> reservedSeats)
+    ReservationService resService;
+    public MailService(ReservationService reservationService)
+    {
+        resService = reservationService;
+    }
+    public void SendEmail(ReservationModel res)
     {
         try
         {
             // Set up the email
-            string seats = string.Join(", ", reservedSeats.Select(seat => seat.Name));
+            string seats = string.Join(", ", res.ReservedSeats.Select(seat => resService.GetSeatLocation(seat)));
             MailMessage mail = new MailMessage();
             string fromAdress = "youreyeshr@outlook.com";
             mail.From = new MailAddress(fromAdress);
-            mail.To.Add(toAdress.ToLower());
+            mail.To.Add(res.Customer.Email.ToLower());
             mail.Subject = "Reservation details YourEyes";
-            mail.Body = $"Dear {customerName},\n\n" + 
+            mail.Body = $"Dear {res.Customer.Name},\n\n" + 
             $"Thank you for booking at YourEyes!\n" +
-            $"You booked {reservedSeats.Count} seats.\n" +
+            $"You booked {res.ReservedSeats.Count} seats.\n" +
             $"Here are the details of your reservation:\n" +
-            $"Movie: {movieName}\n" +
-            $"Starts at: {startTime.Split(" ")[1]} - {endTime.Split(" ")[1]}\n" +
+            $"Movie: {res.TimeTable.Movie.Name}\n" +
+            $"Date: {res.TimeTable.DateTimeStartDate.Date.ToString("dd-MM-yyyy")}\n" +
+            $"Starts at: {res.TimeTable.DateTimeStartDate.ToString("HH:mm")} - {res.TimeTable.DateTimeEndDate.ToString("HH:mm")}\n" +
             $"Seats: {seats}\n" +
-            $"Confirmation number: {reservationID}\n\n" +
+            $"Confirmation number: {res.ID}\n\n" +
             "See you soon!\n" +
             "YourEyes";
             mail.IsBodyHtml = false;
