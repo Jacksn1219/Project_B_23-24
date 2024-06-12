@@ -35,7 +35,8 @@ namespace Project_B.menu_s
             {
                 Universal.printAsTitle("Login");
                 Console.Write("\n");
-                string userInput = Universal.takeUserInput("Password") ?? "";
+                string? userInput = Universal.takeUserInput("Password");
+                if (userInput == null) return false;
                 if (userInput.Equals(passWord)) IsLogedIn = true;
                 else
                 {

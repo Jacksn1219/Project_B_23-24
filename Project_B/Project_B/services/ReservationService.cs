@@ -174,7 +174,8 @@ public class ReservationService
         while (!validInput)
         {
             Console.Write("Please enter your confirmation number: ");
-            string userInput = Universal.takeUserInput("Type...");
+            string? userInput = Universal.takeUserInput("Type...");
+            if (userInput == null) return;
             if (int.TryParse(userInput, out confirmationNumber))
             {
                 validInput = true;
@@ -205,7 +206,8 @@ public class ReservationService
             while (!validEmail)
             {
                 Console.Write("Please enter the E-mail associated with this reservation: ");
-                string emaily = Universal.takeUserInput("Type...");
+                string? emaily = Universal.takeUserInput("Type...");
+                if (emaily == null) return;
                 if (emaily.ToLower() != reservation.Customer.Email.ToLower())
                 {
                     Console.ForegroundColor = ConsoleColor.Red;

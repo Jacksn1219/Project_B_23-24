@@ -50,23 +50,29 @@ namespace Project_B
 
             // Name //
             Console.WriteLine("\nWhat is the name of the movie?");
-            string Name = Universal.takeUserInput("Type...") ?? "";
+            string? Name = Universal.takeUserInput("Type...");
+            if (Name == null) return;
 
             // Discription //
             Console.WriteLine("\nWhat is the description of the movie?");
-            string Discription = Universal.takeUserInput("Type...") ?? "";
+            string? Discription = Universal.takeUserInput("Type...");
+            if (Discription == null) return;
 
             // pegiAge //
             int pegiAge = 0;
             Console.WriteLine("\nWhat is the PEGIage of the movie? (4, 7, 12, 16, 18)");
-            int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
+            string? temp = Universal.takeUserInput("Type...");
+            if (temp == null) return;
+            int.TryParse(temp, out pegiAge);
             List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
             while (!possiblePegiAges.Contains(pegiAge))
             {
                 Console.SetCursorPosition(0, Console.CursorTop - 3);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                 Console.WriteLine("\nWhat is the PEGIage of the movie? (4, 7, 12, 16, 18)");
-                int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
+                temp = Universal.takeUserInput("Type...");
+                if (temp == null) return;
+                int.TryParse(temp, out pegiAge);
             }
             Console.SetCursorPosition(0, Console.CursorTop - 3);
             Console.Write("                          ");
@@ -75,13 +81,17 @@ namespace Project_B
             // Duration in minutes //
             int Duration = 0;
             Console.WriteLine("\nWhat is the duration of the movie in minutes? (more than 0)");
-            int.TryParse(Universal.takeUserInput("Type..."), out Duration);
+            temp = Universal.takeUserInput("Type...");
+            if (temp == null) return;
+            int.TryParse(temp, out Duration);
             while (Duration == 0)
             {
                 Console.SetCursorPosition(0, Console.CursorTop - 3);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                 Console.WriteLine("\nWhat is the duration of the movie? (more than 0)");
-                int.TryParse(Universal.takeUserInput("Type..."), out Duration);
+                temp = Universal.takeUserInput("Type...");
+                if (temp == null) return;
+                int.TryParse(temp, out Duration);
             }
             Console.SetCursorPosition(0, Console.CursorTop - 3);
             Console.Write("                          ");
@@ -124,6 +134,7 @@ namespace Project_B
             directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) =>
             {
                 Director = CreateDirector();
+                if (Director == null) directorMenu.UseMenu();
 
                 Console.Clear();
                 Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
@@ -168,7 +179,8 @@ namespace Project_B
             }
             actorMenu.Add("Create a new actor", (x) =>
             {
-                ActorModel newActor = CreateActor();
+                ActorModel? newActor = CreateActor();
+                if (newActor == null) return;
                 Actors.Add(newActor);
 
                 Console.Clear();
@@ -253,7 +265,9 @@ namespace Project_B
 
                 int pegiAge = 0;
                 Console.WriteLine($"Current pegiAge = {movieToEdit.PegiAge}" + "\n" + "What is the new PEGIage of the movie? (4, 7, 12, 16, 18)");
-                int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
+                string? temp = Universal.takeUserInput("Type...");
+                if (temp == null) return;
+                int.TryParse(temp, out pegiAge);
                 List<int> possiblePegiAges = new List<int> { 4, 7, 12, 16, 18 };
                 while (!possiblePegiAges.Contains(pegiAge))
                 {
@@ -262,7 +276,9 @@ namespace Project_B
                     {
                         Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                         Console.WriteLine($"\nCurrent pegiAge = {movieToEdit.PegiAge}" + "\n" + "What is the PEGIage of the movie? (4, 7, 12, 16, 18)");
-                        int.TryParse(Universal.takeUserInput("Type..."), out pegiAge);
+                        temp = Universal.takeUserInput("Type...");
+                        if (temp == null) return;
+                        int.TryParse(temp, out pegiAge);
                     }
                     catch { }
                 }
@@ -272,13 +288,17 @@ namespace Project_B
             {
                 int Duration = 0;
                 Console.WriteLine($"Current duration = {movieToEdit.DurationInMin} minutes" + "\n" + "What is the new duration of the movie in minutes? (more than 0)");
-                int.TryParse(Universal.takeUserInput("Type..."), out Duration);
+                string? temp = Universal.takeUserInput("Type...");
+                if (temp == null) return;
+                int.TryParse(temp, out Duration);
                 while (Duration == 0)
                 {
                     Console.Clear();
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                     Console.WriteLine($"\nCurrent duration = {movieToEdit.DurationInMin} minutes" + "\n" + "What is the new duration of the movie in minutes? (more than 0)");
-                    int.TryParse(Universal.takeUserInput("Type..."), out Duration);
+                    temp = Universal.takeUserInput("Type...");
+                    if (temp == null) return;
+                    int.TryParse(temp, out Duration);
                 }
                 movieToEdit.editDuration(Duration);
             });
@@ -331,6 +351,7 @@ namespace Project_B
                 directorMenu.Add($"\n {Universal.centerToScreen("Create a new director")}", (x) =>
                 {
                     Director = CreateDirector();
+                    if (Director == null) directorMenu.UseMenu();
 
                     Console.Clear();
                     Console.WriteLine($"The new director {Director.Name} has been added to the movie.");
@@ -377,7 +398,8 @@ namespace Project_B
                     }
                     actorMenu.Add("Create a new actor", (x) =>
                     {
-                        ActorModel newActor = CreateActor();
+                        ActorModel? newActor = CreateActor();
+                        if (newActor == null) return;
                         movieToEdit.addActor(newActor);
 
                         Console.Clear();
@@ -998,22 +1020,26 @@ namespace Project_B
             movieMenu.UseMenu();
         }
 
-        public DirectorModel CreateDirector()
+        public DirectorModel? CreateDirector()
         {
             Universal.printAsTitle("Create new director");
 
             // Name //
             Console.WriteLine("\nWhat is the directors name?");
-            string Name = Universal.takeUserInput("Type...") ?? "";
+            string? Name = Universal.takeUserInput("Type...");
+            if (Name == null) return null;
 
             // Discription //
             Console.WriteLine("\nWhat is the director description?");
-            string Discription = Universal.takeUserInput("Type...") ?? "";
+            string Discription = Universal.takeUserInput("Type...");
+            if (Discription == null) return null;
 
             // Age //
             int Age = 0;
             Console.WriteLine("\nWhat is the directors age?");
-            int.TryParse(Universal.takeUserInput("Type..."), out Age);
+            string? temp = Universal.takeUserInput("Type...");
+            if (temp == null) return null;
+            int.TryParse(temp, out Age);
             while (Age <= 0)
             {
                 Console.SetCursorPosition(0, Console.CursorTop - 3);
@@ -1072,13 +1098,17 @@ namespace Project_B
                 // Age //
                 int Age = 0;
                 Console.WriteLine($"Current Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors?");
-                int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                string? temp = Universal.takeUserInput("Type...");
+                if (temp == null) return;
+                int.TryParse(temp, out Age);
                 while (Age <= 0)
                 {
                     Console.Clear();
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                     Console.WriteLine($"\nCurrent Age = {directorToEdit.Age}" + "\n" + "What is the new age of the directors?");
-                    int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                    temp = Universal.takeUserInput("Type...");
+                    if (temp == null) return;
+                    int.TryParse(temp, out Age);
                 }
 
                 directorToEdit.editAge(Age);
@@ -1103,28 +1133,34 @@ namespace Project_B
             Console.WriteLine($"\nThe changes to {directorToEdit.Name} have been saved.");
             Universal.PressAnyKeyWaiter();
         }
-        public ActorModel CreateActor()
+        public ActorModel? CreateActor()
         {
             Universal.printAsTitle("Create new actor");
 
             // Name //
             Console.WriteLine("\nWhat is the actors name?");
-            string Name = Universal.takeUserInput("Type...") ?? "";
+            string? Name = Universal.takeUserInput("Type...");
+            if (Name == null) return null;
 
             // Discription //
             Console.WriteLine("\nWhat is the actors description?");
-            string Discription = Universal.takeUserInput("Type...") ?? "";
+            string? Discription = Universal.takeUserInput("Type...");
+            if (Discription == null) return null;
 
             // Age //
             int Age = 0;
             Console.WriteLine("\nWhat is the actors age?");
-            int.TryParse(Universal.takeUserInput("Type..."), out Age);
+            string? temp = Universal.takeUserInput("Type...");
+            if (temp == null) return null;
+            int.TryParse(temp, out Age);
             while (Age <= 0)
             {
                 Console.SetCursorPosition(0, Console.CursorTop - 3);
                 Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                 Console.WriteLine("\nWhat is the actors age?");
-                int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                temp = Universal.takeUserInput("Type...");
+                if (temp == null) return null;
+                int.TryParse(temp, out Age);
             }
             Console.SetCursorPosition(0, Console.CursorTop - 3);
             Console.Write("                          ");
@@ -1157,7 +1193,7 @@ namespace Project_B
             actorList = actorList.OrderBy(x => x.Name).ToList();
 
             //movie to edit
-            ActorModel? actorToEdit = null;
+            ActorModel? actorToEdit = new ActorModel("", "", 0);
 
             InputMenu whatToEditMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
             whatToEditMenu.Add("Name", (x) =>
@@ -1177,13 +1213,17 @@ namespace Project_B
                 // Age //
                 int Age = 0;
                 Console.WriteLine($"Current Age = {actorToEdit.Age}" + "\n" + "What is the new age of the actor? (18 or older)");
-                int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                string? temp = Universal.takeUserInput("Type...");
+                if (temp == null) return;
+                int.TryParse(temp, out Age);
                 while (Age <= 0)
                 {
                     Console.Clear();
                     Universal.WriteColor("Invalid number, try again!", ConsoleColor.Red);
                     Console.WriteLine($"\nCurrent Age = {actorToEdit.Age}" + "\n" + "What is the new age of the actor? (18 or older)");
-                    int.TryParse(Universal.takeUserInput("Type..."), out Age);
+                    temp = Universal.takeUserInput("Type...");
+                    if (temp == null) return;
+                    int.TryParse(temp, out Age);
                 }
 
                 actorToEdit.editAge(Age);
@@ -1200,7 +1240,7 @@ namespace Project_B
                 });
             }
             actorMenu.UseMenu();
-            if (actorToEdit == null) return;
+            if (actorToEdit.Name == "" && actorToEdit.Description == "" && actorToEdit.Age == 0) return;
 
             //Saving the new item to the database
             _af.ItemToDb(actorToEdit);

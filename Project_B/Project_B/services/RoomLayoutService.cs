@@ -504,11 +504,12 @@ class RoomLayoutService : LayoutModel
                 Console.Clear();
                 Console.WriteLine($"You've selected seat {seatModel.Name}. Please provide your information.");
                 // Here you can prompt the user for their information and handle it accordingly
-                string fullName;
+                string? fullName;
                 while (true)
                 {
                     Console.Write("Enter your full name: ");
-                    fullName = Universal.takeUserInput("Type...") ?? "";
+                    fullName = Universal.takeUserInput("Type...");
+                    if (fullName == null) return;
                     if (IsValidFullName(fullName))
                     {
                         break;  // Exit the loop if a valid full name is entered
@@ -519,13 +520,15 @@ class RoomLayoutService : LayoutModel
                     }
                 }
                 Console.Write("Enter your email: ");
-                string email = Universal.takeUserInput("Type...");
+                string? email = Universal.takeUserInput("Type...");
+                if (email == null) return;
 
                 string phoneNumber;
                 while (true)
                 {
                     Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                    phoneNumber = Universal.takeUserInput("Type...") ?? "";
+                    phoneNumber = Universal.takeUserInput("Type...");
+                    if (phoneNumber == null) return;
                     if (IsValidPhoneNumber(phoneNumber))
                     {
                         break;  // Exit the loop if a valid phone number is entered
