@@ -103,7 +103,7 @@ namespace Project_B
             try
             {
                 int i = 1;
-                DirectorModel? director = null;
+                DirectorModel? director = new DirectorModel("", "", 0);
                 while (director != null)
                 {
                     director = _df.GetItemFromId(i);
