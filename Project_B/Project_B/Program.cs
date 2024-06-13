@@ -57,7 +57,7 @@ namespace Project_B
                     {"Schedule", (x) => { rs.showReservedSeatsPerTimetable(rf, sf, cf, reservationFactory, rs); }},
                     {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory, rs, ttf); }},
                     {"\n" + centerToScreen("Create/Edit"), (x) => {
-                        InputMenu CreateMenu = new InputMenu("useLambda");
+                        InputMenu CreateMenu = new InputMenu("Create/Edit");
                         CreateMenu.Add(new Dictionary<string, Action<string>>()
                         {
                             {"Add Movie", (x) => {createItems.CreateNewMovie();}},
@@ -72,7 +72,7 @@ namespace Project_B
                             {"\n" + centerToScreen("Edit seat prices"), (x) => {SeatPriceCalculator.UpdatePrices();}},
                             {"Change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                         });
-                        CreateMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
+                        CreateMenu.UseMenu((title) => Universal.printAsTitle(title));
                     }},
                     {"History", (x) => { hs.UseMenu(); }},
                     {"See customer e-mails", (x) => { rs.SeeCustomerEmails();}}

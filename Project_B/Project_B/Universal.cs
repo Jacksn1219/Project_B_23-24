@@ -7,6 +7,8 @@ using Models;
 namespace Project_B;
 public static class Universal
 {
+    public static string MenuFollower = "";
+
     /// <summary>
     /// the datetime format of the user based on his culture
     /// </summary>
@@ -241,7 +243,7 @@ public static class Universal
             foreach (SeatModel seat in reservation.ReservedSeats)
                 reservesSeatList.Add((reservation.ID ?? 0, seat));
         }
-        InputMenu showReservedSeatMenu = new InputMenu("useLambda");
+        InputMenu showReservedSeatMenu = new InputMenu("Select a seat to show");
         foreach ((int, SeatModel) seat in reservesSeatList)
         {
             TimeTableModel? timetable = _ttf.GetItemFromId(_rf.GetItemFromId(seat.Item1, 99).TimeTableID ?? 1);
@@ -249,7 +251,7 @@ public static class Universal
                 showReservedSeatMenu.Add($"{timetable.DateTimeStartDate} | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); });
             //else showReservedSeatMenu.Add($" | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
         }
-        showReservedSeatMenu.UseMenu(() => printAsTitle("Select a seat to show"));
+        showReservedSeatMenu.UseMenu((title) => printAsTitle(title));
     }
     public static void PressAnyKeyWaiter()
     {

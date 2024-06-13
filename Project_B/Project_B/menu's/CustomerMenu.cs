@@ -8,9 +8,9 @@ namespace Project_B.menu_s
         {
             // ------ gebruiker menu met menu opties ------//
             //create menu
-            InputMenu gebruikerMenu = new InputMenu("useLambda");
+            InputMenu gebruikerMenu = new InputMenu("Customer menu");
             gebruikerMenu.Add(menuItems);
-            gebruikerMenu.UseMenu(() => Universal.printAsTitle("Customer menu"));
+            gebruikerMenu.UseMenu((title) => Universal.printAsTitle(title));
         }
     }
 }

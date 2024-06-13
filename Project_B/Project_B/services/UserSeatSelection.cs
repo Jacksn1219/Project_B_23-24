@@ -55,7 +55,7 @@ namespace Project_B.services
 
             SeatModel? selectedOption = null;
 
-            Models.InputMenu selectRoom = new Models.InputMenu("useLambda", null);
+            Models.InputMenu selectRoom = new Models.InputMenu("Select your seat", null);
             foreach (RoomModel room in roomList)
             {
                 selectRoom.Add($"{room.Name}", (x) =>
@@ -64,7 +64,7 @@ namespace Project_B.services
                     selectedOption = RoomLayoutService.selectSeatModelForUser(room.Seats, room);
                 });
             }
-            selectRoom.UseMenu(() => Universal.printAsTitle("Select your seat"));
+            selectRoom.UseMenu((title) => Universal.printAsTitle(title));
             return selectedOption;
         }
     }

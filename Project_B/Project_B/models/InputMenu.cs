@@ -24,6 +24,12 @@ namespace Models
             this.menuoptions = new List<InputMenuOption>();
             this.row = row;
         }
+        public void editMenuFollower()
+        {
+            List<string> temp = Universal.MenuFollower.Split(" > ").ToList();
+            temp.RemoveAt(temp.Count() - 1);
+            Universal.MenuFollower = String.Join(" > ", temp);
+        }
 
         public void editIntro(string newIntro) => this.introduction = newIntro;
 
@@ -59,11 +65,12 @@ namespace Models
         /// <summary>
         /// Print menu to screen
         /// </summary>
-        public void Draw(int cursor, Action? printMenu)
+        public void Draw(int cursor, Action<string>? printMenu)
         {
             //Console.Clear();
             Console.SetCursorPosition(0, 0);
-            if (this.introduction == "useLambda" && printMenu != null) printMenu();
+            Console.WriteLine(Universal.MenuFollower);
+            if (printMenu != null) printMenu(introduction);
             else Console.WriteLine(this.introduction);
             Console.WriteLine();
 
@@ -108,13 +115,14 @@ namespace Models
         /// Activating the menu
         /// </summary>
         /// <param name="row"></param>
-        public void UseMenu(Action? printMenu = null)
+        public void UseMenu(Action<string>? printMenu = null)
         {
             Console.CursorVisible = false;
             int cursor = 0;
             if (cursor == 0) while (cursor < this.menuoptions.Count && (this.menuoptions[cursor].Name == " " || this.menuoptions[cursor].Name == "X" || this.menuoptions[cursor].isTaken == true)) cursor++;
             ConsoleKey userInput = ConsoleKey.Delete;
             Console.Clear();
+            Universal.MenuFollower += $" > {this.introduction}";
             //Main loop
             while (userInput != ConsoleKey.Q)
             {
@@ -154,6 +162,7 @@ namespace Models
                     Console.Clear();
                     Console.WriteLine("\x1b[3J");
                     if (this.exit == true) Environment.Exit(0);
+                    editMenuFollower();
                     return;
                 }
                 else if (userInput == ConsoleKey.Enter)
@@ -163,13 +172,18 @@ namespace Models
                     {
                         Console.Clear();
                         if (this.exit == true) Environment.Exit(0);
+                        editMenuFollower();
                         return;
                     }
                     else
                     {
                         this.menuoptions[cursor].Act("");
                         Console.Clear();
-                        if (this.exit == null) return;
+                        if (this.exit == null)
+                        {
+                            editMenuFollower();
+                            return;
+                        }
                     }
                 }
             }

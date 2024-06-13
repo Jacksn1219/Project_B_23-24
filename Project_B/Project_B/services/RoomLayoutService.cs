@@ -132,7 +132,7 @@ class RoomLayoutService : LayoutModel
 
         //SeatModel? selectedOption = null;
 
-        InputMenu selectRoom = new InputMenu("useLambda", null);
+        InputMenu selectRoom = new InputMenu("Select room to edit", null);
         foreach (RoomModel room in roomList)
         {
             selectRoom.Add($"{room.Name}", (x) =>
@@ -142,7 +142,7 @@ class RoomLayoutService : LayoutModel
                 //selectedOption = RoomLayoutService.selectSeatModel(room.Seats, room);
             });
         }
-        selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
+        selectRoom.UseMenu((title) => Universal.printAsTitle(title));
         //return selectedOption;
     }
     public void editLayout()
@@ -329,7 +329,7 @@ class RoomLayoutService : LayoutModel
             else layouts[(seat.RoomID ?? 0) - 1].Add(seat);
         }
 
-        InputMenu selectRoom = new InputMenu("useLambda");
+        InputMenu selectRoom = new InputMenu("Select room to edit");
         foreach (RoomModel room in roomList)
         {
             selectRoom.Add($"{room.Name}", (x) =>
@@ -340,7 +340,7 @@ class RoomLayoutService : LayoutModel
                 rf.ItemToDb(room);
             });
         }
-        selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
+        selectRoom.UseMenu((title) => Universal.printAsTitle(title));
     }
 
     public static void MakeNewLayout()
