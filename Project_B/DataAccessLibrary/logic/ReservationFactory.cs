@@ -5,7 +5,6 @@ using System.Xml;
 using DataAccessLibrary;
 using Serilog;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Text.Json;
 
 namespace DataAccessLibrary.logic
 {
@@ -46,7 +45,7 @@ namespace DataAccessLibrary.logic
                     )
                     VALUES($1,$2,$3)",
                     new Dictionary<string, dynamic?>(){
-                        {"$1", item.CustomerID},
+                        {"$1", item.CustomerID },
                         {"$2", item.TimeTableID},
                         {"$3", item.Note}
                     }
@@ -86,7 +85,6 @@ namespace DataAccessLibrary.logic
                         ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
                         SeatID INTEGER  NOT NULL,
                         ReservationID INTEGER  NOT NULL,
-                        Price INTEGER  NOT NULL,
                         FOREIGN KEY (SeatID) REFERENCES Seat (ID),
                         FOREIGN KEY (ReservationID) REFERENCES Reservation (ID)
                     )"
@@ -200,18 +198,6 @@ namespace DataAccessLibrary.logic
             }
             return true;
         }
-        public static List<string> ReadPrices()
-        {
-            List<string>? _prices = null;
-            try
-            {
-                string _filePath = "System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @\"..\\..\\..\\DataSource\\SeatPrices.json\"";
-                _prices = JsonSerializer.Deserialize<List<string>>(
-                File.ReadAllText(_filePath) ?? "");
-            }
-            catch { }
-            return _prices ?? new List<string>();
-        }
         private bool RelatedItemsDependingOnItemToDb(ReservationModel item, int deepcopyLv)
         {
             if (deepcopyLv < 0) return true;
@@ -234,14 +220,12 @@ namespace DataAccessLibrary.logic
                     _db.SaveData(
                         @"INSERT INTO ReservedSeat(
                             SeatID,
-                            ReservationID,
-                            Price
+                            ReservationID
                         )
-                        VALUES($1,$2,$3)",
+                        VALUES($1,$2)",
                         new Dictionary<string, dynamic?>(){
                             {"$1", SeatModel.ID},
-                            {"$2", item.ID},
-                            {"$3", ReadPrices()[0]}
+                            {"$2", item.ID}
                         }
                     );
                 }
