@@ -31,6 +31,7 @@ public class MailService
             $"Movie: {res.TimeTable.Movie.Name}\n" +
             $"Date: {res.TimeTable.DateTimeStartDate.Date.ToString("dd-MM-yyyy")}\n" +
             $"Starts at: {res.TimeTable.DateTimeStartDate.ToString("HH:mm")} - {res.TimeTable.DateTimeEndDate.ToString("HH:mm")}\n" +
+            $"Room: {res.TimeTable.Room.Name}" +
             $"Seats: {seats}\n" +
             $"Confirmation number: {res.ID}\n\n" +
             "See you soon!\n" +
