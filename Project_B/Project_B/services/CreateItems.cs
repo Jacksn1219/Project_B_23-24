@@ -236,7 +236,7 @@ namespace Project_B
             //movie to edit
             MovieModel? movieToEdit = null;
 
-            InputMenu whatToEditMenu = new InputMenu("", null);
+            InputMenu whatToEditMenu = new InputMenu("Select what you want to edit:", null);
             whatToEditMenu.Add("Name", (x) =>
             {
                 Console.WriteLine($"Current Name = {movieToEdit.Name}" + "\n" + "What is the new name of the movie?");
@@ -454,7 +454,7 @@ namespace Project_B
 
                     movieToEdit = movie;
                     whatToEditMenu.editIntro(movie.Name);
-                    whatToEditMenu.UseMenu((title) => Universal.centerToScreen("Select what you want to edit:"));
+                    whatToEditMenu.UseMenu((title) => Console.WriteLine(Universal.printAsTitle(title)));
                     if (!movieToEdit.IsChanged) System.Console.WriteLine("no changes where made");
                     else if (_mf.ItemToDb(movieToEdit)) Console.WriteLine($"The changes to {movieToEdit.Name} have been saved.");
                     else System.Console.WriteLine("failed to save the changes to the movie");
@@ -462,7 +462,7 @@ namespace Project_B
                     Universal.PressAnyKeyWaiter();
                 });
             }
-            movieMenu.UseMenu((title) => Universal.centerToScreen("Select movie to edit:"));
+            movieMenu.UseMenu((title) => Console.WriteLine(Universal.printAsTitle(title)));
             if (movieToEdit == null) return;
 
             //whatToEditMenu.UseMenu();
@@ -575,12 +575,12 @@ namespace Project_B
             movieList = movieList.OrderBy(m => m.Name).ToList();
 
             MovieModel? selectedMovie = null;
-            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a movie:"), null);
+            InputMenu movieMenu = new InputMenu("", null);
             foreach (MovieModel movie in movieList)
             {
                 movieMenu.Add(movie.Name ?? "", (x) => { selectedMovie = movie; });
             }
-            movieMenu.UseMenu();
+            movieMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen("Select a movie:")));
             if (selectedMovie == null)
             {
                 return;
@@ -601,12 +601,12 @@ namespace Project_B
             catch { }
 
             RoomModel? selectedRoom = null;
-            InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a room: (Room1, Room2, Room3)"), null);
+            InputMenu roomMenu = new InputMenu("", null);
             foreach (RoomModel room in roomList)
             {
                 roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
             }
-            roomMenu.UseMenu();
+            roomMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen("Select a room: (Room1, Room2, Room3)")));
             if (selectedRoom == null)
             { return; }
 
@@ -704,18 +704,18 @@ namespace Project_B
 
             TimeTableModel? selectedTimeTable = null;
 
-            InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Select a timetable to edit:"), null);
+            InputMenu timeTableMenu = new InputMenu("", null);
             foreach (TimeTableModel timeTable in timeTableList)
             {
                 timeTableMenu.Add($"Movie: {timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
             }
-            timeTableMenu.UseMenu();
+            timeTableMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen("Select a timetable to edit:")));
             if (selectedTimeTable == null)
             {
                 return;
             }
 
-            InputMenu editMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
+            InputMenu editMenu = new InputMenu("", null);
             editMenu.Add("Movie", (x) =>
             {
                 List<MovieModel> movieList = new List<MovieModel>();
@@ -741,12 +741,12 @@ namespace Project_B
                 movieList = movieList.OrderBy(m => m.Name).ToList();
 
                 MovieModel? selectedMovie = null;
-                InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Select a new movie:"), null);
+                InputMenu movieMenu = new InputMenu("Select a new movie:", null);
                 foreach (MovieModel movie in movieList)
                 {
                     movieMenu.Add(movie.Name ?? "", (x) => { selectedMovie = movie; });
                 }
-                movieMenu.UseMenu();
+                movieMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen(title)));
                 if (selectedMovie == null)
                 { return; }
 
@@ -774,14 +774,14 @@ namespace Project_B
 
                 while (!validSelection)
                 {
-                    InputMenu roomMenu = new InputMenu(Universal.centerToScreen("Select a new room:"), null);
+                    InputMenu roomMenu = new InputMenu("Edit Room", null);
                     
                     foreach (RoomModel room in roomList)
                     {
                         roomMenu.Add(room.Name ?? "", (x) => { selectedRoom = room; });
                     }
 
-                    roomMenu.UseMenu();
+                    roomMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen("Select a new room:")));
 
                     if (selectedRoom == null)
                     {
@@ -877,7 +877,7 @@ namespace Project_B
                 }
                 Console.ReadKey();
             });
-            editMenu.UseMenu();
+            editMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen("Select what you want to edit:")));
 
             if (_ttf.ItemToDb(selectedTimeTable))
             {
@@ -921,7 +921,7 @@ namespace Project_B
 
             movieList = movieList.OrderBy(m => m.Name).ToList();
 
-            InputMenu movieMenu = new InputMenu(Universal.centerToScreen("Browse Movies:"), null);
+            InputMenu movieMenu = new InputMenu("", null);
             movieMenu.Add("> All movies <", (x) =>
             {
                 InputMenu allMovieMenu = new InputMenu(Universal.centerToScreen("All movies are here:"));
@@ -935,7 +935,7 @@ namespace Project_B
                         Console.ReadKey();
                     });
                 }
-                allMovieMenu.UseMenu();
+                allMovieMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen("Browse Movies:")));
             });
             movieMenu.Add("> Filter movie <", (x) =>
             {
@@ -972,11 +972,11 @@ namespace Project_B
                             filteredMenu.UseMenu();
                         });
                     }
-                    pegiMenu.UseMenu();
+                    pegiMenu.UseMenu((title) => Console.WriteLine(title));
                 });
-                filterMenu.UseMenu();
+                filterMenu.UseMenu((title) => Console.WriteLine(title));
             });
-            movieMenu.UseMenu();
+            movieMenu.UseMenu((title) => Console.WriteLine(title));
         }
 
         public DirectorModel CreateDirector()
@@ -1066,16 +1066,16 @@ namespace Project_B
             });
 
             // Menu to chose Director
-            InputMenu directorMenu = new InputMenu(Universal.centerToScreen("Select director to edit:"));
+            InputMenu directorMenu = new InputMenu("Select director to edit:");
             foreach (DirectorModel director in directorList)
             {
                 directorMenu.Add(director.Name ?? "", (x) =>
                 {
                     directorToEdit = director;
-                    whatToEditMenu.UseMenu();
+                    whatToEditMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen(title)));
                 });
             }
-            directorMenu.UseMenu();
+            directorMenu.UseMenu((title) => Console.WriteLine(title));
             if (directorToEdit == null) return;
 
             //Saving the new item to the database
@@ -1140,7 +1140,7 @@ namespace Project_B
             //movie to edit
             ActorModel? actorToEdit = null;
 
-            InputMenu whatToEditMenu = new InputMenu(Universal.centerToScreen("Select what you want to edit:"), null);
+            InputMenu whatToEditMenu = new InputMenu("Select what you want to edit:", null);
             whatToEditMenu.Add("Name", (x) =>
             {
                 Console.WriteLine($"Current Name = {actorToEdit.Name}" + "\n" + "What is the new name of the actor?");
@@ -1171,16 +1171,16 @@ namespace Project_B
             });
 
             // Menu to chose Actor
-            InputMenu actorMenu = new InputMenu(Universal.centerToScreen("Select actor to edit:"));
+            InputMenu actorMenu = new InputMenu("Select actor to edit:");
             foreach (ActorModel actor in actorList)
             {
                 actorMenu.Add(actor.Name ?? "", (x) =>
                 {
                     actorToEdit = actor;
-                    whatToEditMenu.UseMenu();
+                    whatToEditMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen(title)));
                 });
             }
-            actorMenu.UseMenu();
+            actorMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen(title)));
             if (actorToEdit == null) return;
 
             //Saving the new item to the database
@@ -1221,14 +1221,14 @@ namespace Project_B
 
             TimeTableModel? selectedTimeTable = null;
 
-            InputMenu timeTableMenu = new InputMenu(Universal.centerToScreen("Movies at cinema YourEyes:"), null);
+            InputMenu timeTableMenu = new InputMenu("Movies at cinema YourEyes:", null);
 
             foreach (TimeTableModel timeTable in timeTableList)
             {
                 timeTableMenu.Add($"Movie: {timeTable.Movie.Name} in {timeTable.Room.Name} on {timeTable.StartDate} till {timeTable.EndDate}.", (x) => { selectedTimeTable = timeTable; });
             }
             
-            timeTableMenu.UseMenu();
+            timeTableMenu.UseMenu((title) => Console.WriteLine(Universal.centerToScreen(title)));
             
             if (selectedTimeTable == null)
             {
