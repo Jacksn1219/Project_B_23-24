@@ -33,7 +33,7 @@ namespace Project_B
             //set up services
             CreateItems createItems = new CreateItems(af, df, mf, rf, ttf, reservationFactory);
             RoomService roomservice = new(rf);
-            ReservationService rs = new(reservationFactory, mf, ttf, rf);
+            ReservationService rs = new(reservationFactory, mf, ttf, rf, cf);
             HistoryService hs = new HistoryService(rf, sf, cf, reservationFactory, rs, ttf);
 
             //----- Welkom scherm -----//
@@ -47,8 +47,8 @@ namespace Project_B
             MainMenu.UseMenu(
                 //user options
                 new Dictionary<string, Action<string>>(){
-                    {"# Show schedule #", (x) => { /*takeUserInput("Movie title");/*not yet*/ }},
-                    {"# Browse movies #", (x) => { /*not yet*/ }},
+                    {"Schedule", (x) => {createItems.DisplayTable();}},
+                    {"Browse movies", (x) => {createItems.browseMovies();}},
                     {"\n" + Universal.centerToScreen("Reserve seats"), (x) => {rs.CreateReservation();}},
                     {"\n" + Universal.centerToScreen("Search reservation"), (x) => {rs.GetReservationById();}}
                 },
@@ -57,14 +57,14 @@ namespace Project_B
                     {"Schedule", (x) => { rs.showReservedSeatsPerTimetable(rf, sf, cf, reservationFactory, rs); }},
                     {"Reserved seats", (x) => {Universal.showReservedSeats(sf, cf, reservationFactory, rs, ttf); }},
                     {"\n" + centerToScreen("Create/Edit"), (x) => {
-                        InputMenu CreateMenu = new InputMenu("useLambda");
+                        InputMenu CreateMenu = new InputMenu("Create/Edit");
                         CreateMenu.Add(new Dictionary<string, Action<string>>()
                         {
                             {"Add Movie", (x) => {createItems.CreateNewMovie();}},
                             {"Edit Movie", (x) => {createItems.EditMovie();}},
                             {"Remove Movie", (x) => {createItems.DeleteMovie();}},
-                            {"\n" + centerToScreen("Add Timetable"), (x) => {createItems.CreateTimeTable();}},
-                            {"Edit Timetable", (x) => {createItems.EditTimeTable();}},
+                            {"\n" + centerToScreen("Plan a movie"), (x) => {createItems.CreateTimeTable();}},
+                            {"Edit planned movie", (x) => {createItems.EditTimeTable();}},
                             {"\n" + centerToScreen("Add Director"), (x) => {createItems.CreateDirector();}},
                             {"Edit Director", (x) => {createItems.EditDirector();}},
                             {"\n" + centerToScreen("Add Actor"), (x) => {createItems.CreateActor();}},
@@ -72,9 +72,10 @@ namespace Project_B
                             {"\n" + centerToScreen("Edit seat prices"), (x) => {SeatPriceCalculator.UpdatePrices();}},
                             {"Change room layout", (x) => {RoomLayoutService.editLayoutPerRoom(rf, sf);}}
                         });
-                        CreateMenu.UseMenu(() => Universal.printAsTitle("Create/Edit"));
+                        CreateMenu.UseMenu((title) => Universal.printAsTitle(title));
                     }},
-                    {"History", (x) => { hs.UseMenu(); }}
+                    {"History", (x) => { hs.UseMenu(); }},
+                    {"See customer e-mails", (x) => { rs.SeeCustomerEmails();}}
                 }
             );
         }

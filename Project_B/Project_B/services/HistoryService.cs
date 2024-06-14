@@ -2,6 +2,7 @@
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
 using Models;
+using System.IO;
 
 namespace Project_B.services;
 public class HistoryService
@@ -26,15 +27,11 @@ public class HistoryService
 
     public void UseMenu()
     {
-        InputMenu HistoryMenu = new InputMenu("useLambda");
+        InputMenu HistoryMenu = new InputMenu("History");
 
-        DateTime startDate;
-        Console.WriteLine("Enter the start date (yyyy-MM-dd):");
-        DateTime.TryParse(Universal.takeUserInput("Type..."), out startDate);
+        DateTime startDate = Universal.GetDateTimeFromUser();
 
-        DateTime endDate;
-        Console.WriteLine("\nEnter the end date (yyyy-MM-dd):");
-        DateTime.TryParse(Universal.takeUserInput("Type..."), out endDate);
+        DateTime endDate = Universal.GetDateTimeFromUser();
 
         HistoryMenu.Add(new Dictionary<string, Action<string>>{
             {"Profits", (x) => {
@@ -43,15 +40,20 @@ public class HistoryService
             }},
             {"Schedule", (x) => {
                 GetScheduleBetweenDates(startDate, endDate);
+            }},
+            {"Create csv file", (x) => {
+                CreateCsvFile(startDate, endDate);
             }}
         });
 
-        HistoryMenu.UseMenu(() => Universal.printAsTitle("History"));
+        HistoryMenu.UseMenu((title) => Universal.printAsTitle(title));
     }
-    public void showReservedSeatsPerTimetable() {
+    public void showReservedSeatsPerTimetable()
+    {
         _rs.showReservedSeatsPerTimetable(_rf, _sf, _cf, _reservationFactory, _rs);
     }
-    private ReservationModel[] GetReservationHistory(DateTime startDate, DateTime endDate) {
+    private ReservationModel[] GetReservationHistory(DateTime startDate, DateTime endDate)
+    {
         return _reservationFactory.GetReservationsBetweenDates(100, startDate, endDate, 1, 69);
         //return _tf.GetTimeTablesInRoomBetweenDates(startDate, endDate);
     }
@@ -59,7 +61,7 @@ public class HistoryService
     {
         ReservationModel[] reservationModels = GetReservationHistory(startDate, endDate);
         List<SeatModel> seats = new List<SeatModel>();
-        foreach(ReservationModel item in reservationModels)
+        foreach (ReservationModel item in reservationModels)
         {
             seats.AddRange(item.ReservedSeats);
         }
@@ -73,7 +75,7 @@ public class HistoryService
         Console.WriteLine(SeatPriceCalculator.ShowCalculation(seats));
 
         Universal.PressAnyKeyWaiter();
-        
+
         return Convert.ToInt32(total);
     }
     public void GetScheduleBetweenDates(DateTime startDate, DateTime endDate)
@@ -116,5 +118,34 @@ public class HistoryService
 
             Universal.PressAnyKeyWaiter();
         }
+    }
+    public void CreateCsvFile(DateTime startDate, DateTime endDate)
+    {
+        int totalProfits = GetProfitsBetweenDates(startDate, endDate);
+        TimeTableModel[] timeTables = _ttf.GetTimeTablesBetweenDates(startDate, endDate);
+        string directoryPath = Path.Combine(Environment.CurrentDirectory, "csv_history");
+        Directory.CreateDirectory(directoryPath);
+        string fileName = $"{startDate:yyyy-MM-dd} - {endDate:yyyy-MM-dd}.csv";
+        string filePath = Path.Combine(directoryPath, fileName);
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            writer.WriteLine("Name, Date, Time, Room, Reserved Seats");
+            foreach (TimeTableModel timeTable in timeTables)
+            {
+                _ttf.getRelatedItemsFromDb(timeTable, 534);
+                if(timeTable.Movie is null || timeTable.Room is null) continue;
+                ReservationModel[] reservations = GetReservationHistory(startDate, endDate).Where(x => x.TimeTableID == timeTable.ID).ToArray();
+                List<SeatModel> reservedSeats = new();
+                foreach (ReservationModel reservation in reservations)
+                {
+                    reservedSeats.AddRange(reservation.ReservedSeats);
+                }
+                string line = $"{timeTable.Movie.Name}, {timeTable.DateTimeStartDate.ToString("dd/MM/yyyy")}, {timeTable.DateTimeStartDate.ToString("HH:mm")}, {timeTable.Room.Name}, {reservedSeats.Count()}";
+                writer.WriteLine(line);
+            }
+        }
+        Console.WriteLine($"\nA csv file has been created under the name: {fileName}");
+        Console.WriteLine($"This file can be found under the folder: {directoryPath}");
+        Universal.PressAnyKeyWaiter();
     }
 }

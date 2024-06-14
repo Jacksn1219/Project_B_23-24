@@ -7,10 +7,34 @@ using Models;
 namespace Project_B;
 public static class Universal
 {
+    public static string MenuFollower = "";
+
     /// <summary>
     /// the datetime format of the user based on his culture
     /// </summary>
-    public static string UserDateTimeFormat { get => CultureInfo.CurrentUICulture.DateTimeFormat.FullDateTimePattern; }
+    public static string UserDateTimeFormat { get => CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern + " " + CultureInfo.CurrentUICulture.DateTimeFormat.ShortTimePattern; }
+
+    /// <summary>
+    /// Asks the user to fill in a date & time until a valid datetime format is filled in.
+    /// </summary>
+    /// <returns>the DateTime the user filled in</returns>
+    public static DateTime GetDateTimeFromUser()
+    {
+        while (true)
+        {
+            try
+            {
+                Console.WriteLine($"Fill in the date & time (in this format: {UserDateTimeFormat})");
+                return DateTime.Parse(Console.ReadLine() ?? "", CultureInfo.CurrentUICulture);
+            }
+            catch
+            {
+                System.Console.WriteLine(ChangeColour(ConsoleColor.Red) + "Invalid datetime format!" + ChangeColour(ConsoleColor.White));
+            }
+
+        }
+    }
+
     /// <summary>
     /// basic check if mail is valid. (totaly not stolen from the internet)
     /// </summary>
@@ -128,7 +152,7 @@ public static class Universal
         Console.ForegroundColor = ConsoleColor.White;
         return "";
     }
-    public static string takeUserInput(string question)
+    public static string? takeUserInput(string question)
     {
         Console.CursorVisible = true;
 
@@ -148,12 +172,51 @@ public static class Universal
         (int, int) tempMouseLocation = (Console.CursorLeft - 1, Console.CursorTop);
 
         // Userinput
-        string userInput = Console.ReadLine() ?? "";
+        string? userInput = ""; //Console.ReadLine() ??
+        ConsoleKeyInfo temp = default(ConsoleKeyInfo);
+        do
+        {
+            while (!Console.KeyAvailable) { }
+            Console.SetCursorPosition(Console.CursorLeft - (userInput.Length), Console.CursorTop);
+            temp = Console.ReadKey(true);
+            if (temp.Key == ConsoleKey.Backspace && userInput.Length > 0)
+            {
+                List<char> tempUserInput = userInput.ToList();
+                Console.Write("                             ");
+                if (userInput.Length > 29) for (int i = 29; i < userInput.Length; i++) { Console.Write(" "); }
+                Console.SetCursorPosition(Console.CursorLeft - 29, Console.CursorTop);
+                if (userInput.Length > 29) Console.SetCursorPosition(Console.CursorLeft - (userInput.Length - 29), Console.CursorTop);
+                tempUserInput.RemoveAt(tempUserInput.Count - 1);
+                userInput = String.Join("", tempUserInput);
+            }
+            else if (temp.Key == ConsoleKey.Escape)
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.CursorVisible = false;
+                return null;
+            }
+            else if (temp.Key != ConsoleKey.Backspace && temp.Key != ConsoleKey.Escape && Char.IsAscii(temp.KeyChar))
+            {
+                if (temp.KeyChar == '\0' && temp.Modifiers == 0) userInput += "'";
+                else if (temp.KeyChar == '\0') userInput += "\"";
+                else userInput += $"{temp.KeyChar}";
+            }
+            Console.Write(userInput);
+        } while (temp.Key != ConsoleKey.Enter && temp.Key != ConsoleKey.Escape);
+
+        // "\r" weghalen. I know no better solution ;D
+        List<char> tempList = userInput.ToList();
+        tempList.RemoveAt(tempList.Count - 1);
+        //tempList.RemoveAt(tempList.Count - 1);
+        userInput = String.Join("", tempList);
 
         if (userInput == "")
         {
             Console.SetCursorPosition(tempMouseLocation.Item1, tempMouseLocation.Item2);
             userInput = takeUserInput("You have to type something...");
+            Console.CursorVisible = false;
+            if (userInput == null) return null;
         }
 
         // Reseting the color
@@ -180,7 +243,7 @@ public static class Universal
             foreach (SeatModel seat in reservation.ReservedSeats)
                 reservesSeatList.Add((reservation.ID ?? 0, seat));
         }
-        InputMenu showReservedSeatMenu = new InputMenu("useLambda");
+        InputMenu showReservedSeatMenu = new InputMenu("Select a seat to show");
         foreach ((int, SeatModel) seat in reservesSeatList)
         {
             TimeTableModel? timetable = _ttf.GetItemFromId(_rf.GetItemFromId(seat.Item1, 99).TimeTableID ?? 1);
@@ -188,7 +251,7 @@ public static class Universal
                 showReservedSeatMenu.Add($"{timetable.DateTimeStartDate} | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); });
             //else showReservedSeatMenu.Add($" | {seat.Item2.RoomID} | {seat.Item2.Name}", (x) => { rs.GetReservationById(seat.Item1); Console.ReadLine(); });
         }
-        showReservedSeatMenu.UseMenu(() => printAsTitle("Select a seat to show"));
+        showReservedSeatMenu.UseMenu((title) => printAsTitle(title));
     }
     public static void PressAnyKeyWaiter()
     {

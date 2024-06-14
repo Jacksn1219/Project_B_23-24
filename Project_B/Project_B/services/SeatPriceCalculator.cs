@@ -36,7 +36,8 @@ namespace Project_B.services
                     "Price tier I", (x) =>
                     {
                         while(true){
-                            var resp = takeUserInput("Fill in New price:");
+                            string? resp = takeUserInput("Fill in New price:");
+                            if (resp == null) return;
                             if(decimal.TryParse(resp, out var price))
                             {
                                 prices.PriceTierI = price;
@@ -58,7 +59,8 @@ namespace Project_B.services
                     {
 
                         while(true){
-                            var resp = takeUserInput("Fill in New price:");
+                            string? resp = takeUserInput("Fill in New price:");
+                            if (resp == null) return;
                             if(decimal.TryParse(resp, out var price))
                             {
                                 prices.PriceTierII = price;
@@ -79,7 +81,8 @@ namespace Project_B.services
                     {
 
                         while(true){
-                            var resp = takeUserInput("Fill in New price:");
+                            string resp = takeUserInput("Fill in New price:");
+                            if (resp == null) return;
                             if(decimal.TryParse(resp, out var price))
                             {
                                 prices.PriceTierIII = price;
@@ -99,7 +102,8 @@ namespace Project_B.services
                     "Extra space", (x) =>
                     {
                         while(true){
-                            var resp = takeUserInput("Fill in New price:");
+                            string resp = takeUserInput("Fill in New price:");
+                            if (resp == null) return;
                             if(decimal.TryParse(resp, out var price))
                             {
                                 prices.ExtraSpace = price;
@@ -119,7 +123,8 @@ namespace Project_B.services
                     "LoveSeat", (x) =>
                     {
                         while(true){
-                            var resp = takeUserInput("Fill in New price:");
+                            string? resp = takeUserInput("Fill in New price:");
+                            if (resp == null) return;
                             if(decimal.TryParse(resp, out var price))
                             {
                                 prices.LoveSeat = price;

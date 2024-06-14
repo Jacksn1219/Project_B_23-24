@@ -62,7 +62,7 @@ namespace DataAccessLibrary.logic
                     )"
                 );
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Fatal(ex, "failed to create table customer");
                 throw;
@@ -82,7 +82,7 @@ namespace DataAccessLibrary.logic
                     }
                 ).First();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Warning(ex, $"failed to get customer with ID {id}");
                 return null;
@@ -110,13 +110,7 @@ namespace DataAccessLibrary.logic
                     }
                 ).First();
             }
-            catch(InvalidOperationException ex)
-            {
-                //bad email
-                _logger.Information(ex, $"failed to get customer with email {email}");
-                throw new InvalidDataException($"no customer is returned from E-mail {email}", ex);
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //better start panicing
                 _logger.Warning(ex, $"failed to get customer with email {email}");
@@ -131,7 +125,7 @@ namespace DataAccessLibrary.logic
             {
                 return _db.ReadData<CustomerModel>(
                     $"SELECT * FROM Customer LIMIT {count} OFFSET {count * page - count}"
-                );
+                ).OrderBy(x => x.Name).ToArray();
             }
             catch (Exception ex)
             {
@@ -142,7 +136,7 @@ namespace DataAccessLibrary.logic
 
         public bool ItemsToDb(List<CustomerModel> items, int deepcopyLv = 99)
         {
-            if(deepcopyLv < 0) return true;
+            if (deepcopyLv < 0) return true;
             foreach (var item in items)
             {
                 ItemToDb(item, deepcopyLv);
@@ -185,7 +179,7 @@ namespace DataAccessLibrary.logic
                 if (toReturn) item.IsChanged = false;
                 return toReturn;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Warning(ex, $"failed to update customer with ID {item.ID}");
                 return false;

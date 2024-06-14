@@ -1,3 +1,4 @@
+using System.Text;
 using DataAccessLibrary;
 using DataAccessLibrary.logic;
 using DataAccessLibrary.models;
@@ -8,15 +9,19 @@ using Project_B.services;
 public class ReservationService
 {
     private readonly ReservationFactory _rf;
+    private readonly MailService _ms;
     private readonly MovieFactory _mf;
     private readonly TimeTableFactory _tf;
     private readonly RoomFactory _roomf;
-    public ReservationService(ReservationFactory rf, MovieFactory mf, TimeTableFactory tf, RoomFactory roomf)
+    private readonly CustomerFactory _cf;
+    public ReservationService(ReservationFactory rf, MovieFactory mf, TimeTableFactory tf, RoomFactory roomf, CustomerFactory cf)
     {
         _rf = rf;
         _mf = mf;
+        _ms = new MailService(this);
         _tf = tf;
         _roomf = roomf;
+        _cf = cf;
     }
     //add methodes to get and add reservations
     public void CreateReservation()
@@ -27,16 +32,17 @@ public class ReservationService
 
 
         //select timetable
-        TimeTableModel? tt = null;
-
-        tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
-        if (tt == null)
+        TimeTableModel? tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
+        if (tt is null) return; //has stopped reservation
+        if (tt.Room is null || tt.Movie is null)
         {
+            System.Console.WriteLine("this planned movie can't be reserved yet.");
+            Universal.PressAnyKeyWaiter();
             return;
         }
 
         //get reserved seats,
-        
+
         // Loop until the user is done selecting seats
         List<SeatModel> selectedSeats = new List<SeatModel>();
         while (true)
@@ -74,7 +80,7 @@ public class ReservationService
             }
         }
         if (selectedSeats.Count() == 0) return;
-    
+
 
         //get seats
 
@@ -95,7 +101,7 @@ public class ReservationService
         if (tt.Room == null) { return; }
 
         //fill in user data
-        (CustomerModel? customer, string note) userInfo = UserInfoInput.GetUserInfo(tt);
+        (CustomerModel? customer, string note) userInfo = UserInfoInput.GetUserInfo(tt, _cf);
         if (userInfo.customer == null) return;
 
         System.Console.WriteLine(SeatPriceCalculator.ShowCalculation(selectedSeats));
@@ -114,7 +120,7 @@ public class ReservationService
                 ReservationModel res = new ReservationModel(userInfo.customer, tt, selectedSeats, userInfo.note);
                 _rf.ItemToDb(res);
                 //print number
-                MailService.SendEmail(res.Customer.Email, res.TimeTable.Movie.Name, res.Customer.Name, res.ID, res.TimeTable.StartDate, res.TimeTable.EndDate, res.ReservedSeats);
+                _ms.SendEmail(res);
                 Console.Clear();
                 System.Console.WriteLine($"\nReservation is created!\nYour reservation number is: {res.ID}\nAn E-mail has been sent with your confirmation details!");
                 createReservation = true;
@@ -129,7 +135,7 @@ public class ReservationService
                 System.Console.WriteLine("\nInvalid input. Please enter 'Y' or 'N'");
             }
         }
-        
+
     }
 
     public void GetReservationByNumber(int nr)
@@ -139,7 +145,7 @@ public class ReservationService
         else System.Console.WriteLine(res.ToString());
     }
     public DateOnly? GetWeekDay()
-    {
+    {//commented code was code that hid days that where before today. (so if tuesday, you do not see monday)
         //get current day
         DateTime today = DateTime.Today;
         DayOfWeek currentDay = today.DayOfWeek;
@@ -148,19 +154,19 @@ public class ReservationService
         if (weekdayInt < 1) weekdayInt = 1;
         DateOnly? toReturn = null;
         //create inputmenu
-        InputMenu selectDay = new InputMenu("| Select a day |", null);
+        InputMenu selectDay = new InputMenu("Select a day", null);
         //add days of week left.
         for (int i = weekdayInt; i < 7; i++)
         {
             DayOfWeek temp = (DayOfWeek)i; //temp DayOfWeekValue. (if you use i it will always be 7)
             selectDay.Add($"{temp}", (x) =>
-        {
+            {
                 var date = today.AddDays((int)temp - weekdayInt);
                 toReturn = DateOnly.FromDateTime(date);
                 //Console.ReadLine();
-        });
+            });
         }
-        selectDay.UseMenu();
+        selectDay.UseMenu((title) => Universal.printAsTitle(title));
         return toReturn;
     }
     public void GetReservationById()
@@ -168,9 +174,10 @@ public class ReservationService
         bool validInput = false;
         int confirmationNumber = 0;
         while (!validInput)
-    {
+        {
             Console.Write("Please enter your confirmation number: ");
-            string userInput = Universal.takeUserInput("Type...");
+            string? userInput = Universal.takeUserInput("Type...");
+            if (userInput == null) return;
             if (int.TryParse(userInput, out confirmationNumber))
             {
                 validInput = true;
@@ -178,7 +185,7 @@ public class ReservationService
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid input. Please enter a valid confirmation number.\n");
+                Console.WriteLine("Invalid input. Please enter a valid confirmation number. (Q to quit)\n");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -201,11 +208,12 @@ public class ReservationService
             while (!validEmail)
             {
                 Console.Write("Please enter the E-mail associated with this reservation: ");
-                string emaily = Universal.takeUserInput("Type...");
-                if (emaily.ToLower() != reservation.Customer.Email.ToLower())
+                string? emaily = Universal.takeUserInput("Type...");
+                if (emaily == null) return;
+                if (emaily.ToLower() != reservation.Customer?.Email?.ToLower())
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Sorry this is not the correct E-mail. Please try again\n");
+                    Console.WriteLine("Sorry this is not the correct E-mail. Please try again (Q to quit)\n");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
                 else
@@ -217,24 +225,54 @@ public class ReservationService
         Console.Clear();
         Console.WriteLine($"These are the details of your reservation:\n");
         Console.WriteLine($"Confirmation number: {reservation.ID}");
-        Console.WriteLine($"Name: {reservation.Customer.Name}");
-        Console.WriteLine($"E-mail: {reservation.Customer.Email}");
-        Console.WriteLine($"Phone number: {reservation.Customer.PhoneNumber}");
-        Console.WriteLine($"Movie: {reservation.TimeTable.Movie.Name}");
-        Console.WriteLine($"Starts at: {reservation.TimeTable.StartDate.Split(" ")[1]} - {reservation.TimeTable.EndDate.Split(" ")[1]}");
-        Console.WriteLine($"Room: {reservation.TimeTable.Room.Name}");
+        Console.WriteLine($"Name: {reservation.Customer?.Name}");
+        Console.WriteLine($"E-mail: {reservation.Customer?.Email}");
+        Console.WriteLine($"Phone number: {reservation.Customer?.PhoneNumber}");
+        Console.WriteLine($"Movie: {reservation.TimeTable?.Movie?.Name}");
+        Console.WriteLine($"Starts at: {reservation.TimeTable?.StartDate.Split(" ")[1]} - {reservation.TimeTable?.EndDate.Split(" ")[1]}");
+        Console.WriteLine($"Room: {reservation.TimeTable?.Room?.Name}");
         if (reservation.ReservedSeats != null && reservation.ReservedSeats.Count > 0)
         {
             string[] reservedSeats = GetSeatLocation(reservation);
             string seats = string.Join(", ", reservedSeats); //reservation.ReservedSeats.Select(seat => seat.Name)
             Console.WriteLine($"Seats: {seats}");
-    }
+        }
         else
         {
             Console.WriteLine("No seats reserved.");
         }
         Universal.PressAnyKeyWaiter();
         //Console.ReadKey();
+    }
+    public void SeeCustomerEmails()
+    {
+        List<CustomerModel> allCustomers = new List<CustomerModel>();
+        try
+        {
+            int page = 1;
+            while (true)
+            {
+                CustomerModel[] customers = _cf.GetItems(100, page, 6);
+                foreach (CustomerModel customer in customers)
+                {
+                    if (customer.IsSubscribed)
+                    {
+                        allCustomers.Add(customer);
+                    }
+                }
+                page++;
+                if (customers.Length < 100) break;
+            }
+        }
+        catch { }
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("Here are the e-mails of all the subscribed customers:\n");
+        foreach (CustomerModel customer in allCustomers)
+        {
+            sb.Append($"Name: {customer.Name}, Age: {customer.Age}, E-mail: {customer.Email}\n");
+        }
+        Console.WriteLine(sb.ToString());
+        Universal.PressAnyKeyWaiter();
     }
     public string[] GetSeatLocation(ReservationModel reservation)
     {
@@ -257,10 +295,10 @@ public class ReservationService
         InputMenu movieSelecter = new InputMenu("| Selecteer een film |", null);
         TimeTableModel[]? timetables = _tf.GetTimeTablesFromDate(weekday);
         //TimeTableModel[] timetables = _tf.GetItems(100); //now only first 100
-        if(timetables == null || timetables.Length == 0) 
+        if (timetables == null || timetables.Length == 0)
         {
             System.Console.WriteLine("there are no movies planned today");
-            Console.ReadKey();
+            Universal.PressAnyKeyWaiter();
             return null;
         }
         foreach (TimeTableModel timeTable in timetables)
@@ -272,7 +310,7 @@ public class ReservationService
                 _tf.getRelatedItemsFromDb(timeTable, 40);
             }
             if (timeTable.Movie == null) continue;
-            movieSelecter.Add($"Film: {timeTable.Movie.Name}", (x) =>
+            movieSelecter.Add($"Film: {timeTable.Movie.Name} | Time: {timeTable.DateTimeStartDate.ToShortTimeString()} till {timeTable.DateTimeEndDate.ToShortTimeString()} | Room: {timeTable.Room?.Name}", (x) =>
             {
                 mov = timeTable;
             });
@@ -294,8 +332,6 @@ public class ReservationService
         tt = SelectTimeTableInDay(day ?? DateOnly.MaxValue);
         if (tt == null)
         {
-            System.Console.WriteLine("failed to get timetable");
-            Console.ReadLine();
             return;
         }
         else if (tt != null)
@@ -311,8 +347,8 @@ public class ReservationService
             throw new ArgumentNullException(nameof(tt), "The tt object is null.");
         }
         if (tt.Room == null) { return; }
-        
-        
+
+
         // Select a reserved seat to show the info of
         SeatModel seat = RoomLayoutService.selectReservedSeatModel(tt.Room) ?? new();
 

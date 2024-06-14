@@ -132,7 +132,7 @@ class RoomLayoutService : LayoutModel
 
         //SeatModel? selectedOption = null;
 
-        InputMenu selectRoom = new InputMenu("useLambda", null);
+        InputMenu selectRoom = new InputMenu("Select room to edit", null);
         foreach (RoomModel room in roomList)
         {
             selectRoom.Add($"{room.Name}", (x) =>
@@ -142,7 +142,7 @@ class RoomLayoutService : LayoutModel
                 //selectedOption = RoomLayoutService.selectSeatModel(room.Seats, room);
             });
         }
-        selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
+        selectRoom.UseMenu((title) => Universal.printAsTitle(title));
         //return selectedOption;
     }
     public void editLayout()
@@ -153,8 +153,15 @@ class RoomLayoutService : LayoutModel
     {
         //List<SeatModel> layout = getSeatModelsFromDatabase(); - Aymane
         //Room room = getRoomFromDatabase(); - Aymane
+        Console.WriteLine("Use arrow keys, w, s, a, d, Enter, Esc to navigate.");
+        Console.WriteLine("Press \"Enter\" to confirm a seat....\n");
+        Universal.PressAnyKeyWaiter();
 
-        InputMenu SeatModelSelectionMenu = new InputMenu($"  [   Screen   ]", false, room.RowWidth ?? 0);
+        string screenString = "[   Screen   ]";
+        int screenPosition = ((room.RowWidth ?? 1) / 2);
+        for (int i = 0; i < screenPosition; i++) { screenString = "   " + screenString; }
+        screenString = screenString.Substring(7);
+        InputMenu SeatModelSelectionMenu = new InputMenu(screenString, false, room.RowWidth ?? 0);
         //string SeatModelName;
 
         string getType;
@@ -322,7 +329,7 @@ class RoomLayoutService : LayoutModel
             else layouts[(seat.RoomID ?? 0) - 1].Add(seat);
         }
 
-        InputMenu selectRoom = new InputMenu("useLambda");
+        InputMenu selectRoom = new InputMenu("Select room to edit");
         foreach (RoomModel room in roomList)
         {
             selectRoom.Add($"{room.Name}", (x) =>
@@ -333,7 +340,7 @@ class RoomLayoutService : LayoutModel
                 rf.ItemToDb(room);
             });
         }
-        selectRoom.UseMenu(() => Universal.printAsTitle("Select room to edit"));
+        selectRoom.UseMenu((title) => Universal.printAsTitle(title));
     }
 
     public static void MakeNewLayout()
@@ -497,11 +504,12 @@ class RoomLayoutService : LayoutModel
                 Console.Clear();
                 Console.WriteLine($"You've selected seat {seatModel.Name}. Please provide your information.");
                 // Here you can prompt the user for their information and handle it accordingly
-                string fullName;
+                string? fullName;
                 while (true)
                 {
                     Console.Write("Enter your full name: ");
-                    fullName = Universal.takeUserInput("Type...") ?? "";
+                    fullName = Universal.takeUserInput("Type...");
+                    if (fullName == null) return;
                     if (IsValidFullName(fullName))
                     {
                         break;  // Exit the loop if a valid full name is entered
@@ -512,13 +520,15 @@ class RoomLayoutService : LayoutModel
                     }
                 }
                 Console.Write("Enter your email: ");
-                string email = Universal.takeUserInput("Type...");
+                string? email = Universal.takeUserInput("Type...");
+                if (email == null) return;
 
                 string phoneNumber;
                 while (true)
                 {
                     Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                    phoneNumber = Universal.takeUserInput("Type...") ?? "";
+                    phoneNumber = Universal.takeUserInput("Type...");
+                    if (phoneNumber == null) return;
                     if (IsValidPhoneNumber(phoneNumber))
                     {
                         break;  // Exit the loop if a valid phone number is entered

@@ -3,6 +3,7 @@ using System.Data.SQLite;
 using DataAccessLibrary.models;
 using DataAccessLibrary;
 using Models;
+using DataAccessLibrary.logic;
 
 
 namespace Project_B.services
@@ -10,14 +11,14 @@ namespace Project_B.services
 
     public static class UserInfoInput
     {
-        public static (CustomerModel?, string) GetUserInfo(TimeTableModel tt)
+        public static (CustomerModel?, string) GetUserInfo(TimeTableModel tt, CustomerFactory cf)
         {
             // Get initial user info
             // Call the InitialUserInfo method and pass the movie instance as an argument
 
             // var userInfo = UserInfoInput.InitialUserInfo(movie);
             if (tt.Movie == null) return (null, "");
-            (CustomerModel? customer, string note) userInfo = InitialUserInfo(tt.Movie);
+            (CustomerModel? customer, string note) userInfo = InitialUserInfo(tt.Movie, cf);
             if (userInfo.customer == null) return (null, "");
 
             // Display initial info
@@ -52,28 +53,14 @@ namespace Project_B.services
             return userInfo;
         }
 
-        public static (CustomerModel?, string) InitialUserInfo(MovieModel movie)
+        public static (CustomerModel?, string) InitialUserInfo(MovieModel movie, CustomerFactory cf)
         {
-            string fullName;
-            while (true)
-            {
-                Console.Write("Enter your full name: ");
-                fullName = Universal.takeUserInput("Type...") ?? "";
-                if (IsValidFullName(fullName))
-                {
-                    break;  // Exit the loop if a valid full name is entered
-                }
-                else
-                {
-                    Console.WriteLine("Please enter a valid full name.");
-                }
-            }
-
             string email;
             while (true)
             {
                 Console.Write("Enter your email: ");
                 string? input = Universal.takeUserInput("Type...");
+                if (input == null) return (null, "");
                 if (input.IsValidEmail())
                 {
                     email = input ?? "";
@@ -84,12 +71,36 @@ namespace Project_B.services
                     System.Console.WriteLine("Please enter a valid email.");
                 }
             }
+            //check if customer already exists
+            CustomerModel? existingCustomer = cf.GetCustomerFromEmail(email);
+            if (existingCustomer is not null)
+            {
+                System.Console.WriteLine("Your e-mail is already in the system.");
+                Universal.PressAnyKeyWaiter();
+                return (existingCustomer, "");
+            }
+            string? fullName;
+            while (true)
+            {
+                Console.Write("Enter your full name: ");
+                fullName = Universal.takeUserInput("Type...");
+                if (fullName == null) return (null, "");
+                if (IsValidFullName(fullName))
+                {
+                    break;  // Exit the loop if a valid full name is entered
+                }
+                else
+                {
+                    Console.WriteLine("Please enter a valid full name.");
+                }
+            }
 
             int age;
             while (true)
             {
                 Console.Write("Enter your age: ");
-                string input = Universal.takeUserInput("Type...");
+                string? input = Universal.takeUserInput("Type...");
+                if (input == null) return (null, "");
 
                 if (int.TryParse(input, out age) && age > 0 && age < 100)
                 {
@@ -99,7 +110,8 @@ namespace Project_B.services
                     if ((int)movie.PegiAge > age)
                     {
                         Universal.WriteColor($"\nWarning: This movie is not suitable for a {age}-year-old. Do you want to continue? (Y/N)", ConsoleColor.Red);
-                        string choice = Universal.takeUserInput("Type...")?.ToLower() ?? "";
+                        string? choice = Universal.takeUserInput("Type...")?.ToLower();
+                        if (choice == null) return (null, "");
                         if (choice == "y" || choice == "yes")
                         {
                             // User wants to continue
@@ -125,11 +137,12 @@ namespace Project_B.services
             }
 
 
-            string phoneNumber;
+            string? phoneNumber;
             while (true)
             {
                 Console.Write("Enter your phone number (starting with 0 and max 10 digits): ");
-                phoneNumber = Universal.takeUserInput("Type...") ?? "";
+                phoneNumber = Universal.takeUserInput("Type...");
+                if (phoneNumber == null) return (null, "");
                 if (IsValidPhoneNumber(phoneNumber))
                 {
                     break;  // Exit the loop if a valid phone number is entered
@@ -142,7 +155,8 @@ namespace Project_B.services
             //get note
             Console.WriteLine("In case of allergies or special needs that the cinema needs to know about");
             Console.WriteLine("Please write them here:");
-            string userinput = Universal.takeUserInput("Type...") ?? "";
+            string? userinput = Universal.takeUserInput("Type...");
+            if (userinput == null) return (null, "");
             //ask for rights to send email
             System.Console.WriteLine("Can YourEyes send you mail? (Y/N)");
             char resp = Console.ReadKey().KeyChar;
@@ -190,7 +204,8 @@ namespace Project_B.services
                         {
                             while(true)
                             {
-                                var resp = Universal.takeUserInput("New full name:");
+                                string? resp = Universal.takeUserInput("New full name:");
+                                if (resp == null) return;
                                 if(resp.IsValidFullName())
                                 {
                                     options.customer.Name = resp;
@@ -208,7 +223,8 @@ namespace Project_B.services
                         {
                             while(true)
                             {
-                                var resp = Universal.takeUserInput("New email:");
+                                string? resp = Universal.takeUserInput("New email:");
+                                if (resp == null) return;
                                 if(resp.IsValidEmail())
                                 {
                                     options.customer.Email = resp;
@@ -226,7 +242,8 @@ namespace Project_B.services
                         {
                             while(true)
                             {
-                                var resp = Universal.takeUserInput("New phone number:");
+                                string ? resp = Universal.takeUserInput("New phone number:");
+                                if (resp == null) return;
                                 if(resp.IsValidPhoneNumber())
                                 {
                                     options.customer.PhoneNumber = resp;
@@ -244,7 +261,8 @@ namespace Project_B.services
                         {
                             while(true)
                             {
-                                var resp = Universal.takeUserInput("New phone number:");
+                                string ? resp = Universal.takeUserInput("New phone number:");
+                                if (resp == null) return;
                                 if(int.TryParse(resp, out int age))
                                 {
                                     if(age < 0 || age > 110)
@@ -269,7 +287,9 @@ namespace Project_B.services
                     {
                         "Note", (x) =>
                         {
-                            options.note = Universal.takeUserInput("New note: ");
+                            string? temp = Universal.takeUserInput("New note: ");
+                            if (temp == null) return;
+                            options.note = temp;
                             DisplayUserInfo(options);
                             Console.ReadKey();
                             return;
